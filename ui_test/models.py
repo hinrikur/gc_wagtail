@@ -353,8 +353,6 @@ class RelatedLink(LinkFields):
 #   def __str__(self):
 #     return self.page.title + " -> " + self.koxchart.heiti
 
-
-
 class ArticlePage(SiteSettingsTemplateMixin, MovePagesMixin, Page, RelatedPageMixin, CategoryMixin, ArticleTagStuffMixin, AuthorMixin, ArticleMixin):
     SUB_ARTICLE_LAYOUT_CHOICES = (
         ('none', "Fela hliðarefni"),
