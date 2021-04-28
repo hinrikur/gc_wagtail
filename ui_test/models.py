@@ -367,7 +367,7 @@ class ArticlePage(SiteSettingsTemplateMixin, MovePagesMixin, Page, RelatedPageMi
         ('noimg', "Fela mynd"),
     )
     tags = ClusterTaggableManager(through=ArticleTag, blank=True)
-    body = RichTextField(blank=False)
+    body = RichTextField(blank=False, editor='draftail')
     header_image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -388,7 +388,7 @@ class ArticlePage(SiteSettingsTemplateMixin, MovePagesMixin, Page, RelatedPageMi
     header_video = models.CharField(max_length=225, blank=True, null=True, help_text="Slóð á myndbönd frá YouTube og Vimeo.")
 
     
-    correct = models.TextField(blank=True, null=True, help_text='FieldPanel viðmót')
+    # correct = models.TextField(blank=True, null=True, help_text='FieldPanel viðmót')
 
     content_panels = BASE_ARTICLE_CONTENT_PANELS + [
         FieldPanel('tags'),
@@ -402,7 +402,7 @@ class ArticlePage(SiteSettingsTemplateMixin, MovePagesMixin, Page, RelatedPageMi
         MultiFieldPanel(
             [   
                 FieldPanel('body'),
-                FieldPanel('correct')
+                # FieldPanel('correct')
             ], 'Body'
         ), 
     ]

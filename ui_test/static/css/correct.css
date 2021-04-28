@@ -1,0 +1,92 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  
+/* ann {
+  background: #ff7c24;
+  border: solid;
+  border-width: thin;
+  border-radius: 5px;;
+  box-shadow: 1px 1px 1px grey;
+}
+
+ann:hover {
+  border-color: #FFE0EA;
+  background-color: #FFB07B;
+  cursor: pointer;
+} */
+
+
+ann {
+  /* background: #ff7c24; */
+  /* border: solid; */
+  /* border-width: thin;
+  border-radius: 5px;; */
+  /* box-shadow: 1px 1px 1px grey; */
+  text-decoration: underline #FFB07B;
+  /* text-decoration: underline #e97528; */
+  text-decoration-thickness: 20%;
+}
+
+ann:hover {
+  color: black;
+  background-color: #FFB07B;
+  border-radius: 3px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ann:focus{
+  background-color:red;
+} */
+
+ann:hover:active{
+  background-color:#e29460;
+  text-decoration: none;
+}
+
+button.Annotation__button_yes{
+  background-color:limegreen;
+  border: None;
+  color:honeydew;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 4px;
+  /* font-weight: bold; */
+}
+button.Annotation__button_no{
+  background-color: rgb(219, 43, 43);
+  border: None;
+  color: honeydew;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 4px;
+  /* font-weight: bold; */
+}
+
+button.Annotation__button_no:active{
+  background-color: firebrick;
+}
+
+button.Annotation__button_yes:active{
+  background-color: rgb(34, 146, 34);
+}
+
+.Annotation--top{
+  /* border-width: 5px;
+  border-style: solid;
+  border-color: #e29460; */
+  /* background-color: rgb(90, 86, 86); */
+  color: black;
+  background-color: #fdebdf;
+  transform: translateX(-25%);
+}

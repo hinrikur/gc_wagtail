@@ -55,36 +55,141 @@ class ArticlePageAdmin(ModelAdmin):
 
 modeladmin_register(ArticlePageAdmin)
 
-@hooks.register('insert_editor_js')
-def editor_js():
-    js_files = [
-        'ui_test/js/common.js',
-        'ui_test/js/page.js'
-    ]
-    js_includes = format_html_join('\n', '<script src="{0}"></script>',
-        ((static(filename),) for filename in js_files)
+
+# Testing demo from wagtial docs
+# #########################################################
+# #########################################################
+# #########################################################
+# #########################################################
+# #########################################################
+
+from draftjs_exporter.dom import DOM
+from wagtail.admin.rich_text.converters.html_to_contentstate import InlineEntityElementHandler
+
+@hooks.register('register_rich_text_features')
+def register_correct_feature(features):
+    features.default_features.append('correction')
+    """
+    Registering the `correction` feature, which uses the `CORRECTION` Draft.js entity type,
+    and is stored as HTML with a `<span data-correction>` tag.
+    """
+    feature_name = 'correction'
+    type_ = 'CORRECTION'
+
+    control = {
+        'type': type_,
+        'label': 'Y',
+        'description': 'Lesa yfir',
+    }
+
+    features.register_editor_plugin(
+        'draftail', feature_name, draftail_features.EntityFeature(
+            control,
+            # js=['js/correct.js', 'js/rsuitejs-index-bundle.js'],
+            js=['js/correct-bundle.js'],
+            css={'all': ['css/correct.css']}
+        )
     )
-    # remember to use double '{{' so they are not parsed as template placeholders
-    return js_includes # + format_html(
-        # """
-        # <script>
-        #        function correct() {
-        #         // Submit the contents of the textarea to the server
-        #         // for tokenization and parsing
-        #         var txt = $("#txt");
-        #         var s = txt.val().trim();
-        #         txt.toggleClass("with-background", txt.val() == "");
-        #         if (s && s.length) {
-        #             // Ask the server to tokenize and parse the given text, asynchronously
-        #             new CorrectionTask().submitText(s);
-        #         } else {
-        #             // Nothing to do
-        #             $("#txt").focus();
-        #         }
-        #     }
-        # </script>
-        # """
-    # )
+
+    features.register_converter_rule('contentstate', feature_name, {
+        # Note here that the conversion is more complicated than for blocks and inline styles.
+        'from_database_format': {'span[data-correction]': CorrectEntityElementHandler(type_)},
+        'to_database_format': {'entity_decorators': {type_: correct_entity_decorator}},
+    })
+
+
+
+def correct_entity_decorator(props):
+    """
+    Draft.js ContentState to database HTML.
+    Converts the CORRECTION entities into a span tag.
+    """
+    return DOM.create_element('span', {
+        'data-correction': props['correction'],
+    }, props['children'])
+
+
+class CorrectEntityElementHandler(InlineEntityElementHandler):
+    """
+    Database HTML to Draft.js ContentState.
+    Converts the span tag into a CORRECTION entity, with the right data.
+    """
+    mutability = 'IMMUTABLE'
+
+    def get_attribute_data(self, attrs):
+        """
+        Take the ``correction`` value from the ``data-correction`` HTML attribute.
+        """
+        return {
+            'correction': attrs['data-correction'],
+        }
+
+
+# Testing annotation replacement
+
+@hooks.register('register_rich_text_features')
+def register_debug_annotate_feature(features):
+    features.default_features.append('debug-annotate')
+    """
+    Registering the `debug-annotate` feature, which uses the `DANNOTATE` Draft.js entity type,
+    and is stored as HTML with a `<span data-dannotation>` tag.
+    """
+    feature_name = 'debug-annotate'
+    type_ = 'DANNOTATE'
+
+    control = {
+        'type': type_,
+        'label': 'ANN',
+        'description': 'Prófa leiðréttingu',
+    }
+
+    features.register_editor_plugin(
+        'draftail', feature_name, draftail_features.EntityFeature(
+            control,
+            js=['js/annotate-bundle.js'],
+            css={'all': ['css/correct.css']}
+        )
+    )
+
+    features.register_converter_rule('contentstate', feature_name, {
+        # Note here that the conversion is more complicated than for blocks and inline styles.
+        'from_database_format': {'span[data-dannotation]': DebugAnnotateEntityElementHandler(type_)},
+        'to_database_format': {'entity_decorators': {type_: debug_annotate_entity_decorator}},
+    })
+
+
+# Testing annotation replacement
+
+def debug_annotate_entity_decorator(props):
+    """
+    Draft.js ContentState to database HTML.
+    Converts the DANNOTATE entities into a span tag.
+    """
+    return DOM.create_element('span', {
+        'data-dannotation': props['debug-annotate'],
+    }, props['children'])
+
+
+class DebugAnnotateEntityElementHandler(InlineEntityElementHandler):
+    """
+    Database HTML to Draft.js ContentState.
+    Converts the span tag into a DANNOTATE entity, with the right data.
+    """
+    mutability = 'IMMUTABLE'
+
+    def get_attribute_data(self, attrs):
+        """
+        Take the ``debug-annotate`` value from the ``data-dannotation`` HTML attribute.
+        """
+        return {
+            'debug-annotate': attrs['data-dannotation'],
+        }
+
+# #########################################################
+# #########################################################
+# #########################################################
+# #########################################################
+# #########################################################
 
 
 # removed because not part of edit panel
@@ -196,7 +301,6 @@ def register_html_feature(features):
         WhitelistRule('iframe', attribute_rule({'src':True, 'id': True, 'type': True, 'width': True, 'height': True, 'frameborder': True, 'scrolling': True, 'style': True})),
     ])
     features.default_features.append('html')
-
 
 
 

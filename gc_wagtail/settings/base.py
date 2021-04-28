@@ -188,5 +188,8 @@ BASE_URL = 'http://example.com'
 WAGTAILADMIN_RICH_TEXT_EDITORS = {
     'default': {
         'WIDGET': 'wagtail.admin.rich_text.HalloRichTextArea'
+    },
+    'draftail': {
+        'WIDGET' : 'wagtail.admin.rich_text.DraftailRichTextArea',
     }
 }
