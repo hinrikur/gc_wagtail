@@ -1,0 +1,176 @@
+{
+    "result": [
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þgf_þf",
+                        "detail": "Sögnin 'að vanta' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað þágufalls.",
+                        "end": 2,
+                        "start": 0,
+                        "offSetEnd": 22,
+                        "offSetStart": 0,
+                        "suggest": "",
+                        "text": "Á líklega að vera 'Manninn á verkstæðinu'"
+                    },
+                    {
+                        "code": "S004",
+                        "detail": null,
+                        "end": 3,
+                        "start": 3,
+                        "offSetEnd": 30,
+                        "offSetStart": 23,
+                        "suggest": "vantar",
+                        "text": "Orðið 'vanntar' var leiðrétt í 'vantar'"
+                    }
+                ],
+                "corrected": "Manninum á verkstæðinu vantar hamar.",
+                "tokens": [
+                    {
+                        "k": 6,
+                        "x": "Manninum"
+                    },
+                    {
+                        "k": 6,
+                        "x": "á"
+                    },
+                    {
+                        "k": 6,
+                        "x": "verkstæðinu"
+                    },
+                    {
+                        "k": 6,
+                        "x": "vantar"
+                    },
+                    {
+                        "k": 6,
+                        "x": "hamar"
+                    },
+                    {
+                        "k": 1,
+                        "x": "."
+                    }
+                ]
+            },
+            {
+                "annotations": [
+
+                    {
+                        "code": "P_NT_EndingIR",
+                        "detail": "Karlkyns orð sem enda á '-ir' í nefnifalli eintölu, eins og 'kælir', eru rituð 'kæli' í þolfalli.",
+                        "end": 4,
+                        "start": 4,
+                        "offSetEnd": 64,
+                        "offSetStart": 59,
+                        "suggest": "kæli",
+                        "text": "Á sennilega að vera 'kæli'"
+                    }
+                ],
+                "corrected": "Guðjón setti kókið í kælir.",
+                "tokens": [
+                    {
+                        "k": 14,
+                        "x": "Guðjón"
+                    },
+                    {
+                        "k": 6,
+                        "x": "setti"
+                    },
+                    {
+                        "k": 6,
+                        "x": "kókið"
+                    },
+                    {
+                        "k": 6,
+                        "x": "í"
+                    },
+                    {
+                        "k": 6,
+                        "x": "kælir"
+                    },
+                    {
+                        "k": 1,
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þgf_þf",
+                        "detail": "Sögnin 'að dreyma' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað þágufalls.",
+                        "end": 0,
+                        "start": 0,
+                        "offSetEnd": 69,
+                        "offSetStart": 66,
+                        "suggest": "",
+                        "text": "Á líklega að vera 'Mig'"
+                    },
+                    {
+                        "code": "S004",
+                        "detail": null,
+                        "end": 1,
+                        "start": 1,
+                        "offSetEnd": 77,
+                        "offSetStart": 70,
+                        "suggest": "dreymdi",
+                        "text": "Orðið 'dreimdi' var leiðrétt í 'dreymdi'"
+                    },
+                    {
+                        "code": "S001",
+                        "detail": null,
+                        "end": 2,
+                        "start": 2,
+                        "offSetEnd": 85,
+                        "offSetStart": 78,
+                        "suggest": "stóran",
+                        "text": "Orðið 'stórann' var leiðrétt í 'stóran'"
+                    },
+                    {
+                        "code": "S004",
+                        "detail": null,
+                        "end": 3,
+                        "start": 3,
+                        "offSetEnd": 96,
+                        "offSetStart": 86,
+                        "suggest": "brauðhleif",
+                        "text": "Orðið 'brauðhleyf' var leiðrétt í 'brauðhleif'"
+                    }
+                ],
+                "corrected": "Mér dreymdi stóran brauðhleif.",
+                "tokens": [
+                    {
+                        "k": 6,
+                        "x": "Mér"
+                    },
+                    {
+                        "k": 6,
+                        "x": "dreymdi"
+                    },
+                    {
+                        "k": 6,
+                        "x": "stóran"
+                    },
+                    {
+                        "k": 6,
+                        "x": "brauðhleif"
+                    },
+                    {
+                        "k": 1,
+                        "x": "."
+                    }
+                ]
+            }
+        ]
+    ],
+    "stats": {
+        "ambiguity": 1.1640106469086369,
+        "num_parsed": 3,
+        "num_sentences": 3,
+        "num_tokens": 17
+    },
+    "text": "Manninum á verkstæðinu vanntar hamar. Guðjón setti kókið í kælir.\nMér dreimdi stórann brauðhleyf.",
+    "valid": true
+}

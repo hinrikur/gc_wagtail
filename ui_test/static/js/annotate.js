@@ -1,102 +1,270 @@
 
 const React = window.React;
-// const ReactDOM = window.ReactDOM;
-// const useEffect = window.React.useEffect;
-// const useRef = window.React.useRef;
-// const useState = window.React.useState;
 
 const Modifier = window.DraftJS.Modifier;
 const EditorState = window.DraftJS.EditorState;
+const DraftUtils = window.Draftail.DraftUtils;
+const SelectionState = window.DraftJS.SelectionState;
+
 // const CompositeDecorator = window.DraftJS.CompositeDecorator;
 // const AtomicBlockUtils = window.DraftJS.AtomicBlockUtils;
-// const convertToRaw = window.DraftJS.convertToRaw;
+const convertToRaw = window.DraftJS.convertToRaw;
 
-const Icon = window.Draftail.Icon;
 
+// Manninum á verkstæðinu vanntar hamar. Guðjón setti kókið í kælir.
+// Mér dreimdi stórann brauðhleyf.
 
 const AnnotationEntity = require('./components/annotation-entity.js');
 
+// const processResponce = require('./components/processAPI.js');
+const dummyApi = require('./components/dummyAPI.json');
+
+// console.log(dummyApi)
+
 // const Portal = require('./components/portal.js');
 // const AnnotationTooltip = require('./components/annotation-popover.js');
+
+console.log(dummyApi)
+
+function processAPI(json) {
+    var annotationArray = [];
+    // console.log(json.result)
+    // iterate through outer array
+    for (var i = 0; i < json.result.length; i++) {
+        // iterate through paragraphs
+        for (var j = 0; j < json.result[i].length; j++) {
+            // iterate through sentences
+            var anns = json.result[i][j]["annotations"];
+            console.log('list of annotations:', anns);
+            var newArray = annotationArray.concat(anns);
+            annotationArray = newArray;
+            console.log("annotationArray length:", annotationArray.length)
+        }
+    }
+
+    return annotationArray;
+}
+
 
 
 class DebugAnnotateSource extends React.Component {
 
     componentDidMount() {
 
-
-        const { editorState, entityType, onComplete } = this.props;
+        const { editorState, entityType, onComplete, entityKey } = this.props;
         // console.log(this.props)
-        console.log("Yes, the Annotation button was pressed.");
+        // console.log("Yes, the Annotation button was pressed.");
 
-        const editorHasContent = editorState.getCurrentContent().hasText();
-        const currentContent = editorState.getCurrentContent();
-        const unModifiedState = EditorState.push(editorState, currentContent, 'original-content');
+        // Debug errors:   /////////////////////////////////////////
+        // óaunhæft
+        // const debugAnnInfo = JSON.parse('{ "code": "S004", "detail": null, "end": 5, "start": 5, "suggest": "óraunhæft", "text": "Orðið \'óaunhæft\' var leiðrétt í \'óraunhæft\'" }');
+        // Mér hlakkar
+        const debugAnnInfo = JSON.parse(`{"code": "P_WRONG_CASE_þgf_nf", "detail": "Sögnin 'að hlakka' er persónuleg. Frumlag hennar á að vera í nefnifalli í stað þágufalls.", "end": 0, "start": 0, "suggest": "", "text": "Á líklega að vera 'Ég'"}`);
+        // Ég vill
+        // const debugAnnInfo = JSON.parse(`{"code": "P_wrong_person", "detail": null, "end": 1, "start": 0, "suggest": "ég vil", "text": "Orðasambandið 'Ég vill' var leiðrétt í 'ég vil'"}`);
+        // Mér langaði
+        // const debugAnnInfo = JSON.parse(`"code": "P_WRONG_CASE_þgf_þf", "detail": "Sögnin 'að langa' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað þágufalls.", "end": 0, "start": 0, "suggest": "", "text": "Á líklega að vera 'Mig'"}`);
 
-        const debugAnnInfo = JSON.parse('{ "code": "S004", "detail": null, "end": 5, "start": 5, "suggest": "óraunhæft", "text": "Orðið \'óaunhæft\' var leiðrétt í \'óraunhæft\'" }');
 
-        console.log(debugAnnInfo);
-        // console.log(window)
+        // If statement catches if entityKey is set, indicating annotation has been approved
+        if (entityKey !== undefined && entityKey !== null) {
+
+            // console.log("IF CONDITION CAUGHT")
+            // console.log("Current entityKey to edit, if any:", entityKey)
+            const EntityToReplace = DraftUtils.getEntitySelection(editorState, entityKey)
+            const currentContent = editorState.getCurrentContent();
+            const data = currentContent.getEntity(entityKey).getData();
+            const correctedEntity = Modifier.replaceText(currentContent, EntityToReplace, data.suggest, null, null)
+            // const removedEntity = Modifier.applyEntity(currentContent, correctedEntity, null)
+            const correctedState = EditorState.push(editorState, correctedEntity, 'apply-entity');
+            onComplete(correctedState);
+
+        } else { // Creating new annotation entity/ies   
+
+            const editorHasContent = editorState.getCurrentContent().hasText();
+            // const currentContent = editorState.getCurrentContent();
+            // const unModifiedState = EditorState.push(editorState, currentContent, 'apply-entity');
+
+            // console.log(debugAnnInfo);
+            // // console.log(window)
 
 
+            // capturing empty editors etc.
+            switch (editorHasContent) {
 
-        switch (editorHasContent) {
-            case true:
                 // Editor contains text
+                case true:
 
-                // As is the annotation entity is generated on selected text in the 
+                    // API eventually called here via POST request
+                    // Until then, dummy response imported and used instead
+                    // 
+                    // 
 
-                const selectionState = editorState.getSelection();
-                const anchorKey = selectionState.getAnchorKey();
-                const currentContent = editorState.getCurrentContent();
-                const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-                const start = selectionState.getStartOffset();
-                const end = selectionState.getEndOffset();
-                const selectedText = currentContentBlock.getText().slice(start, end);
+                    const rawState = convertToRaw(editorState.getCurrentContent());
+                    var rawContentBlocks = rawState.blocks;
+                    const entitiesToRender = [];
 
-                console.log("Text to annotate: " + selectedText);
 
-                // TESTING DECORATORS WITH REACT COMPONENTS
 
-                // Uses the Draft.js API to create a new entity with the right data.
+                    for (var key in rawContentBlocks) {
+                        // 
+                        // API call eventually made here
+                        // 
+                        // response flattened to a array of annotation data objects
+                        const processedResponse = processAPI(dummyApi);
+                        console.log("Array of annotations:", processedResponse);
+                        // (Dummy) response added to raw blockmap 
+                        // NOTE: might be skipped? testing annotation in this loop
+                        rawContentBlocks[key]["APIresponse"] = processedResponse;
 
-                const suggestedWord = debugAnnInfo.suggest;
-                const annotationText = debugAnnInfo.text;
+                    }
 
-                // The annotation entity contains information sent from the API during annotation
-                const annEntity = currentContent.createEntity(entityType.type, 'IMMUTABLE', debugAnnInfo
-                    // { 
-                    //     suggestion: suggestedWord,
-                    //     description: annotationText,
+                    for (var blockKey in rawContentBlocks) {
 
-                    // }
-                );
-                // console.log('Annotation entity:', annEntity)
-                const annotationEntityKey = annEntity.getLastCreatedEntityKey();
-                // console.log("annotationEntityKey: ", annotationEntityKey)
+                        rawContentBlocks[blockKey].APIresponse.forEach(annotation => {
 
-                // const newContentState = editorState.getCurrentContent();
-                //  const newContentState = EditorState.createWithContent(currentContent, annotationDecorator)
-                const newContentState = Modifier.replaceText(currentContent, selectionState, selectedText, null, annotationEntityKey);
+                            // const selectionState = editorState.getSelection();
+                            // const anchorKey = selectionState.getAnchorKey();
+                            const anchorKey = rawContentBlocks[blockKey].key;
+                            let currentContent = editorState.getCurrentContent();
+                            console.log("currentContent:", currentContent)
+                            console.log("blockMap:", currentContent.getBlockMap())
+                            const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+                            console.log("anchorKey:", anchorKey)
+                            console.log("currentContentBock, via anchorKey:", currentContentBlock)
+                            // const start = selectionState.getStartOffset();
+                            const start = annotation.offSetStart;
+                            // const end = selectionState.getEndOffset();
+                            const end = annotation.offSetEnd;
+                            const selectedText = currentContentBlock.getText().slice(start, end);
 
-                // Create the new state as an undoable action.
-                const nextState = EditorState.push(
-                    editorState,
-                    newContentState,
-                    "annotated-state"
-                );
+                            const blockSelection = SelectionState
+                                .createEmpty(anchorKey)
+                                .merge({
+                                    anchorOffset: start,
+                                    focusOffset: end,
+                                });
 
-                onComplete(nextState);
-                break;
-            case false:
+                            console.log("Text to annotate: " + selectedText);
+                            console.log("Start offset:", start);
+                            console.log("End offset:", end);
+
+                            // The annotation entity contains information sent from the API during annotation
+                            const annEntity = currentContent.createEntity(entityType.type, 'IMMUTABLE', annotation
+                                // { 
+                                //     suggestion: suggestedWord,
+                                //     description: annotationText,
+
+                                // }
+                            );
+                            // console.log('Annotation entity:', annEntity)
+                            const annotationEntityKey = annEntity.getLastCreatedEntityKey();
+
+                            entitiesToRender.push({
+                                "key": annotationEntityKey,
+                                "blockSelection": blockSelection,
+                                "selectedText": selectedText,
+                            })
+                            // console.log("annotationEntityKey: ", annotationEntityKey)
+
+                        });
+
+                        let newContentState = editorState.getCurrentContent();
+
+                        entitiesToRender.forEach(entity => {
+                            console.log("entity from list:", entity)
+                            // console.log(entity.key)
+                            // console.log(entity.blockSelection)
+                            // console.log(entity.selectedText)
+                            newContentState = Modifier.replaceText(
+                                newContentState, 
+                                entity.blockSelection, 
+                                entity.selectedText, 
+                                null, 
+                                entity.key);
+                        });
+
+                        // Create the new state as an undoable action.
+                        const nextState = EditorState.push(
+                            editorState,
+                            newContentState,
+                            "apply-entity"
+                        );
+
+                        onComplete(nextState);
+                        
+    // Manninum á verkstæðinu vanntar hamar. 
+                        
+
+                    }
+
+                    // // processedResponse.forEach(annotation => {
+                    // // As is the annotation entity is generated on selected text in the 
+
+                    // const selectionState = editorState.getSelection();
+                    // const anchorKey = selectionState.getAnchorKey();
+                    // const currentContent = editorState.getCurrentContent();
+                    // console.log("blockMap:", currentContent.getBlockMap())
+                    // const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+                    // const start = selectionState.getStartOffset();
+                    // const end = selectionState.getEndOffset();
+                    // const selectedText = currentContentBlock.getText().slice(start, end);
+
+
+                    // console.log("Text to annotate: " + selectedText);
+                    // console.log("Start offset:", start);
+                    // console.log("End offset:", end);
+
+
+
+                    // // TESTING DECORATORS WITH REACT COMPONENTS
+
+                    // // Uses the Draft.js API to create a new entity with the right data.
+
+                    // const suggestedWord = debugAnnInfo.suggest;
+                    // const annotationText = debugAnnInfo.text;
+
+                    // // The annotation entity contains information sent from the API during annotation
+                    // const annEntity = currentContent.createEntity(entityType.type, 'IMMUTABLE', debugAnnInfo
+                    //     // { 
+                    //     //     suggestion: suggestedWord,
+                    //     //     description: annotationText,
+
+                    //     // }
+                    // );
+                    // // console.log('Annotation entity:', annEntity)
+                    // const annotationEntityKey = annEntity.getLastCreatedEntityKey();
+                    // // console.log("annotationEntityKey: ", annotationEntityKey)
+
+                    // // const newContentState = editorState.getCurrentContent();
+                    // //  const newContentState = EditorState.createWithContent(currentContent, annotationDecorator)
+                    // const newContentState = Modifier.replaceText(currentContent, selectionState, selectedText, null, annotationEntityKey);
+
+                    // // Create the new state as an undoable action.
+                    // const nextState = EditorState.push(
+                    //     editorState,
+                    //     newContentState,
+                    //     "annotated-state"
+                    // );
+                    // });
+
+
+
+                    // onComplete(nextState);
+                    break;
+
                 // Editor is empty
-                onComplete(unModifiedState);
-                console.log("...But the editor is empty");
-                break;
-            default:
-                // Other / Error
-                console.log("Debug annotate case not caught");
-                break;
+                case false:
+                    onComplete(unModifiedState);
+                    console.log("...But the editor is empty");
+                    break;
+
+                // Other case (not meant to get here!)
+                default:
+                    // Other / Error
+                    console.log("Debug annotate case not caught");
+                    break;
+            }
         }
 
     }
@@ -116,12 +284,12 @@ const DebugAnnotation = (props) => {
         onRemove } = props;
 
     const editor = document.querySelector('[data-draftail-input]');
-    console.log("selected as 'editor':", editor);
+    // console.log("selected as 'editor':", editor);
 
     const data = contentState.getEntity(entityKey).getData();
-    console.log("DATA FROM DEBUG ANNOTATION:", data);
+    // console.log("DATA FROM DEBUG ANNOTATION:", data);
 
-    console.log("ContentState from Annotation Entity:", contentState.getEntity(entityKey));
+    // console.log("ContentState from Annotation Entity:", contentState.getEntity(entityKey));
 
     // console.log('Annotation entity:', annEntity)
     // const annotationEntityKey = annEntity.getLastCreatedEntityKey();
