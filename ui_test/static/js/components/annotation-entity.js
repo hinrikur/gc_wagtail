@@ -51,6 +51,29 @@ function formatAnnotation(txt) {
   });
 }
 
+function getAnnotationClass(code) {
+  // Converts error's code from API to one of three classes
+  // Relevant for rendering of annotation 
+
+  var cls; // return variable
+
+  const classMap = {
+    "C": "grammar-error",      // Compound error
+    "N": "grammar-suggestion", // Punctuation error - N  
+    "P": "grammar-suggestion", // Phrase error - P
+    "W": "grammar-suggestion", // Spelling suggestion - W (not used in GreynirCorrect atm)
+    "Z": "spelling",          // Capitalization error - Z
+    "A": "spelling",          // Abbreviation - A
+    "S": "spelling",          // Spelling error - S
+    "U": "spelling",          // Unknown word - U (nothing can be done)
+    "T": "wording",           // Taboo warning
+  };
+
+  var codeChar = code.charAt(0);
+  cls = classMap[codeChar]
+  return cls;
+}
+
 class AnnotationEntity extends React.Component {
   constructor(props) {
     super(props);
@@ -93,18 +116,25 @@ class AnnotationEntity extends React.Component {
     } = this.props;
 
     const { showTooltipAt } = this.state;
+    const annCode = data.code;
+    const annClass = getAnnotationClass(annCode)
+
+    console.log("Annotation code:", annCode)
+    console.log("Annotation class:", annClass)
+
+
     // 'ann' element, conteins the annotation 
     return React.createElement(
       "ann",
       {
         role: "button",
         onMouseUp: this.openTooltip,
-        className: "ann"
+        className: `${annClass}`
       },
       React.createElement(
         "span",
         {
-          className: "TooltipEntity__text"
+          className: "Annotated__text"
         },
         children
       ),
@@ -123,7 +153,8 @@ class AnnotationEntity extends React.Component {
           AnnotationPopover,
           {
             target: showTooltipAt,
-            direction: "top"
+            direction: "top",
+            annClass: annClass
           },
           // div for popover contents
           React.createElement(
@@ -151,7 +182,7 @@ class AnnotationEntity extends React.Component {
               )
               : null
           ),
-
+          // Button for accepting annotation, calling onEdit and rerunning source component
           React.createElement(
             IconButton,
             {
@@ -173,6 +204,7 @@ class AnnotationEntity extends React.Component {
             // },
             // "Samþykkja"
           ),
+          // Button for declining annotation, removing annotation entity
           React.createElement(
             IconButton,
             {

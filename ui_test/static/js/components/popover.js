@@ -33,12 +33,12 @@ const getTooltipStyles = (target, direction) => {
 /**
  * A tooltip, with arbitrary content.
  */
-const AnnotationTooltip = ({ target, children, direction }) =>
+const AnnotationTooltip = ({ target, children, direction, annClass }) =>
   /*#__PURE__*/ React.createElement(
   "div",
   {
     style: getTooltipStyles(target, direction),
-    className: `Tooltip Annotation--${direction}`,
+    className: `Tooltip Annotation-${annClass}-${direction}`,
     role: "tooltip"
   },
   children

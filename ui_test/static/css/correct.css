@@ -192,6 +192,22 @@ div.ann-detail {
   margin-bottom: 0.5em;
 }
 
+.Annotation-grammar-suggestion-top {
+  background-color: #fdebdf;
+  transform: translate(-25%, 2%);
+
+}
+
+.Annotation-spelling-top{
+  /* border-width: 5px;
+  border-style: solid;
+  border-color: #e29460; */
+  /* background-color: rgb(90, 86, 86); */
+  color: black;
+  background-color: #ffe9e9;
+  transform: translate(-25%, 2%);
+}
+
 /* ann {
   background: #ff7c24;
   border: solid;
@@ -213,7 +229,7 @@ ann {
   /* border-width: thin;
   border-radius: 5px;; */
   /* box-shadow: 1px 1px 1px grey; */
-  text-decoration: underline #FFB07B;
+  text-decoration: underline #ffb27f;
   /* text-decoration: underline #e97528; */
   text-decoration-thickness: 20%;
 }
@@ -234,6 +250,33 @@ ann:hover:active{
   background-color:#e29460;
   text-decoration: none;
 }
+
+ann.spelling {
+  /* background: #ff7c24; */
+  /* border: solid; */
+  /* border-width: thin;
+  border-radius: 5px;; */
+  /* box-shadow: 1px 1px 1px grey; */
+  text-decoration: underline #ff2727;
+  /* text-decoration: underline #e97528; */
+  text-decoration-thickness: 20%;
+}
+
+ann.spelling:hover {
+  /* color: white; */
+  background-color: #ff5959;
+  border-radius: 3px;
+  text-decoration: none;
+  /* text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; */
+  cursor: pointer;
+}
+
+ann.spelling:hover:active{
+  background-color:#ff5959;
+  text-decoration: none;
+}
+
+/* div.ann-spelling- */
 
 button.Annotation__button_yes{
   background-color:limegreen;
@@ -270,12 +313,3 @@ button.Annotation__button_yes:active{
   background-color: rgb(34, 146, 34);
 }
 
-.Annotation--top{
-  /* border-width: 5px;
-  border-style: solid;
-  border-color: #e29460; */
-  /* background-color: rgb(90, 86, 86); */
-  color: black;
-  background-color: #fdebdf;
-  transform: translateX(-25%);
-}
