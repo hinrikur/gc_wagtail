@@ -45,6 +45,21 @@ function processAPI(json) {
     return annotationArray;
 }
 
+function getReplacement(data) {
+    // finds valid replacement text in annotation data
+    var replacement;
+    if (data.suggest === "") {
+        // in case of empty .suggest field in data,
+        // example from .text field extracted with regex
+        var realSuggest = data.text.match(/'[^']*'/)[0];
+        realSuggest = realSuggest.substring(1, realSuggest.length-1);
+        replacement = realSuggest;
+    } else {
+        // otherwise returns .suggest value
+        replacement = data.suggest;
+    }
+    return replacement;
+}
 
 
 class DebugAnnotateSource extends React.Component {
@@ -64,7 +79,7 @@ class DebugAnnotateSource extends React.Component {
         // const debugAnnInfo = JSON.parse(`{"code": "P_wrong_person", "detail": null, "end": 1, "start": 0, "suggest": "ég vil", "text": "Orðasambandið 'Ég vill' var leiðrétt í 'ég vil'"}`);
         // Mér langaði
         // const debugAnnInfo = JSON.parse(`"code": "P_WRONG_CASE_þgf_þf", "detail": "Sögnin 'að langa' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað þágufalls.", "end": 0, "start": 0, "suggest": "", "text": "Á líklega að vera 'Mig'"}`);
-
+        
 
         // If statement catches if entityKey is set, indicating annotation has been approved
         if (entityKey !== undefined && entityKey !== null) {
@@ -74,7 +89,9 @@ class DebugAnnotateSource extends React.Component {
             const EntityToReplace = DraftUtils.getEntitySelection(editorState, entityKey)
             const currentContent = editorState.getCurrentContent();
             const data = currentContent.getEntity(entityKey).getData();
-            const correctedEntity = Modifier.replaceText(currentContent, EntityToReplace, data.suggest, null, null)
+            // Suggestion text extracted from annoatation data
+            const suggestionText = getReplacement(data);
+            const correctedEntity = Modifier.replaceText(currentContent, EntityToReplace, suggestionText, null, null)
             // const removedEntity = Modifier.applyEntity(currentContent, correctedEntity, null)
             const correctedState = EditorState.push(editorState, correctedEntity, 'apply-entity');
             onComplete(correctedState);
@@ -148,6 +165,10 @@ class DebugAnnotateSource extends React.Component {
                             console.log("Text to annotate: " + selectedText);
                             console.log("Start offset:", start);
                             console.log("End offset:", end);
+                            
+                            // // Suggestion text extracted from annoatation data
+                            // const suggestionText = getReplacement(annotation);
+                            // // console.log("Replacement txx:", realSuggest); 
 
                             // The annotation entity contains information sent from the API during annotation
                             const annEntity = currentContent.createEntity(entityType.type, 'IMMUTABLE', annotation
