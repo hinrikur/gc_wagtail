@@ -71,7 +71,7 @@ class DebugAnnotateSource extends React.Component {
         // óaunhæft
         // const debugAnnInfo = JSON.parse('{ "code": "S004", "detail": null, "end": 5, "start": 5, "suggest": "óraunhæft", "text": "Orðið \'óaunhæft\' var leiðrétt í \'óraunhæft\'" }');
         // Mér hlakkar
-        const debugAnnInfo = JSON.parse(`{"code": "P_WRONG_CASE_þgf_nf", "detail": "Sögnin 'að hlakka' er persónuleg. Frumlag hennar á að vera í nefnifalli í stað þágufalls.", "end": 0, "start": 0, "suggest": "", "text": "Á líklega að vera 'Ég'"}`);
+        // const debugAnnInfo = JSON.parse(`{"code": "P_WRONG_CASE_þgf_nf", "detail": "Sögnin 'að hlakka' er persónuleg. Frumlag hennar á að vera í nefnifalli í stað þágufalls.", "end": 0, "start": 0, "suggest": "", "text": "Á líklega að vera 'Ég'"}`);
         // Ég vill
         // const debugAnnInfo = JSON.parse(`{"code": "P_wrong_person", "detail": null, "end": 1, "start": 0, "suggest": "ég vil", "text": "Orðasambandið 'Ég vill' var leiðrétt í 'ég vil'"}`);
         // Mér langaði
@@ -82,14 +82,27 @@ class DebugAnnotateSource extends React.Component {
         if (entityKey !== undefined && entityKey !== null) {
 
             // console.log("IF CONDITION CAUGHT")
-            // console.log("Current entityKey to edit, if any:", entityKey)
-            const EntityToReplace = DraftUtils.getEntitySelection(editorState, entityKey)
+
+            // get entity to replace (via Draftail utils)
+            const entityToReplace = DraftUtils.getEntitySelection(editorState, entityKey)
+            // get editor content (via DraftJS API)
             const currentContent = editorState.getCurrentContent();
+            // get entity inline style
+            const currentBlock = content.getBlockMap().get(entityToReplace.getStartKey());
+            const start = entityToReplace.getAnchorOffset()
+            const originalStyle = currentBlock.getInlineStyleAt(start)
+            // get entity data
             const data = currentContent.getEntity(entityKey).getData();
-            // Suggestion text extracted from annoatation data
+            // get suggestion text from entity data
             const suggestionText = getReplacement(data);
-            const correctedEntity = Modifier.replaceText(currentContent, EntityToReplace, suggestionText, null, null)
-            // const removedEntity = Modifier.applyEntity(currentContent, correctedEntity, null)
+            // replace the annotation entity via DraftJS Modifier
+            const correctedEntity = Modifier.replaceText(
+                currentContent,
+                entityToReplace, 
+                suggestionText, 
+                originalStyle, 
+                null)
+            // push to EditorState
             const correctedState = EditorState.push(editorState, correctedEntity, 'apply-entity');
             onComplete(correctedState);
 
@@ -151,6 +164,7 @@ class DebugAnnotateSource extends React.Component {
                             // const end = selectionState.getEndOffset();
                             const end = annotation.offSetEnd;
                             const selectedText = currentContentBlock.getText().slice(start, end);
+                            const selectionStyle = currentContentBlock.getInlineStyleAt(start)
 
                             const blockSelection = SelectionState
                                 .createEmpty(anchorKey)
@@ -182,6 +196,7 @@ class DebugAnnotateSource extends React.Component {
                                 "key": annotationEntityKey,
                                 "blockSelection": blockSelection,
                                 "selectedText": selectedText,
+                                "selectionStyle": selectionStyle,
                             })
                             // console.log("annotationEntityKey: ", annotationEntityKey)
 
@@ -198,8 +213,9 @@ class DebugAnnotateSource extends React.Component {
                                 newContentState, 
                                 entity.blockSelection, 
                                 entity.selectedText, 
-                                null, 
-                                entity.key);
+                                entity.selectionStyle, // null, 
+                                entity.key
+                                );
                         });
 
                         // Create the new state as an undoable action.
