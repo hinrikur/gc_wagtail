@@ -19,16 +19,12 @@ const AnnotationEntity = require('./components/annotation-entity.js');
 // const processResponce = require('./components/processAPI.js');
 const dummyApi = require('./components/dummyAPI.json');
 
-// console.log(dummyApi)
-
-// const Portal = require('./components/portal.js');
-// const AnnotationTooltip = require('./components/annotation-popover.js');
-
 console.log(dummyApi)
 
 function processAPI(json) {
+    // iterates over API response JSON and returns flat
+    // array of annotations (annotationArray)
     var annotationArray = [];
-    // console.log(json.result)
     // iterate through outer array
     for (var i = 0; i < json.result.length; i++) {
         // iterate through paragraphs
@@ -36,6 +32,7 @@ function processAPI(json) {
             // iterate through sentences
             var anns = json.result[i][j]["annotations"];
             console.log('list of annotations:', anns);
+            // annotation added to return array
             var newArray = annotationArray.concat(anns);
             annotationArray = newArray;
             console.log("annotationArray length:", annotationArray.length)
