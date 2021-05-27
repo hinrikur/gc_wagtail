@@ -131,7 +131,7 @@ function getReplacement(data) {
         // in case of empty .suggest field in data,
         // example from .text field extracted with regex
         var realSuggest = data.text.match(/'[^']*'/)[0];
-        realSuggest = realSuggest.substring(1, realSuggest.length-1);
+        realSuggest = realSuggest.substring(1, realSuggest.length - 1);
         replacement = realSuggest;
     } else {
         // otherwise returns .suggest value
@@ -242,8 +242,6 @@ class DebugAnnotateSource extends React.Component {
                      const processedResponse = processAPI(dummyApi);
                      console.log("Array of annotations:", processedResponse);
                      // (Dummy) response added to raw blockmap 
-                        // (Dummy) response added to raw blockmap 
-                     // (Dummy) response added to raw blockmap 
                      // NOTE: might be skipped? testing annotation in this loop
                      // rawContentBlocks[key]["APIresponse"] = processedResponse;
  
@@ -313,13 +311,9 @@ class DebugAnnotateSource extends React.Component {
                                 // // Suggestion text extracted from annoatation data
                                 // const suggestionText = getReplacement(annotation);
                                 // // console.log("Replacement txx:", realSuggest); 
-                            // // console.log("Replacement txx:", realSuggest); 
-                                // // console.log("Replacement txx:", realSuggest); 
 
                                 // The annotation entity contains information sent from the API during annotation
                                 const annEntity = currentContent.createEntity(entityType.type, 'IMMUTABLE', annotation
-                                    // { 
-                                // { 
                                     // { 
                                     //     suggestion: suggestedWord,
                                     //     description: annotationText,
