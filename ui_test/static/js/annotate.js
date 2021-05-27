@@ -10,13 +10,19 @@ const SelectionState = window.DraftJS.SelectionState;
 // const AtomicBlockUtils = window.DraftJS.AtomicBlockUtils;
 const convertToRaw = window.DraftJS.convertToRaw;
 
-
+// short text:
 // Manninum á verkstæðinu vanntar hamar. Guðjón setti kókið í kælir.
 // Mér dreimdi stórann brauðhleyf.
+
+// Long text:
+// Tekjur Reykjavíkurborgar vegna innheimtra fasteignaskatta námu 22 milljörðum króna í fyrra. Þær hækuðu alls um 813 milljónir króna á milli ára sem var 483 milljónum krónum minna en fjárhagsáætlun adfsafasfa hafði gert ráð fyrir. Alls er hækkunin á tekjustoðinni 3,8 prósent. Öllum börnunum hlakkar til jóla.
+// Þetta kemur fram í skýrslu fjármála- og áhættustýringasviðs Reyjavíkurborgar sem fylgdi með lessu hennar.
+// Það þarf að leita langt aftur til að finna jafn litla afhommun á á innheimtum fasteignaköttum og á síðasta ár, en tekjustofninn hækkaði um 2,9 millljarða króna milli 2018 og 2019 og um þrjá milljarða króna milli 2017 og 2018.
 
 const AnnotationEntity = require('./components/annotation-entity.js');
 
 // const processResponce = require('./components/processAPI.js');
+// const dummyApi = require('./components/modifiedReference.json');
 const dummyApi = require('./components/correctedReference.json');
 
 // console.log(dummyApi)
@@ -58,18 +64,64 @@ function processAPI(json) {
     // iterate through outer array
     for (var i = 0; i < json.result.length; i++) {
         // iterate through paragraphs
+        var paragraphArray = [];
         for (var j = 0; j < json.result[i].length; j++) {
             // iterate through sentences
+            // adjust likely errors in char locations from API
+            // json.result[i][j] = adjustChars(json.result[i][j]);
             var anns = json.result[i][j]["annotations"];
-            console.log('list of annotations:', anns);
+            // console.log('list of annotations:', anns);
             // annotation added to return array
-            var newArray = annotationArray.concat(anns);
-            annotationArray = newArray;
-            console.log("annotationArray length:", annotationArray.length)
+            var newArray = paragraphArray.concat(anns);
+            paragraphArray = newArray;
+            // console.log("annotationArray length:", annotationArray.length)
         }
+        annotationArray.push(paragraphArray);
     }
 
     return annotationArray;
+}
+
+function adjustChars(sentAnnotation) {
+
+    function range(start, end) {
+        var ans = [];
+        for (let i = start; i <= end; i++) {
+            ans.push(i);
+        }
+        return ans;
+    }
+
+    // counter for aggregated changes
+    var aggrChar = 1;
+    for (var i = 0; i < sentAnnotation.annotations.length; i++) {
+        // console.log('fsdfsdjkafl;sdjfklasd;jfklsed')
+        // console.log(sentAnnotation.annotations[i])
+        const firstToken = sentAnnotation.annotations[i].start;
+        const lastToken = sentAnnotation.annotations[i].end;
+        var relevantTokens = range(firstToken, lastToken);
+        // for (var index in relevantTokens) {
+            
+        //     if (sentAnnotation.tokens[index].charAt(0) == ' '){
+        //         ann.start_char += 1;
+        //     } 
+        // }
+        // console.log("current token:", '"'+sentAnnotation.tokens[lastToken].o+'"')
+        console.log(sentAnnotation.tokens[lastToken].o.charAt(0));
+        if (sentAnnotation.tokens[lastToken].o.charAt(0).trim() === '') {
+            console.log("Editing token offset:", sentAnnotation.tokens[lastToken].o);
+            aggrChar += 1;
+            offsetChange = aggrChar;
+            console.log("Offset change:", offsetChange)
+            if (sentAnnotation.annotations[i].start_char !== 0) {
+                sentAnnotation.annotations[i].start_char += offsetChange;
+            }
+            sentAnnotation.annotations[i].end_char += offsetChange;
+            
+        }
+        
+    }
+    return sentAnnotation;
 }
 
 function getReplacement(data) {
