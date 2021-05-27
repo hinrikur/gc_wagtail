@@ -313,7 +313,7 @@ class DebugAnnotateSource extends React.Component {
                                 // // console.log("Replacement txx:", realSuggest); 
 
                                 // The annotation entity contains information sent from the API during annotation
-                                const annEntity = currentContent.createEntity(entityType.type, 'IMMUTABLE', annotation
+                                const annEntity = currentContent.createEntity(entityType.type, 'MUTABLE', annotation
                                     // { 
                                     //     suggestion: suggestedWord,
                                     //     description: annotationText,

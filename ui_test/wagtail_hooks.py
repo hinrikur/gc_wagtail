@@ -175,7 +175,7 @@ class DebugAnnotateEntityElementHandler(InlineEntityElementHandler):
     Database HTML to Draft.js ContentState.
     Converts the span tag into a DANNOTATE entity, with the right data.
     """
-    mutability = 'IMMUTABLE'
+    mutability = 'MUTABLE'
 
     def get_attribute_data(self, attrs):
         """
