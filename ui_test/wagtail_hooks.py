@@ -139,7 +139,7 @@ def register_debug_annotate_feature(features):
 
     control = {
         'type': type_,
-        'label': 'ANN',
+        'label': 'Lesa yfir',
         'description': 'Prófa leiðréttingu',
     }
 
