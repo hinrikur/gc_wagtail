@@ -102,10 +102,13 @@ class AnnotationEntity extends React.Component {
     });
   }
 
-  buttonInteract(onCommand, key) {
-    console.log("buttonInteract function called")
-    console.log(onCommand)
-    onCommand(key);
+  // handler for triggering Drafttail entity source via command passed
+  // removes entity with onRemove, triggers entity source with onEdit
+  // closes popover/tooltip at button click (bug fix)
+  buttonHandler(command, key) {
+    // console.log("buttonHandler function called")
+    // console.log(onCommand)
+    command(key);
     this.setState({
       showTooltipAt: null
     });
@@ -197,7 +200,7 @@ class AnnotationEntity extends React.Component {
               title: "Samþykkja uppástungu",
               icon: "glyphicon glyphicon-ok normal",
               onClick: () => {
-                this.buttonInteract(onEdit, entityKey)
+                this.buttonHandler(onEdit, entityKey)
               }
               // onClick: onEdit.bind(this.props.data.suggest, entityKey),
             }
@@ -221,7 +224,8 @@ class AnnotationEntity extends React.Component {
               title: "Hafna uppástungu",
               icon: "glyphicon glyphicon-remove normal",
               onClick: () => {
-                this.buttonInteract(onRemove, entityKey)}
+                this.buttonHandler(onRemove, entityKey);
+              }
             }
           )
           //     React.createElement(
