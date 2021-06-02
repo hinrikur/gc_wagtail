@@ -102,16 +102,21 @@ class AnnotationEntity extends React.Component {
     });
   }
 
+  buttonInteract(onCommand, key) {
+    console.log("buttonInteract function called")
+    console.log(onCommand)
+    onCommand(key);
+    this.setState({
+      showTooltipAt: null
+    });
+  }
+
   render() {
     const {
-      editorState,
       entityKey,
-      contentState,
       children,
       onEdit,
       onRemove,
-      icon,
-      label,
       data
     } = this.props;
 
@@ -191,8 +196,10 @@ class AnnotationEntity extends React.Component {
               label: "Samþykkja",
               title: "Samþykkja uppástungu",
               icon: "glyphicon glyphicon-ok normal",
-              onClick: onEdit.bind(null, entityKey),
-              // onClick: onRemove.bind(this.props.data.suggest, entityKey),
+              onClick: () => {
+                this.buttonInteract(onEdit, entityKey)
+              }
+              // onClick: onEdit.bind(this.props.data.suggest, entityKey),
             }
             // "button",
             // {
@@ -213,9 +220,10 @@ class AnnotationEntity extends React.Component {
               label: "Hafna",
               title: "Hafna uppástungu",
               icon: "glyphicon glyphicon-remove normal",
-              onClick: onRemove.bind(null, entityKey),
+              onClick: () => {
+                this.buttonInteract(onRemove, entityKey)}
             }
-          ),
+          )
           //     React.createElement(
           // "button",
           // {

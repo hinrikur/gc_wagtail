@@ -11,6 +11,7 @@ class Portal extends React.Component {
 
     if (!this.portal) {
       this.portal = document.createElement("div");
+      this.portal.setAttribute("id", "portal");
 
       if (document.body) {
         document.body.appendChild(this.portal);
