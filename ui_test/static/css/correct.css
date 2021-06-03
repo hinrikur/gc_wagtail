@@ -177,6 +177,8 @@ div.ann-text {
   /* background-color: white; */
   /* border: 1px solid #ff7c24; */
   /* border-radius: 5px; */
+  word-wrap: break-word;
+  width: 300px;
   padding: 6px;
   margin-bottom: 0.5em;
   /* cursor: pointer; */
