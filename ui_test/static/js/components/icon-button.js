@@ -1,6 +1,6 @@
 
 const React = window.React;
-const Icon = window.Draftail.Icon;
+// const Icon = window.Draftail.Icon;
 
 class IconButton extends React.Component {
   constructor(props) {
@@ -39,6 +39,7 @@ class IconButton extends React.Component {
         title, 
         icon,
         onClick,
+        onMouseUp,
     } = this.props;
     const { showTooltipOnHover } = this.state;
     return /*#__PURE__*/ React.createElement(
@@ -52,7 +53,8 @@ class IconButton extends React.Component {
         "aria-label": title || null,
         "data-draftail-balloon": title && showTooltipOnHover ? true : null,
         tabIndex: -1,
-        onClick: onClick
+        onClick: onClick,
+        onMouseUp: onMouseUp
         // onMouseDown: this.onMouseDown,
         // onMouseLeave: this.onMouseLeave
       },
