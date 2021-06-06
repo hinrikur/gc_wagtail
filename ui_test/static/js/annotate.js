@@ -1,55 +1,37 @@
-
 const React = window.React;
 
 const Modifier = window.DraftJS.Modifier;
 const EditorState = window.DraftJS.EditorState;
 const DraftUtils = window.Draftail.DraftUtils;
 const SelectionState = window.DraftJS.SelectionState;
-
-// const CompositeDecorator = window.DraftJS.CompositeDecorator;
-// const AtomicBlockUtils = window.DraftJS.AtomicBlockUtils;
 const convertToRaw = window.DraftJS.convertToRaw;
 
-// short text:
-// Manninum á verkstæðinu vanntar hamar. Guðjón setti kókið í kælir.
-// Mér dreimdi stórann brauðhleyf.
-
-// Long text:
-// Tekjur Reykjavíkurborgar vegna innheimtra fasteignaskatta námu 22 milljörðum króna í fyrra. Þær hækuðu alls um 813 milljónir króna á milli ára sem var 483 milljónum krónum minna en fjárhagsáætlun adfsafasfa hafði gert ráð fyrir. Alls er hækkunin á tekjustoðinni 3,8 prósent. Öllum börnunum hlakkar til jóla.
-// Þetta kemur fram í skýrslu fjármála- og áhættustýringasviðs Reyjavíkurborgar sem fylgdi með lessu hennar.
-// Það þarf að leita langt aftur til að finna jafn litla afhommun á á innheimtum fasteignaköttum og á síðasta ár, en tekjustofninn hækkaði um 2,9 millljarða króna milli 2018 og 2019 og um þrjá milljarða króna milli 2017 og 2018.
 
 const AnnotationEntity = require('./components/annotation-entity.js');
 
+// Debug API responses (hard-coded) imported
 // const processResponce = require('./components/processAPI.js');
 // const dummyApi = require('./components/modifiedReference.json');
-const dummyApi = require('./components/correctedReference.json');
-
-// console.log(dummyApi)
+// const dummyApi = require('./components/correctedReference.json');
+// const dummyApi = require('./components/showcaseResponse');
 
 // Example POST method implementation:
 async function callGreynirAPI(url = '', data = {}) {
     if (data === "") {
         // text is field is empty, returns null
+        // NOTE: this was tripped when content blocks were annoatated one by one
+        //       shouldn't occur now as whole editor content is annotated at once
+        //       empty editor case handled at lower level
         return null;
     } else {
         console.log("Data being sent via request");
         console.log(JSON.stringify(data));
-        // Default options are marked with *
         const response = await fetch(url, {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            // mode: 'no-cors', // no-cors, *cors, same-origin
-            // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            // credentials: 'omit', // include, *same-origin, omit
             scheme: "https",
             headers: {
-                // 'Content-Type': 'application/json; charset=UTF-8',
-                'Content-Type': 'text/plain',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-                // 'Access-Control-Allow-Origin': 'http://localhost:8000' //'*', 
+                'Content-Type': 'text/plain', 
             },
-            // redirect: 'follow', // manual, *follow, error
-            // referrerPolicy: 'same-origin', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
             body: data // body data type must match "Content-Type" header
         });
 
@@ -57,9 +39,10 @@ async function callGreynirAPI(url = '', data = {}) {
     }
 }
 
+// iterates over API response JSON and returns flat
+// array of annotations (annotationArray)
 function processAPI(json) {
-    // iterates over API response JSON and returns flat
-    // array of annotations (annotationArray)
+    // empty return array defined
     var annotationArray = [];
     // iterate through outer array
     for (var i = 0; i < json.result.length; i++) {
@@ -68,13 +51,10 @@ function processAPI(json) {
         for (var j = 0; j < json.result[i].length; j++) {
             // iterate through sentences
             // adjust likely errors in char locations from API
-            // json.result[i][j] = adjustChars(json.result[i][j]);
             var anns = json.result[i][j]["annotations"];
-            // console.log('list of annotations:', anns);
             // annotation added to return array
             var newArray = paragraphArray.concat(anns);
             paragraphArray = newArray;
-            // console.log("annotationArray length:", annotationArray.length)
         }
         annotationArray.push(paragraphArray);
     }
@@ -82,6 +62,9 @@ function processAPI(json) {
     return annotationArray;
 }
 
+// helper for adjusting wrong character spans in API response
+// not used currently
+// more low level fix likely needed (In GreynirCorrect or Yfirlestur API)
 function adjustChars(sentAnnotation) {
 
     function range(start, end) {
@@ -101,7 +84,7 @@ function adjustChars(sentAnnotation) {
         const lastToken = sentAnnotation.annotations[i].end;
         var relevantTokens = range(firstToken, lastToken);
         // for (var index in relevantTokens) {
-            
+
         //     if (sentAnnotation.tokens[index].charAt(0) == ' '){
         //         ann.start_char += 1;
         //     } 
@@ -112,14 +95,14 @@ function adjustChars(sentAnnotation) {
             console.log("Editing token offset:", sentAnnotation.tokens[lastToken].o);
             aggrChar += 1;
             offsetChange = aggrChar;
-            console.log("Offset change:", offsetChange)
+            console.log("Offset change:", offsetChange);
             if (sentAnnotation.annotations[i].start_char !== 0) {
                 sentAnnotation.annotations[i].start_char += offsetChange;
             }
             sentAnnotation.annotations[i].end_char += offsetChange;
-            
+
         }
-        
+
     }
     return sentAnnotation;
 }
@@ -145,34 +128,24 @@ class DebugAnnotateSource extends React.Component {
 
     componentDidMount() {
 
-        const { editorState, entityType, onComplete, entityKey } = this.props;
-        // console.log(this.props)
-        // console.log("Yes, the Annotation button was pressed.");
-
-        // Debug errors:   /////////////////////////////////////////
-        // óaunhæft
-        // const debugAnnInfo = JSON.parse('{ "code": "S004", "detail": null, "end": 5, "start": 5, "suggest": "óraunhæft", "text": "Orðið \'óaunhæft\' var leiðrétt í \'óraunhæft\'" }');
-        // Mér hlakkar
-        // const debugAnnInfo = JSON.parse(`{"code": "P_WRONG_CASE_þgf_nf", "detail": "Sögnin 'að hlakka' er persónuleg. Frumlag hennar á að vera í nefnifalli í stað þágufalls.", "end": 0, "start": 0, "suggest": "", "text": "Á líklega að vera 'Ég'"}`);
-        // Ég vill
-        // const debugAnnInfo = JSON.parse(`{"code": "P_wrong_person", "detail": null, "end": 1, "start": 0, "suggest": "ég vil", "text": "Orðasambandið 'Ég vill' var leiðrétt í 'ég vil'"}`);
-        // Mér langaði
-        // const debugAnnInfo = JSON.parse(`"code": "P_WRONG_CASE_þgf_þf", "detail": "Sögnin 'að langa' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað þágufalls.", "end": 0, "start": 0, "suggest": "", "text": "Á líklega að vera 'Mig'"}`);
-
+        const {
+            editorState,
+            entityType,
+            onComplete,
+            entityKey
+        } = this.props;
 
         // If statement catches if entityKey is set, indicating annotation has been approved
         if (entityKey !== undefined && entityKey !== null) {
 
-            // console.log("IF CONDITION CAUGHT")
-
             // get entity to replace (via Draftail utils)
-            const entityToReplace = DraftUtils.getEntitySelection(editorState, entityKey)
+            const entityToReplace = DraftUtils.getEntitySelection(editorState, entityKey);
             // get editor content (via DraftJS API)
             const currentContent = editorState.getCurrentContent();
             // get entity inline style
             const currentBlock = currentContent.getBlockMap().get(entityToReplace.getStartKey());
-            const start = entityToReplace.getAnchorOffset()
-            const originalStyle = currentBlock.getInlineStyleAt(start)
+            const start = entityToReplace.getAnchorOffset();
+            const originalStyle = currentBlock.getInlineStyleAt(start);
             // get entity data
             const data = currentContent.getEntity(entityKey).getData();
             // get suggestion text from entity data
@@ -183,246 +156,156 @@ class DebugAnnotateSource extends React.Component {
                 entityToReplace,
                 suggestionText,
                 originalStyle,
-                null)
+                null
+            );
             // push to EditorState
             const correctedState = EditorState.push(editorState, correctedEntity, 'apply-entity');
             onComplete(correctedState);
 
-        } else { // Creating new annotation entity/ies   
+        } else { 
 
+            // Creating new annotation enties
             const editorHasContent = editorState.getCurrentContent().hasText();
-            // const currentContent = editorState.getCurrentContent();
-            // const unModifiedState = EditorState.push(editorState, currentContent, 'apply-entity');
 
-            // console.log(debugAnnInfo);
-            // // console.log(window)
-
-
-            // capturing empty editors etc.
+            // capture empty editors etc.
             switch (editorHasContent) {
 
                 // Editor contains text
                 case true:
 
-                    // API eventually called here via POST request
-                    // Until then, dummy response imported and used instead
-                    // 
-                    // 
-
+                    // rawState of editor extracted
                     const rawState = convertToRaw(editorState.getCurrentContent());
-                    // console.log(rawState)
-                    // const rawText = rawState.text;
-
-                    // Text extracted by extracting to array and joining with newline
+                    // Text extracted by mapping to array and joining with newline
                     let textObject = rawState.blocks.map(object => object.text);
                     let toCorrectArray = Object.values(textObject);
-                    const rawText = toCorrectArray.join('\n\n');
-
-                    // callGreynirAPI("https://yfirlestur.is/correct.api", rawText)
-                    //         .then(response => {
-                    //             if (response === null) {
-                    //                 console.log(`Empty block for key ${key}. Skipping...`);
-                    //             } else {
-                    //                 console.log("API response:", response);
-                    //                 // console.log('Success:', response);
-                    //                 // response flattened to a array of annotation data objects
-                    //                 const processedResp = processAPI(response);
-                    //                 // processed respnces added to blockMap
-                    //                 rawContentBlocks[key]["APIresponse"] = processedResp;
-                    //                 // consolresponse);
-                    //             }
-
-                    //         })
-                    //         .catch(err => console.log('Error:', err));
-
+                    const rawText = toCorrectArray.join('\n');
+                    // raw content blocks set as variable
                     var rawContentBlocks = rawState.blocks;
-                    const entitiesToRender = [];
 
-                     // response flattened to a array of arrays of annotation data objects
-                     const processedResponse = processAPI(dummyApi);
-                     console.log("Array of annotations:", processedResponse);
-                     // (Dummy) response added to raw blockmap 
-                     // NOTE: might be skipped? testing annotation in this loop
-                     // rawContentBlocks[key]["APIresponse"] = processedResponse;
- 
-                    var i = 0;
-                    for (var key in rawContentBlocks) {
-                        console.log(key)
-                        console.log(processedResponse[i]);
-                        console.log(rawContentBlocks[key])
-                        rawContentBlocks[key]["APIresponse"] = processedResponse[i];
-                        i++;
+                    // async API call made
+                    // NOTE: Editory content update (rendering annotations) now performed completely inside .then() block
+                    callGreynirAPI("https://yfirlestur.is/correct.api", rawText)
+                        .then(response => {
+                            if (response === null) {
+                                console.log(`Empty block for key ${key}. Skipping...`);
+                            } else {
+                                // raw response logged to console
+                                console.log("API response:", response);
+                                // response flattened to a array of arrays of annotation data objects
+                                const processedResponse = processAPI(response);
+                                // processed response logged to console
+                                console.log("Array of annotations:", processedResponse);
+                                // response flattened to a array of annotation data objects
+                                var i = 0;
+                                for (var key in rawContentBlocks) {
+                                    console.log(key);
+                                    console.log(processedResponse[i]);
+                                    console.log(rawContentBlocks[key]);
+                                    rawContentBlocks[key]["APIresponse"] = processedResponse[i];
+                                    i++;
 
-                        // const toCorrect = rawContentBlocks[key].text;
-                        // callGreynirAPI("https://yfirlestur.is/correct.api", toCorrect)
-                        //     .then(response => {
-                        //         if (response === null) {
-                        //             console.log(`Empty block for key ${key}. Skipping...`);
-                        //         } else {
-                        //             console.log("API response:", response);
-                        //             // console.log('Success:', response);
-                        //             // response flattened to a array of annotation data objects
-                        //             const processedResp = processAPI(response);
-                        //             // processed respnces added to blockMap
-                        //             rawContentBlocks[key]["APIresponse"] = processedResp;
-                        //             // consolresponse);
-                        //         }
-                        //     })
-                        //     .catch(err => console.log('Error:', err));
+                                }
 
-                    }
+                                console.log("rawContentBlocks after addition:", rawContentBlocks);
 
-                   
-                    // }
-                    var aggrLen = 0;
-                    i = 0; 
-                    for (var blockKey in rawContentBlocks) {
-                        console.log(rawContentBlocks[blockKey])
-                        if (typeof rawContentBlocks[blockKey].APIresponse !== "undefined") {
-                            rawContentBlocks[blockKey].APIresponse.forEach(annotation => {
+                                // container array for entities that will be rendered in the editor
+                                const entitiesToRender = [];
 
-                                // const selectionState = editorState.getSelection();
-                                // const anchorKey = selectionState.getAnchorKey();
-                                const anchorKey = rawContentBlocks[blockKey].key;
-                                let currentContent = editorState.getCurrentContent();
-                                console.log("currentContent:", currentContent)
-                                console.log("blockMap:", currentContent.getBlockMap())
-                                const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-                                console.log("anchorKey:", anchorKey)
-                                console.log("currentContentBock, via anchorKey:", currentContentBlock)
-                                // const start = selectionState.getStartOffset();
-                                const start = annotation.start_char - aggrLen;
-                                // const end = selectionState.getEndOffset();
-                                const end = annotation.end_char - aggrLen;
-                                const selectedText = currentContentBlock.getText().slice(start, end);
-                                const selectionStyle = currentContentBlock.getInlineStyleAt(start)
+                                // variable for aggregated text length
+                                var aggrLen = 0;
+                                // iterate over block keys in raw content blocks
+                                for (var blockKey in rawContentBlocks) {
+                                    // log current content block key
+                                    console.log(rawContentBlocks[blockKey]);
+                                    // check for empty API response
+                                    if (typeof rawContentBlocks[blockKey].APIresponse !== "undefined") {
+                                        // API response not empty
+                                        // each content block assigned its relevant text annotations
+                                        rawContentBlocks[blockKey].APIresponse.forEach(annotation => {
 
-                                const blockSelection = SelectionState
-                                    .createEmpty(anchorKey)
-                                    .merge({
-                                        anchorOffset: start,
-                                        focusOffset: end,
+                                            const anchorKey = rawContentBlocks[blockKey].key;
+                                            let currentContent = editorState.getCurrentContent();
+                                            // 
+                                            console.log("currentContent:", currentContent);
+                                            console.log("blockMap:", currentContent.getBlockMap());
+                                            // 
+                                            const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+                                            console.log("anchorKey:", anchorKey);
+                                            console.log("currentContentBock, via anchorKey:", currentContentBlock);
+                                            // each annotation start and end char index reduced by aggregated char length (aggrLen)
+                                            // API looks at location in total text, DrafTail looks at location in current block
+                                            const start = annotation.start_char - aggrLen;
+                                            const end = annotation.end_char - aggrLen;
+                                            // text for annotation selected from content block text, with inline style
+                                            const selectedText = currentContentBlock.getText().slice(start, end);
+                                            const selectionStyle = currentContentBlock.getInlineStyleAt(start);
+
+                                            const blockSelection = SelectionState
+                                                .createEmpty(anchorKey)
+                                                .merge({
+                                                    anchorOffset: start,
+                                                    focusOffset: end,
+                                                });
+
+                                            console.log("Text to annotate: " + selectedText);
+                                            console.log("Start offset:", start);
+                                            console.log("End offset:", end);
+
+                                            // The annotation entity contains information sent from the API during annotation
+                                            const annEntity = currentContent.createEntity(
+                                                entityType.type,
+                                                'MUTABLE', // DraftTail entity mutability
+                                                annotation // data from API
+                                            );
+                                            // last created DraftTail entity extracted 
+                                            const annotationEntityKey = annEntity.getLastCreatedEntityKey();
+                                            // last created pushed to toRender array
+                                            entitiesToRender.push({
+                                                "key": annotationEntityKey,
+                                                "blockSelection": blockSelection,
+                                                "selectedText": selectedText,
+                                                "selectionStyle": selectionStyle,
+                                            });
+
+
+                                        });
+                                        // length of current block text added to aggregated text length variable
+                                        aggrLen += rawContentBlocks[blockKey].text.length;
+
+                                    } else {
+                                        // API response was empty or undefined, usually because of an empty text block
+                                        // TODO: keep empty blocks in order with annotated blocks
+                                        console.log("Undefined response, likely empty Block. BlockKey:", blockKey);
+                                    }
+
+                                    // current content saved as base new content state
+                                    let newContentState = editorState.getCurrentContent();
+
+                                    // iterate over list of entities to render and add to new content state
+                                    entitiesToRender.forEach(entity => {
+                                        console.log("entity from list:", entity);
+                                        newContentState = Modifier.replaceText(
+                                            newContentState,
+                                            entity.blockSelection,
+                                            entity.selectedText,
+                                            entity.selectionStyle, // null, 
+                                            entity.key
+                                        );
                                     });
 
-                                console.log("Text to annotate: " + selectedText);
-                                console.log("Start offset:", start);
-                                console.log("End offset:", end);
+                                    // Create the new state as an undoable action.
+                                    const nextState = EditorState.push(
+                                        editorState,
+                                        newContentState,
+                                        "apply-entity"
+                                    );
+                                    // render next state through onComplete DraftTail method
+                                    onComplete(nextState);
+                                }
+                            }
+                        })
+                        .catch(err => console.log('Error:', err));
 
-                                // // Suggestion text extracted from annoatation data
-                                // const suggestionText = getReplacement(annotation);
-                                // // console.log("Replacement txx:", realSuggest); 
-
-                                // The annotation entity contains information sent from the API during annotation
-                                const annEntity = currentContent.createEntity(entityType.type, 'MUTABLE', annotation
-                                    // { 
-                                    //     suggestion: suggestedWord,
-                                    //     description: annotationText,
-
-                                    // }
-                                );
-                                // console.log('Annotation entity:', annEntity)
-                                const annotationEntityKey = annEntity.getLastCreatedEntityKey();
-
-                                entitiesToRender.push({
-                                    "key": annotationEntityKey,
-                                    "blockSelection": blockSelection,
-                                    "selectedText": selectedText,
-                                    "selectionStyle": selectionStyle,
-                                });
-                                // console.log("annotationEntityKey: ", annotationEntityKey)
-                               
-                            });
-                            aggrLen += rawContentBlocks[blockKey].text.length;
-                            // if (i !== 0) {
-                            //     aggrlen += rawContentBlocks.text.length;
-                            // }
-                        } else {
-                            console.log("Undefined response, likely empty Block. BlockKey:", blockKey)
-                        }
-
-                        let newContentState = editorState.getCurrentContent();
-
-                        entitiesToRender.forEach(entity => {
-                            console.log("entity from list:", entity)
-                            // console.log(entity.key)
-                            // console.log(entity.blockSelection)
-                            // console.log(entity.selectedText)
-                            newContentState = Modifier.replaceText(
-                                newContentState,
-                                entity.blockSelection,
-                                entity.selectedText,
-                                entity.selectionStyle, // null, 
-                                entity.key
-                            );
-                        });
-
-                        // Create the new state as an undoable action.
-                        const nextState = EditorState.push(
-                            editorState,
-                            newContentState,
-                            "apply-entity"
-                        );
-
-                        onComplete(nextState);
-
-                        // Manninum á verkstæðinu vanntar hamar. 
-
-
-                    }
-
-                    // // processedResponse.forEach(annotation => {
-                    // // As is the annotation entity is generated on selected text in the 
-
-                    // const selectionState = editorState.getSelection();
-                    // const anchorKey = selectionState.getAnchorKey();
-                    // const currentContent = editorState.getCurrentContent();
-                    // console.log("blockMap:", currentContent.getBlockMap())
-                    // const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-                    // const start = selectionState.getStartOffset();
-                    // const end = selectionState.getEndOffset();
-                    // const selectedText = currentContentBlock.getText().slice(start, end);
-
-
-                    // console.log("Text to annotate: " + selectedText);
-                    // console.log("Start offset:", start);
-                    // console.log("End offset:", end);
-
-
-
-                    // // TESTING DECORATORS WITH REACT COMPONENTS
-
-                    // // Uses the Draft.js API to create a new entity with the right data.
-
-                    // const suggestedWord = debugAnnInfo.suggest;
-                    // const annotationText = debugAnnInfo.text;
-
-                    // // The annotation entity contains information sent from the API during annotation
-                    // const annEntity = currentContent.createEntity(entityType.type, 'IMMUTABLE', debugAnnInfo
-                    //     // { 
-                    //     //     suggestion: suggestedWord,
-                    //     //     description: annotationText,
-
-                    //     // }
-                    // );
-                    // // console.log('Annotation entity:', annEntity)
-                    // const annotationEntityKey = annEntity.getLastCreatedEntityKey();
-                    // // console.log("annotationEntityKey: ", annotationEntityKey)
-
-                    // // const newContentState = editorState.getCurrentContent();
-                    // //  const newContentState = EditorState.createWithContent(currentContent, annotationDecorator)
-                    // const newContentState = Modifier.replaceText(currentContent, selectionState, selectedText, null, annotationEntityKey);
-
-                    // // Create the new state as an undoable action.
-                    // const nextState = EditorState.push(
-                    //     editorState,
-                    //     newContentState,
-                    //     "annotated-state"
-                    // );
-                    // });
-
-
-
-                    // onComplete(nextState);
                     break;
 
                 // Editor is empty
@@ -440,7 +323,7 @@ class DebugAnnotateSource extends React.Component {
         }
 
     }
-
+    // render doesn't return anything - not needed
     render() {
         return null;
     }
@@ -450,30 +333,16 @@ class DebugAnnotateSource extends React.Component {
 
 const DebugAnnotation = (props) => {
 
-    const { entityKey,
+    const {
+        entityKey,
         contentState,
         onEdit,
-        onRemove } = props;
-
-    const editor = document.querySelector('[data-draftail-input]');
-    // console.log("selected as 'editor':", editor);
+        onRemove
+    } = props;
 
     const data = contentState.getEntity(entityKey).getData();
-    // console.log("DATA FROM DEBUG ANNOTATION:", data);
-
-    // console.log("ContentState from Annotation Entity:", contentState.getEntity(entityKey));
-
-    // console.log('Annotation entity:', annEntity)
-    // const annotationEntityKey = annEntity.getLastCreatedEntityKey();
-    // console.log("annotationEntityKey: ", entityKey)
-
-    // const currentContent = editorState.getCurrentContent();
-    // const entity = contentState.getEntity(entityKey)
-    // console.log("window props (if any):", window.props);
 
     return React.createElement(AnnotationEntity, {
-        // role: 'annotation',
-        // style: styles.annotation,
         class: 'ann',
         entityKey: entityKey,
         contentState: contentState,
@@ -483,62 +352,23 @@ const DebugAnnotation = (props) => {
         label: null,
         data: data,
         onMouseUp: () => {
-
+            // debug log for checking annotation interaction
             console.log('Annotation clicked');
-
-            // this._onButtonClick
 
         },
 
         onMouseEnter: () => {
+            // debug log for checking annotation interaction
             console.log('hovering on annotation');
-            // console.log()
-            // e => showButton(e);
-            // this.style.background = "green"
-            // this.style.border = "solid"
-            // console.log(this.getElementById("myDiv"));
-
         },
         onMouseLeave: () => {
             console.log('not hovering any more');
-            // e => hideButton(e);
-            // this.childNodes[1].childNodes[1].style.background='red';
-            // this.style.background = "orange"
-            // this.style.border = "none"
         },
-        // onClick: () => {
-        //   const newContentState = Modifier.replaceText(currentContent, currentContent.getEntity(entityKey), data.suggestion, null, annotationEntityKey);
-        // }
-
-        // onMouseUp: () => {
-        //     console.log("Debug annotation button pressed...");
-
-        //     const newContentState = Modifier.replaceText(currentContent, contentState, data.suggestion, null, entityKey);
-
-        //     // Create the new state as an undoable action.
-        //     const nextState = EditorState.push(
-        //         editorState,
-        //         newContentState,
-        //         "corrected-state"
-        //     );
-        //     onComplete(nextState)
-        // },
     },
-
-        // React.createElement('ann', {
-        //   id: 'ann',
-
-        // }),
-        // React.createElement('e', {
-        //     class: 'button',
-        //     role: 'button',
-        //     onClick: () => {
-        //         console.log('button pressed')
-        //     }
-        // }),
         props.children);
 };
 
+// Register DANNOTATE plugin to draftail editor
 window.draftail.registerPlugin({
     type: 'DANNOTATE',
     source: DebugAnnotateSource,
