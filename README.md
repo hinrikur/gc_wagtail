@@ -16,8 +16,8 @@ Repository for testing GreynirCorrect UI in Wagtail environment
 ### `./ui_test/wagtail_hooks.py`
 
 - important for implementing grammar annotation
-- note various points of interest
+- see [DraftTail documentation](https://docs.wagtail.io/en/v2.13.2/advanced_topics/customisation/extending_draftail.htmlt) 
+- important snippets
   - `@hooks.register('register_rich_text_features')` 
   - `correct_entity_decorator`
   - `DebugAnnotateEntityElementHandler`
-- refer to [DraftTail documentation](https://docs.wagtail.io/en/v2.2/advanced_topics/customisation/extending_draftail.html?highlight=at) 
