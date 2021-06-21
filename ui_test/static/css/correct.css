@@ -210,19 +210,8 @@ div.ann-detail {
   transform: translate(-25%, 2%);
 }
 
-/* ann {
-  background: #ff7c24;
-  border: solid;
-  border-width: thin;
-  border-radius: 5px;;
-  box-shadow: 1px 1px 1px grey;
-}
 
-ann:hover {
-  border-color: #FFE0EA;
-  background-color: #FFB07B;
-  cursor: pointer;
-} */
+
 
 
 ann {
@@ -315,3 +304,45 @@ button.Annotation__button_yes:active{
   background-color: rgb(34, 146, 34);
 }
 
+.Feedback-left{
+  /* border-width: 5px;
+  border-style: solid;
+  border-color: #e29460; */
+  /* background-color: rgb(90, 86, 86); */
+  color: black;
+  background-color: #e9e9e9;
+  transform: translate(0%, -50%);
+}
+
+
+div.feedback-title {
+  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #2e2e2e;
+  word-wrap: break-word;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  padding: 6px;
+  padding-top: 0px;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+
+button.feedback-button {
+  background-color: rgb(252, 252, 252);
+  border: None;
+  /* color: honeydew; */
+  padding: 6px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  border-radius: 4px;
+  /* font-weight: bold; */
+}
+
+button.feedback-button:active {
+  background-color: rgb(196, 196, 196);
+}

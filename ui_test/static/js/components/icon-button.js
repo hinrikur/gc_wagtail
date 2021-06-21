@@ -46,8 +46,8 @@ class IconButton extends React.Component {
       "button",
       {
         name: name,
-        className: `Annotation__button_${name}${
-          active ? " Annotation__button_yes--active" : ""
+        className: `${name}${
+          active ? " active" : ""
         }`,
         type: "button",
         "aria-label": title || null,

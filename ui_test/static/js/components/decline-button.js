@@ -2,7 +2,8 @@ const React = window.React;
 // const Icon = window.Draftail.Icon;
 
 const Portal = require('./portal.js');
-const FeedbackMenu = require('./feedbackMenu.js');
+const Popover = require('./popover.js');
+const IconButton = require('./icon-button.js');
 
 class DeclineButton extends React.Component {
     constructor(props) {
@@ -55,6 +56,15 @@ class DeclineButton extends React.Component {
         });
     }
 
+    buttonHandler(command, key) {
+        // console.log("buttonHandler function called")
+        // console.log(onCommand)
+        command(key);
+        this.setState({
+            showTooltipAt: null
+        });
+    }
+
     render() {
         const {
             name,
@@ -70,18 +80,18 @@ class DeclineButton extends React.Component {
         const { showFeedbackAt } = this.state;
         return React.createElement(
             "button", {
-                // name: name,
-                className: `Annotation__button_${name}${active ? " Annotation__button_yes--active" : ""
-                    }`,
-                type: "button",
-                "aria-label": title || null,
-                "data-draftail-balloon": title && showTooltipOnHover ? true : null,
-                tabIndex: -1,
-                onClick: onClick,
-                onMouseUp: this.openFeedback
-                // onMouseDown: this.onMouseDown,
-                // onMouseLeave: this.onMouseLeave
-            },
+            // name: name,
+            className: `${name}${active ? " Annotation__button_yes--active" : ""
+                }`,
+            type: "button",
+            "aria-label": title || null,
+            "data-draftail-balloon": title && showTooltipOnHover ? true : null,
+            tabIndex: -1,
+            onClick: onClick,
+            onMouseUp: this.openFeedback
+            // onMouseDown: this.onMouseDown,
+            // onMouseLeave: this.onMouseLeave
+        },
             typeof icon !== "undefined" && icon !== null ?
                 /*#__PURE__*/
                 React.createElement("span", {
@@ -91,13 +101,13 @@ class DeclineButton extends React.Component {
             label ?
                 /*#__PURE__*/
                 React.createElement(
-                    "span", 
+                    "span",
                     {
                         className: "Annotation__button__label"
                     },
                     label
                 ) : null,
-        
+
             showFeedbackAt &&
             // Portal for feedback menu
             React.createElement(
@@ -109,13 +119,80 @@ class DeclineButton extends React.Component {
             },
                 // AnnotationPopover component
                 React.createElement(
-                    FeedbackMenu, {
+                    Popover, {
                     target: showFeedbackAt,
-                    direction: "top",
+                    direction: "left",
+                    clsName: "Tooltip Feedback"
                     // annClass: annClass
-                }
+                },
+                    React.createElement(
+                        "div", {
+                        className: "feedback-menu-contents"
+                    },
+                    React.createElement('div',
+                    {
+                        className: "feedback-title"
+                    },
+                    "Ástæða höfnunar:"
+                    ),
+                        React.createElement(
+                            "div",
+                            {
+                                className: "feedback-button-1"
+                            },
+                            React.createElement(
+                                IconButton, {
+                                name: "feedback-button",
+                                // active,
+                                label: "Ekki villa",
+                                title: "Merkti textinn inniheldur ekki villu",
+                                icon: "glyphicon glyphicon-remove normal",
+                                onClick: () => {
+                                    this.buttonHandler(onEdit, entityKey);
+                                }
+                            }
+                            )
+                        ),
+                        React.createElement(
+                            "div",
+                            {
+                                className: "feedback-button-2"
+                            },
+                            React.createElement(
+                                IconButton, {
+                                name: "feedback-button",
+                                // active,
+                                label: "Röng ábending",
+                                title: "Ábendingin á ekki við villuna í textanum",
+                                icon: "glyphicon glyphicon-remove normal",
+                                onClick: () => {
+                                    this.buttonHandler(onEdit, entityKey);
+                                }
+                            }
+                            )
+                        ),
+                        React.createElement(
+                            "div",
+                            {
+                                className: "feedback-button-3"
+                            },
+                            React.createElement(
+                                IconButton, {
+                                name: "feedback-button",
+                                // active,
+                                label: "Annað",
+                                title: "Hafna ábendingu af annarri ástæðu (þarf ekki að tilgreina)",
+                                icon: "glyphicon glyphicon-remove normal",
+                                onClick: () => {
+                                    this.buttonHandler(onEdit, entityKey);
+                                }
+                            }
+                            )
+                        )
+                    )
                 )
             )
+
         );
     }
 }

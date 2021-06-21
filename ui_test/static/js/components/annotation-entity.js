@@ -7,7 +7,7 @@ const DraftUtils = window.Draftail.DraftUtils;
 
 
 const Portal = require('./portal.js');
-const AnnotationPopover = require('./popover.js');
+const Popover = require('./popover.js');
 const IconButton = require('./icon-button.js');
 const DeclineButton = require('./decline-button.js');
 
@@ -153,12 +153,13 @@ class AnnotationEntity extends React.Component {
                     closeOnType: true,
                     closeOnResize: true
                 },
-                // AnnotationPopover component
+                // Popover component
                 React.createElement(
-                    AnnotationPopover, {
+                    Popover, {
                         target: showTooltipAt,
                         direction: "top",
-                        annClass: annClass
+                        // annClass: annClass,
+                        clsName: `Tooltip Annotation-${annClass}`
                     },
                     // div for popover contents
                     React.createElement(
@@ -186,7 +187,7 @@ class AnnotationEntity extends React.Component {
                     // Button for accepting annotation, calling onEdit and rerunning source component
                     React.createElement(
                         IconButton, {
-                            name: "yes",
+                            name: "Annotation__button_yes",
                             // active,
                             label: "Samþykkja",
                             title: "Samþykkja uppástungu",
@@ -209,7 +210,7 @@ class AnnotationEntity extends React.Component {
                     // Button for declining annotation, removing annotation entity
                     React.createElement(
                         DeclineButton, {
-                            name: "no",
+                            name: "Annotation__button_no",
                             // active,
                             label: "Hafna",
                             title: "Hafna uppástungu",

@@ -1,50 +1,48 @@
-
 const React = window.React;
 
-class FeedbackMenu extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showTooltipAt: null
-        };
-        this.openTooltip = this.openTooltip.bind(this);
-        this.closeTooltip = this.closeTooltip.bind(this);
+const TOP = "top";
+const LEFT = "left";
+const TOP_LEFT = "top-left";
+
+const getTooltipStyles = (target, direction) => {
+    const top = window.pageYOffset + target.top;
+    const left = window.pageXOffset + target.left;
+
+    switch (direction) {
+        case TOP:
+            return {
+                top: top + target.height,
+                left: left + target.width / 2
+            };
+
+        case LEFT:
+            return {
+                top: top + target.height / 2,
+                left: left + target.width
+            };
+
+        case TOP_LEFT:
+        default:
+            return {
+                top: top + target.height,
+                left
+            };
     }
-    /* :: openTooltip: (e: Event) => void; */
+};
 
-    openTooltip(e) {
-        const trigger = e.target;
 
-        if (trigger instanceof Element) {
-            this.setState({
-                showTooltipAt: trigger.getBoundingClientRect()
-            });
-        }
-    }
-    /* :: closeTooltip: () => void; */
-
-    closeTooltip() {
-        this.setState({
-            showTooltipAt: null
-        });
-    }
-
-    render() {
-        const {
-            editorState,
-            entityKey,
-            contentState,
-            children,
-            onEdit,
-            onRemove,
-            icon,
-            label,
-            data
-        } = this.props;
-
-        const { showTooltipAt } = this.state;
-
-    }
-}
+/**
+ * A tooltip, with arbitrary content.
+ */
+const FeedbackMenu = ({ target, children, direction }) =>
+ /*#__PURE__*/ React.createElement(
+    "div",
+    {
+        style: getTooltipStyles(target, direction),
+        className: `${clsName}-${direction}`,
+        role: "tooltip"
+    },
+    children
+);
 
 module.exports = FeedbackMenu;

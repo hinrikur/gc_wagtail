@@ -4,7 +4,7 @@ const TOP = "top";
 const LEFT = "left";
 const TOP_LEFT = "top-left";
 
-const getTooltipStyles = (target, direction) => {
+const getPopoverStyles = (target, direction) => {
   const top = window.pageYOffset + target.top;
   const left = window.pageXOffset + target.left;
 
@@ -33,12 +33,12 @@ const getTooltipStyles = (target, direction) => {
 /**
  * A tooltip, with arbitrary content.
  */
-const AnnotationTooltip = ({ target, children, direction, annClass }) =>
+const Popover = ({ target, children, direction, clsName}) =>
   /*#__PURE__*/ React.createElement(
   "div",
   {
-    style: getTooltipStyles(target, direction),
-    className: `Tooltip Annotation-${annClass}-${direction}`,
+    style: getPopoverStyles(target, direction),
+    className: `${clsName}-${direction}`,
     role: "tooltip"
   },
   children
@@ -48,4 +48,4 @@ const AnnotationTooltip = ({ target, children, direction, annClass }) =>
 
 
 
-module.exports = AnnotationTooltip;
+module.exports = Popover;
