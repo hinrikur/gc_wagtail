@@ -385,7 +385,7 @@ const DraftUtils = window.Draftail.DraftUtils;
 
 
 const Portal = require('./portal.js');
-const AnnotationPopover = require('./popover.js');
+const Popover = require('./popover.js');
 const IconButton = require('./icon-button.js');
 const DeclineButton = require('./decline-button.js');
 
@@ -531,12 +531,13 @@ class AnnotationEntity extends React.Component {
                     closeOnType: true,
                     closeOnResize: true
                 },
-                // AnnotationPopover component
+                // Popover component
                 React.createElement(
-                    AnnotationPopover, {
+                    Popover, {
                         target: showTooltipAt,
                         direction: "top",
-                        annClass: annClass
+                        // annClass: annClass,
+                        clsName: `Tooltip Annotation-${annClass}`
                     },
                     // div for popover contents
                     React.createElement(
@@ -564,7 +565,7 @@ class AnnotationEntity extends React.Component {
                     // Button for accepting annotation, calling onEdit and rerunning source component
                     React.createElement(
                         IconButton, {
-                            name: "yes",
+                            name: "Annotation__button_yes",
                             // active,
                             label: "Samþykkja",
                             title: "Samþykkja uppástungu",
@@ -587,7 +588,7 @@ class AnnotationEntity extends React.Component {
                     // Button for declining annotation, removing annotation entity
                     React.createElement(
                         DeclineButton, {
-                            name: "no",
+                            name: "Annotation__button_no",
                             // active,
                             label: "Hafna",
                             title: "Hafna uppástungu",
@@ -613,12 +614,13 @@ class AnnotationEntity extends React.Component {
 }
 
 module.exports = AnnotationEntity;
-},{"./decline-button.js":3,"./icon-button.js":5,"./popover.js":6,"./portal.js":7}],3:[function(require,module,exports){
+},{"./decline-button.js":3,"./icon-button.js":4,"./popover.js":5,"./portal.js":6}],3:[function(require,module,exports){
 const React = window.React;
 // const Icon = window.Draftail.Icon;
 
 const Portal = require('./portal.js');
-const FeedbackMenu = require('./feedbackMenu.js');
+const Popover = require('./popover.js');
+const IconButton = require('./icon-button.js');
 
 class DeclineButton extends React.Component {
     constructor(props) {
@@ -671,6 +673,15 @@ class DeclineButton extends React.Component {
         });
     }
 
+    buttonHandler(command, key) {
+        // console.log("buttonHandler function called")
+        // console.log(onCommand)
+        command(key);
+        this.setState({
+            showTooltipAt: null
+        });
+    }
+
     render() {
         const {
             name,
@@ -686,18 +697,18 @@ class DeclineButton extends React.Component {
         const { showFeedbackAt } = this.state;
         return React.createElement(
             "button", {
-                // name: name,
-                className: `Annotation__button_${name}${active ? " Annotation__button_yes--active" : ""
-                    }`,
-                type: "button",
-                "aria-label": title || null,
-                "data-draftail-balloon": title && showTooltipOnHover ? true : null,
-                tabIndex: -1,
-                onClick: onClick,
-                onMouseUp: this.openFeedback
-                // onMouseDown: this.onMouseDown,
-                // onMouseLeave: this.onMouseLeave
-            },
+            // name: name,
+            className: `${name}${active ? " Annotation__button_yes--active" : ""
+                }`,
+            type: "button",
+            "aria-label": title || null,
+            "data-draftail-balloon": title && showTooltipOnHover ? true : null,
+            tabIndex: -1,
+            onClick: onClick,
+            onMouseUp: this.openFeedback
+            // onMouseDown: this.onMouseDown,
+            // onMouseLeave: this.onMouseLeave
+        },
             typeof icon !== "undefined" && icon !== null ?
                 /*#__PURE__*/
                 React.createElement("span", {
@@ -707,13 +718,13 @@ class DeclineButton extends React.Component {
             label ?
                 /*#__PURE__*/
                 React.createElement(
-                    "span", 
+                    "span",
                     {
                         className: "Annotation__button__label"
                     },
                     label
                 ) : null,
-        
+
             showFeedbackAt &&
             // Portal for feedback menu
             React.createElement(
@@ -725,70 +736,86 @@ class DeclineButton extends React.Component {
             },
                 // AnnotationPopover component
                 React.createElement(
-                    FeedbackMenu, {
+                    Popover, {
                     target: showFeedbackAt,
-                    direction: "top",
+                    direction: "left",
+                    clsName: "Tooltip Feedback"
                     // annClass: annClass
-                }
+                },
+                    React.createElement(
+                        "div", {
+                        className: "feedback-menu-contents"
+                    },
+                    React.createElement('div',
+                    {
+                        className: "feedback-title"
+                    },
+                    "Ástæða höfnunar:"
+                    ),
+                        React.createElement(
+                            "div",
+                            {
+                                className: "feedback-button-1"
+                            },
+                            React.createElement(
+                                IconButton, {
+                                name: "feedback-button",
+                                // active,
+                                label: "Ekki villa",
+                                title: "Merkti textinn inniheldur ekki villu",
+                                icon: "glyphicon glyphicon-remove normal",
+                                onClick: () => {
+                                    this.buttonHandler(onEdit, entityKey);
+                                }
+                            }
+                            )
+                        ),
+                        React.createElement(
+                            "div",
+                            {
+                                className: "feedback-button-2"
+                            },
+                            React.createElement(
+                                IconButton, {
+                                name: "feedback-button",
+                                // active,
+                                label: "Röng ábending",
+                                title: "Ábendingin á ekki við villuna í textanum",
+                                icon: "glyphicon glyphicon-remove normal",
+                                onClick: () => {
+                                    this.buttonHandler(onEdit, entityKey);
+                                }
+                            }
+                            )
+                        ),
+                        React.createElement(
+                            "div",
+                            {
+                                className: "feedback-button-3"
+                            },
+                            React.createElement(
+                                IconButton, {
+                                name: "feedback-button",
+                                // active,
+                                label: "Annað",
+                                title: "Hafna ábendingu af annarri ástæðu (þarf ekki að tilgreina)",
+                                icon: "glyphicon glyphicon-remove normal",
+                                onClick: () => {
+                                    this.buttonHandler(onEdit, entityKey);
+                                }
+                            }
+                            )
+                        )
+                    )
                 )
             )
+
         );
     }
 }
 
 module.exports = DeclineButton;
-},{"./feedbackMenu.js":4,"./portal.js":7}],4:[function(require,module,exports){
-
-const React = window.React;
-
-class FeedbackMenu extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showTooltipAt: null
-        };
-        this.openTooltip = this.openTooltip.bind(this);
-        this.closeTooltip = this.closeTooltip.bind(this);
-    }
-    /* :: openTooltip: (e: Event) => void; */
-
-    openTooltip(e) {
-        const trigger = e.target;
-
-        if (trigger instanceof Element) {
-            this.setState({
-                showTooltipAt: trigger.getBoundingClientRect()
-            });
-        }
-    }
-    /* :: closeTooltip: () => void; */
-
-    closeTooltip() {
-        this.setState({
-            showTooltipAt: null
-        });
-    }
-
-    render() {
-        const {
-            editorState,
-            entityKey,
-            contentState,
-            children,
-            onEdit,
-            onRemove,
-            icon,
-            label,
-            data
-        } = this.props;
-
-        const { showTooltipAt } = this.state;
-        
-    }
-}
-
-module.exports = FeedbackMenu;
-},{}],5:[function(require,module,exports){
+},{"./icon-button.js":4,"./popover.js":5,"./portal.js":6}],4:[function(require,module,exports){
 
 const React = window.React;
 // const Icon = window.Draftail.Icon;
@@ -837,8 +864,8 @@ class IconButton extends React.Component {
       "button",
       {
         name: name,
-        className: `Annotation__button_${name}${
-          active ? " Annotation__button_yes--active" : ""
+        className: `${name}${
+          active ? " active" : ""
         }`,
         type: "button",
         "aria-label": title || null,
@@ -868,14 +895,14 @@ class IconButton extends React.Component {
 }
 
 module.exports = IconButton;
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 const React = window.React;
 
 const TOP = "top";
 const LEFT = "left";
 const TOP_LEFT = "top-left";
 
-const getTooltipStyles = (target, direction) => {
+const getPopoverStyles = (target, direction) => {
   const top = window.pageYOffset + target.top;
   const left = window.pageXOffset + target.left;
 
@@ -904,12 +931,12 @@ const getTooltipStyles = (target, direction) => {
 /**
  * A tooltip, with arbitrary content.
  */
-const AnnotationTooltip = ({ target, children, direction, annClass }) =>
+const Popover = ({ target, children, direction, clsName}) =>
   /*#__PURE__*/ React.createElement(
   "div",
   {
-    style: getTooltipStyles(target, direction),
-    className: `Tooltip Annotation-${annClass}-${direction}`,
+    style: getPopoverStyles(target, direction),
+    className: `${clsName}-${direction}`,
     role: "tooltip"
   },
   children
@@ -919,9 +946,9 @@ const AnnotationTooltip = ({ target, children, direction, annClass }) =>
 
 
 
-module.exports = AnnotationTooltip;
+module.exports = Popover;
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 const React = window.React;
 
 class Portal extends React.Component {
