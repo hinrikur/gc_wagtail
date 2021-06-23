@@ -124,7 +124,7 @@ function getReplacement(data) {
 }
 
 
-class DebugAnnotateSource extends React.Component {
+class AnnotationSource extends React.Component {
 
     componentDidMount() {
 
@@ -328,7 +328,7 @@ class DebugAnnotateSource extends React.Component {
                 // Other case (not meant to get here!)
                 default:
                     // Other / Error
-                    console.log("Debug annotate case not caught");
+                    console.log("Annotation case not caught (ERROR)");
                     break;
             }
         }
@@ -342,7 +342,7 @@ class DebugAnnotateSource extends React.Component {
 
 
 
-const DebugAnnotation = (props) => {
+const Annotation = (props) => {
 
     const {
         entityKey,
@@ -381,7 +381,7 @@ const DebugAnnotation = (props) => {
 
 // Register DANNOTATE plugin to draftail editor
 window.draftail.registerPlugin({
-    type: 'DANNOTATE',
-    source: DebugAnnotateSource,
-    decorator: DebugAnnotation,
+    type: 'ANNOTATION',
+    source: AnnotationSource,
+    decorator: Annotation,
 });
