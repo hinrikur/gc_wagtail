@@ -70,7 +70,7 @@ function getAnnotationClass(code) {
     };
 
     var codeChar = code.charAt(0);
-    cls = classMap[codeChar]
+    cls = classMap[codeChar];
     return cls;
 }
 
@@ -125,13 +125,13 @@ class AnnotationEntity extends React.Component {
 
         const { showTooltipAt } = this.state;
         const annCode = data.code;
-        const annClass = getAnnotationClass(annCode)
+        const annClass = getAnnotationClass(annCode);
 
-        console.log("Annotation code:", annCode)
-        console.log("Annotation class:", annClass)
+        // console.log("Annotation code:", annCode);
+        // console.log("Annotation class:", annClass);
 
 
-        // 'ann' element, conteins the annotation 
+        // 'ann' element, contains the in-line annotation and children
         return React.createElement(
             "ann", {
                 role: "button",
@@ -193,21 +193,15 @@ class AnnotationEntity extends React.Component {
                             title: "Samþykkja uppástungu",
                             icon: "glyphicon glyphicon-ok normal",
                             onClick: () => {
-                                    this.buttonHandler(onEdit, entityKey)
+                                    let action = annClass === "wording" ? onRemove : onEdit;
+                                    
+                                    this.buttonHandler(action, entityKey);
+                                    
                                 }
-                                // onClick: onEdit.bind(this.props.data.suggest, entityKey),
                         }
-                        // "button",
-                        // {
-                        //     type: "button",
-                        //     className: "Annotation__button_yes",
-                        //     //   onClick: onEdit.bind(null, entityKey)
-                        //     onClick: onRemove.bind(null, entityKey),
-                        //     icon: "check"
-                        // },
-                        // "Samþykkja"
                     ),
                     // Button for declining annotation, removing annotation entity
+                    // onRemove and entityKey passed as props and called further down
                     React.createElement(
                         DeclineButton, {
                             name: "Annotation__button_no",
@@ -215,22 +209,12 @@ class AnnotationEntity extends React.Component {
                             label: "Hafna",
                             title: "Hafna uppástungu",
                             icon: "glyphicon glyphicon-remove normal",
-                            // onClick: () => {
-                            //     this.buttonHandler(onRemove, entityKey);
-                            // }
+                            onRemove: onRemove,
+                            entityKey: entityKey,
                         }
                     )
-                    //     React.createElement(
-                    // "button",
-                    // {
-                    //   type: "button",
-                    //   className: "Annotation__button_no",
-                    //   onClick: onRemove.bind(null, entityKey)
-                    // },
-                    // "Hafna"
                 )
             )
-
         );
     }
 }
