@@ -61,7 +61,7 @@ class DeclineButton extends React.Component {
         // console.log(onCommand)
         command(key);
         this.setState({
-            showTooltipAt: null
+            showFeedbackAt: null
         });
     }
 
@@ -74,6 +74,8 @@ class DeclineButton extends React.Component {
             icon,
             onClick,
             onMouseUp,
+            onRemove,
+            entityKey
         } = this.props;
 
         const { showTooltipOnHover } = this.state;
@@ -121,7 +123,7 @@ class DeclineButton extends React.Component {
                 React.createElement(
                     Popover, {
                     target: showFeedbackAt,
-                    direction: "left",
+                    direction: "bottom-left",
                     clsName: "Tooltip Feedback"
                     // annClass: annClass
                 },
@@ -146,9 +148,9 @@ class DeclineButton extends React.Component {
                                 // active,
                                 label: "Ekki villa",
                                 title: "Merkti textinn inniheldur ekki villu",
-                                icon: "glyphicon glyphicon-remove normal",
+                                icon: "glyphicon glyphicon-circle-remove normal",
                                 onClick: () => {
-                                    this.buttonHandler(onEdit, entityKey);
+                                    this.buttonHandler(onRemove, entityKey);
                                 }
                             }
                             )
@@ -164,9 +166,9 @@ class DeclineButton extends React.Component {
                                 // active,
                                 label: "Röng ábending",
                                 title: "Ábendingin á ekki við villuna í textanum",
-                                icon: "glyphicon glyphicon-remove normal",
+                                icon: "glyphicon glyphicon-flag-waving normal",
                                 onClick: () => {
-                                    this.buttonHandler(onEdit, entityKey);
+                                    this.buttonHandler(onRemove, entityKey);
                                 }
                             }
                             )
@@ -182,9 +184,9 @@ class DeclineButton extends React.Component {
                                 // active,
                                 label: "Annað",
                                 title: "Hafna ábendingu af annarri ástæðu (þarf ekki að tilgreina)",
-                                icon: "glyphicon glyphicon-remove normal",
+                                icon: "glyphicon glyphicon-circle-question normal",
                                 onClick: () => {
-                                    this.buttonHandler(onEdit, entityKey);
+                                    this.buttonHandler(onRemove, entityKey);
                                 }
                             }
                             )

@@ -3,10 +3,12 @@ const React = window.React;
 const TOP = "top";
 const LEFT = "left";
 const TOP_LEFT = "top-left";
+const BOTTOM_LEFT = "bottom-left";
 
 const getPopoverStyles = (target, direction) => {
   const top = window.pageYOffset + target.top;
   const left = window.pageXOffset + target.left;
+  const bottom = window.pageYOffset;
 
   switch (direction) {
     case TOP:
@@ -18,6 +20,12 @@ const getPopoverStyles = (target, direction) => {
     case LEFT:
       return {
         top: top + target.height / 2,
+        left: left + target.width
+      };
+
+    case BOTTOM_LEFT:
+      return {
+        top,
         left: left + target.width
       };
 
@@ -33,7 +41,7 @@ const getPopoverStyles = (target, direction) => {
 /**
  * A tooltip, with arbitrary content.
  */
-const Popover = ({ target, children, direction, clsName}) =>
+const Popover = ({ target, children, direction, clsName }) =>
   /*#__PURE__*/ React.createElement(
   "div",
   {
