@@ -36,6 +36,8 @@ from wagtail.admin.edit_handlers import EditHandler
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
+from wagtail.core.blocks.field_block import RichTextBlock
+
 logger = logging.getLogger('wagtail.core')
 
 from django.utils import translation
@@ -353,6 +355,10 @@ class RelatedLink(LinkFields):
 #   def __str__(self):
 #     return self.page.title + " -> " + self.koxchart.heiti
 
+class ArticlePageBlock(blocks.StreamBlock):
+    paragraph = RichTextBlock(template="kjarninn/articles/block_templates/paragraph_block.html", editor='draftail')
+    html = blocks.RawHTMLBlock(template="kjarninn/articles/block_templates/html_block.html")
+
 class ArticlePage(SiteSettingsTemplateMixin, MovePagesMixin, Page, RelatedPageMixin, CategoryMixin, ArticleTagStuffMixin, AuthorMixin, ArticleMixin):
     SUB_ARTICLE_LAYOUT_CHOICES = (
         ('none', "Fela hliðarefni"),
@@ -367,7 +373,9 @@ class ArticlePage(SiteSettingsTemplateMixin, MovePagesMixin, Page, RelatedPageMi
         ('noimg', "Fela mynd"),
     )
     tags = ClusterTaggableManager(through=ArticleTag, blank=True)
-    body = RichTextField(blank=False, editor='draftail')
+    # body = RichTextField(blank=False, editor='draftail')
+    body = StreamField(ArticlePageBlock())
+
     header_image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -399,12 +407,13 @@ class ArticlePage(SiteSettingsTemplateMixin, MovePagesMixin, Page, RelatedPageMi
                 FieldPanel('header_image_credit'),
             ], "Header image"
         ),
-        MultiFieldPanel(
-            [   
-                FieldPanel('body'),
-                # FieldPanel('correct')
-            ], 'Body'
-        ), 
+        # MultiFieldPanel(
+        #     [   
+        #         FieldPanel('body'),
+        #         # FieldPanel('correct')
+        #     ], 'Body'
+        # ), 
+        StreamFieldPanel('body'),
     ]
 
     aukahlutir_panels = [
