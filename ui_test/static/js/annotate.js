@@ -19,7 +19,7 @@ const AnnotationEntity = require('./components/annotation-entity.js');
 async function callGreynirAPI(url = '', data = {}) {
     if (data === "") {
         // text is field is empty, returns null
-        // NOTE: this was tripped when content blocks were annoatated one by one
+        // NOTE: this was tripped when content blocks were annoatated one by one,
         //       shouldn't occur now as whole editor content is annotated at once
         //       empty editor case handled at lower level
         return null;
@@ -30,7 +30,7 @@ async function callGreynirAPI(url = '', data = {}) {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             scheme: "https",
             headers: {
-                'Content-Type': 'text/plain', 
+                'Content-Type': 'text/plain',
             },
             body: data // body data type must match "Content-Type" header
         });
@@ -162,12 +162,13 @@ class DebugAnnotateSource extends React.Component {
             const correctedState = EditorState.push(editorState, correctedEntity, 'apply-entity');
             onComplete(correctedState);
 
-        } else { 
+        } else {
 
             // Creating new annotation enties
+
+            // (boolean) check for empty editor
             const editorHasContent = editorState.getCurrentContent().hasText();
 
-            // capture empty editors etc.
             switch (editorHasContent) {
 
                 // Editor contains text
@@ -197,13 +198,18 @@ class DebugAnnotateSource extends React.Component {
                                 console.log("Array of annotations:", processedResponse);
                                 // response flattened to a array of annotation data objects
                                 var i = 0;
+                                // each paragraph annotation matched with a content block
                                 for (var key in rawContentBlocks) {
-                                    console.log(key);
-                                    console.log(processedResponse[i]);
-                                    console.log(rawContentBlocks[key]);
+                                    // content block skipped if no text present 
+                                    // (to match with API reply)
+                                    const blockText = rawContentBlocks[key].text;
+                                    if (blockText.match(/^\s*$/)) { continue; }
+
+                                    // console.log(key);
+                                    // console.log(processedResponse[i]);
+                                    // console.log(rawContentBlocks[key]);
                                     rawContentBlocks[key]["APIresponse"] = processedResponse[i];
                                     i++;
-
                                 }
 
                                 console.log("rawContentBlocks after addition:", rawContentBlocks);
@@ -214,7 +220,7 @@ class DebugAnnotateSource extends React.Component {
                                 // variable for aggregated text length
                                 var aggrLen = 0;
                                 // iterate over block keys in raw content blocks
-                                for (var blockKey in rawContentBlocks) {
+                                for (var blockKey in rawContentBlocks) {                                 
                                     // log current content block key
                                     console.log(rawContentBlocks[blockKey]);
                                     // check for empty API response
@@ -310,7 +316,12 @@ class DebugAnnotateSource extends React.Component {
 
                 // Editor is empty
                 case false:
+
+                    // current content state pushed to new editor state
+                    const currentContent = editorState.getCurrentContent();
+                    const unModifiedState = EditorState.push(editorState, currentContent, 'original-content');
                     onComplete(unModifiedState);
+                    // log to console
                     console.log("...But the editor is empty");
                     break;
 
