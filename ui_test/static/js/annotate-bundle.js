@@ -20,7 +20,7 @@ const AnnotationEntity = require('./components/annotation-entity.js');
 async function callGreynirAPI(url = '', data = {}) {
     if (data === "") {
         // text is field is empty, returns null
-        // NOTE: this was tripped when content blocks were annoatated one by one
+        // NOTE: this was tripped when content blocks were annoatated one by one,
         //       shouldn't occur now as whole editor content is annotated at once
         //       empty editor case handled at lower level
         return null;
@@ -31,7 +31,7 @@ async function callGreynirAPI(url = '', data = {}) {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             scheme: "https",
             headers: {
-                'Content-Type': 'text/plain', 
+                'Content-Type': 'text/plain',
             },
             body: data // body data type must match "Content-Type" header
         });
@@ -52,7 +52,13 @@ function processAPI(json) {
         for (var j = 0; j < json.result[i].length; j++) {
             // iterate through sentences
             // adjust likely errors in char locations from API
-            var anns = json.result[i][j]["annotations"];
+            var adjustedJson = adjustChars(json.result[i][j]);
+
+            // var anns = json.result[i][j].annotations;
+            var anns = adjustedJson.annotations;
+
+            // ADD SENTENCE TEXT TO ANNOTATION HERE
+
             // annotation added to return array
             var newArray = paragraphArray.concat(anns);
             paragraphArray = newArray;
@@ -84,6 +90,14 @@ function adjustChars(sentAnnotation) {
         const firstToken = sentAnnotation.annotations[i].start;
         const lastToken = sentAnnotation.annotations[i].end;
         var relevantTokens = range(firstToken, lastToken);
+
+        // all annotations ends need to increment by one
+        sentAnnotation.annotations[i].end_char += 1;
+        // only tokens starting with whitespace need to increment start by one
+        if (sentAnnotation.tokens[firstToken].o.match(/^ /)) {
+            sentAnnotation.annotations[i].start_char += 1;
+        }
+
         // for (var index in relevantTokens) {
 
         //     if (sentAnnotation.tokens[index].charAt(0) == ' '){
@@ -91,18 +105,18 @@ function adjustChars(sentAnnotation) {
         //     } 
         // }
         // console.log("current token:", '"'+sentAnnotation.tokens[lastToken].o+'"')
-        console.log(sentAnnotation.tokens[lastToken].o.charAt(0));
-        if (sentAnnotation.tokens[lastToken].o.charAt(0).trim() === '') {
-            console.log("Editing token offset:", sentAnnotation.tokens[lastToken].o);
-            aggrChar += 1;
-            offsetChange = aggrChar;
-            console.log("Offset change:", offsetChange);
-            if (sentAnnotation.annotations[i].start_char !== 0) {
-                sentAnnotation.annotations[i].start_char += offsetChange;
-            }
-            sentAnnotation.annotations[i].end_char += offsetChange;
+        // console.log(sentAnnotation.tokens[lastToken].o.charAt(0));
+        // if (sentAnnotation.tokens[lastToken].o.charAt(0).trim() === '') {
+        //     console.log("Editing token offset:", sentAnnotation.tokens[lastToken].o);
+        //     aggrChar += 1;
+        //     offsetChange = aggrChar;
+        //     console.log("Offset change:", offsetChange);
+        //     if (sentAnnotation.annotations[i].start_char !== 0) {
+        //         sentAnnotation.annotations[i].start_char += offsetChange;
+        //     }
+        //     sentAnnotation.annotations[i].end_char += offsetChange;
 
-        }
+        // }
 
     }
     return sentAnnotation;
@@ -124,8 +138,74 @@ function getReplacement(data) {
     return replacement;
 }
 
+function clearAnnotatedRanges(editorState) {
 
-class DebugAnnotateSource extends React.Component {
+    // NOT IMPLEMENTED ATM
+    // either runs without removing entities or crashes due to low-level error
+    // 
+    // Renoves already rendered annotations in editor content state
+    // should be applied on the editor state after the API call but before rendering new entites from call
+
+    var contentState = editorState.getCurrentContent();
+    console.log("Block map before entity removal/rendering:", contentState.getBlockMap());
+    const entitiesToRemove = [];
+    contentState.getBlockMap().forEach(contentBlock => {
+        // const blockKey = block.getKey();
+        // const blockText = block.getText();
+        contentBlock.findEntityRanges(character => {
+            if (character.getEntity() !== null) {
+                const entityKey = character.getEntity();
+                const entity = contentState.getEntity(entityKey);
+                if (entity !== null && contentState.getEntity(entityKey).getType() === 'ANNOTATION') {
+                    const anchorKey = contentBlock.key;
+                    const currentEntity = contentState.getEntity(character.getEntity());
+                    const start = currentEntity.start;
+                    const end = currentEntity.end;
+                    const selectedText = contentBlock.getText().slice(start, end);
+                    const originalStyle = contentBlock.getInlineStyleAt(start);
+                    // const blockSelection = SelectionState
+                    //     .createEmpty(anchorKey)
+                    //     .merge({
+                    //         anchorOffset: start,
+                    //         focusOffset: end,
+                    //     });
+                    const blockSelection = DraftUtils.getEntitySelection(editorState, entityKey);
+
+                    selectedEntity = {
+                        "key": currentEntity,
+                        "blockSelection": blockSelection,
+                        "selectedText": selectedText,
+                        "selectionStyle": originalStyle,
+                    };
+                    return true;
+                }
+            }
+            return false;
+        },
+            (start, end) => {
+                entitiesToRemove.push({ ...selectedEntity, start, end });
+            }
+        );
+
+    });
+
+    entitiesToRemove.forEach(entity => {
+        contentState = Modifier.replaceText(
+            contentState,
+            entity.blockSelection,
+            entity.selectedText,
+            entity.selectionStyle, // null, 
+            entity.key
+        );
+
+    });
+
+
+
+    return contentState;
+}
+
+class AnnotationSource extends React.Component {
 
     componentDidMount() {
 
@@ -135,6 +215,8 @@ class DebugAnnotateSource extends React.Component {
             onComplete,
             entityKey
         } = this.props;
+
+
 
         // If statement catches if entityKey is set, indicating annotation has been approved
         if (entityKey !== undefined && entityKey !== null) {
@@ -163,12 +245,13 @@ class DebugAnnotateSource extends React.Component {
             const correctedState = EditorState.push(editorState, correctedEntity, 'apply-entity');
             onComplete(correctedState);
 
-        } else { 
+        } else {
 
             // Creating new annotation enties
+
+            // (boolean) check for empty editor
             const editorHasContent = editorState.getCurrentContent().hasText();
 
-            // capture empty editors etc.
             switch (editorHasContent) {
 
                 // Editor contains text
@@ -198,13 +281,18 @@ class DebugAnnotateSource extends React.Component {
                                 console.log("Array of annotations:", processedResponse);
                                 // response flattened to a array of annotation data objects
                                 var i = 0;
+                                // each paragraph annotation matched with a content block
                                 for (var key in rawContentBlocks) {
-                                    console.log(key);
-                                    console.log(processedResponse[i]);
-                                    console.log(rawContentBlocks[key]);
+                                    // content block skipped if no text present 
+                                    // (to match with API reply)
+                                    const blockText = rawContentBlocks[key].text;
+                                    if (blockText.match(/^\s*$/)) { continue; }
+
+                                    // console.log(key);
+                                    // console.log(processedResponse[i]);
+                                    // console.log(rawContentBlocks[key]);
                                     rawContentBlocks[key]["APIresponse"] = processedResponse[i];
                                     i++;
-
                                 }
 
                                 console.log("rawContentBlocks after addition:", rawContentBlocks);
@@ -270,8 +358,11 @@ class DebugAnnotateSource extends React.Component {
 
 
                                         });
+                                        console.log("Current block text content:", rawContentBlocks[blockKey].text);
+                                        console.log("Current block text length:", rawContentBlocks[blockKey].text.length);
                                         // length of current block text added to aggregated text length variable
-                                        aggrLen += rawContentBlocks[blockKey].text.length;
+                                        // + 2 to compensate "\n" in API input string between paragraphs
+                                        aggrLen += rawContentBlocks[blockKey].text.replace(/ +$/, "").length;
 
                                     } else {
                                         // API response was empty or undefined, usually because of an empty text block
@@ -279,30 +370,39 @@ class DebugAnnotateSource extends React.Component {
                                         console.log("Undefined response, likely empty Block. BlockKey:", blockKey);
                                     }
 
-                                    // current content saved as base new content state
-                                    let newContentState = editorState.getCurrentContent();
 
-                                    // iterate over list of entities to render and add to new content state
-                                    entitiesToRender.forEach(entity => {
-                                        console.log("entity from list:", entity);
-                                        newContentState = Modifier.replaceText(
-                                            newContentState,
-                                            entity.blockSelection,
-                                            entity.selectedText,
-                                            entity.selectionStyle, // null, 
-                                            entity.key
-                                        );
-                                    });
-
-                                    // Create the new state as an undoable action.
-                                    const nextState = EditorState.push(
-                                        editorState,
-                                        newContentState,
-                                        "apply-entity"
-                                    );
-                                    // render next state through onComplete DraftTail method
-                                    onComplete(nextState);
                                 }
+
+
+
+
+
+                                // current content saved as base new content state
+                                // removes already annotated ranges (if annotation called on already annotated text!)
+                                let currentContent = editorState.getCurrentContent();
+
+                                // let currentContent = clearAnnotatedRanges(editorState);
+
+                                // iterate over list of entities to render and add to new content state
+                                entitiesToRender.forEach(entity => {
+                                    console.log("entity from list:", entity);
+                                    currentContent = Modifier.replaceText(
+                                        currentContent,
+                                        entity.blockSelection,
+                                        entity.selectedText,
+                                        entity.selectionStyle, // null, 
+                                        entity.key
+                                    );
+                                });
+
+                                // Create the new state as an undoable action.
+                                const nextState = EditorState.push(
+                                    editorState,
+                                    currentContent,
+                                    "apply-entity"
+                                );
+                                // render next state through onComplete DraftTail method
+                                onComplete(nextState);
                             }
                         })
                         .catch(err => console.log('Error:', err));
@@ -311,14 +411,19 @@ class DebugAnnotateSource extends React.Component {
 
                 // Editor is empty
                 case false:
+
+                    // current content state pushed to new editor state
+                    const currentContent = editorState.getCurrentContent();
+                    const unModifiedState = EditorState.push(editorState, currentContent, 'original-content');
                     onComplete(unModifiedState);
+                    // log to console
                     console.log("...But the editor is empty");
                     break;
 
                 // Other case (not meant to get here!)
                 default:
                     // Other / Error
-                    console.log("Debug annotate case not caught");
+                    console.log("Annotation case not caught (ERROR)");
                     break;
             }
         }
@@ -332,7 +437,7 @@ class DebugAnnotateSource extends React.Component {
 
 
 
-const DebugAnnotation = (props) => {
+const Annotation = (props) => {
 
     const {
         entityKey,
@@ -371,9 +476,9 @@ const DebugAnnotation = (props) => {
 
 // Register DANNOTATE plugin to draftail editor
 window.draftail.registerPlugin({
-    type: 'DANNOTATE',
-    source: DebugAnnotateSource,
-    decorator: DebugAnnotation,
+    type: 'ANNOTATION',
+    source: AnnotationSource,
+    decorator: Annotation,
 });
 },{"./components/annotation-entity.js":2}],2:[function(require,module,exports){
 const React = window.React;
@@ -401,7 +506,7 @@ var entityMap = {
 };
 
 function escapeHtml(string) {
-    return String(string).replace(/[&<>"'`=\/]/g, function(s) {
+    return String(string).replace(/[&<>"'`=\/]/g, function (s) {
         return entityMap[s];
     });
 }
@@ -410,11 +515,12 @@ function createMarkup(txt) {
     return { __html: txt };
 }
 
-function formatAnnotation(txt) {
+function formatAnnotation(txt, note = "") {
     // Hack to convert all text within single quotation marks in
     // an annotation to bold, while also escaping the annotation
     // text to valid HTML
-    var fmt = txt.replace(/'[^']*'/g, function(s) {
+    // Allows an additional 'note', used for errors in sentence parsing
+    var fmt = txt.replace(/'[^']*'/g, function (s) {
         // Be careful to not use characters that will be HTML-escaped
         // in the dummy markers
         return "[bold]" + s.slice(1, -1) + "[~bold]";
@@ -425,7 +531,7 @@ function formatAnnotation(txt) {
     // Returned as React element
     return React.createElement("div", {
         // className: "ann-popover-contents", // incorrect placement of this className
-        dangerouslySetInnerHTML: createMarkup(replaced)
+        dangerouslySetInnerHTML: createMarkup(replaced + note)
     });
 }
 
@@ -443,36 +549,41 @@ function getAnnotationClass(code) {
         "Z": "spelling", // Capitalization error - Z
         "A": "spelling", // Abbreviation - A
         "S": "spelling", // Spelling error - S
-        "U": "spelling", // Unknown word - U (nothing can be done)
+        "U": "unknown-word", // Unknown word - U (nothing can be done)
         "T": "wording", // Taboo warning
+        "E": "parse-error" // Error in parsing step
     };
 
     var codeChar = code.charAt(0);
-    cls = classMap[codeChar]
+    cls = classMap[codeChar];
     return cls;
 }
 
+
+
 class AnnotationEntity extends React.Component {
     constructor(props) {
-            super(props);
-            this.state = {
-                showTooltipAt: null
-            };
-            this.openTooltip = this.openTooltip.bind(this);
-            this.closeTooltip = this.closeTooltip.bind(this);
-        }
-        /* :: openTooltip: (e: Event) => void; */
+        super(props);
+        this.state = {
+            showTooltipAt: null
+        };
+        this.openTooltip = this.openTooltip.bind(this);
+        this.closeTooltip = this.closeTooltip.bind(this);
+        this.buttonHandler = this.buttonHandler.bind(this);
+        this.popoverButtons = this.popoverButtons.bind(this);
+    }
+    /* :: openTooltip: (e: Event) => void; */
 
     openTooltip(e) {
-            const trigger = e.target;
+        const trigger = e.target;
 
-            if (trigger instanceof Element) {
-                this.setState({
-                    showTooltipAt: trigger.getBoundingClientRect()
-                });
-            }
+        if (trigger instanceof Element) {
+            this.setState({
+                showTooltipAt: trigger.getBoundingClientRect()
+            });
         }
-        /* :: closeTooltip: () => void; */
+    }
+    /* :: closeTooltip: () => void; */
 
     closeTooltip() {
         this.setState({
@@ -492,6 +603,117 @@ class AnnotationEntity extends React.Component {
         });
     }
 
+    popoverButtons(props) {
+        const annClass = props.annClass;
+        // const buttonHandler = this.buttonHandler.bind(this);
+        const entityKey = props.entityKey;
+        const onRemove = props.onRemove;
+        const onEdit = props.onEdit;
+
+        const SINGLE_BUTTON_ACCEPT = ["parse-error", "unknown-word"]
+
+        if (SINGLE_BUTTON_ACCEPT.includes(annClass)){
+
+            return React.createElement(
+                'div', {
+                className: "annotation-buttons"
+            },
+                React.createElement(
+                    IconButton, {
+                    name: "Annotation__button_yes",
+                    // active,
+                    label: "Samþykkja",
+                    title: "Samþykkja uppástungu",
+                    icon: "glyphicon glyphicon-ok normal",
+                    onClick: () => {
+                        let action = onRemove;
+
+                        this.buttonHandler(action, entityKey);
+
+                    }
+                }
+                )
+            );
+        }
+
+        if ( annClass === "wording" ) {
+
+            return React.createElement(
+                'div', {
+                className: "annotation-buttons"
+            },
+                // Button for accepting annotation, calling onEdit and rerunning source component
+                React.createElement(
+                    IconButton, {
+                    name: "Annotation__button_yes",
+                    // active,
+                    label: "Sammála",
+                    title: "Uppástungan á við hér",
+                    icon: "glyphicon glyphicon-ok normal",
+                    onClick: () => {
+                        // let action = annClass === "wording" ? onRemove : onEdit;
+                        let action = onRemove;
+                        this.buttonHandler(action, entityKey);
+
+                    }
+                }
+                ),
+                // Button for declining annotation, removing annotation entity
+                // onRemove and entityKey passed as props and called further down
+                React.createElement(
+                    IconButton, {
+                    name: "Annotation__button_no",
+                    // active,
+                    label: "Ósammála",
+                    title: "Uppástungan á ekki við hér",
+                    icon: "glyphicon glyphicon-remove normal",
+                    onClick: () => {
+                        // let action = annClass === "wording" ? onRemove : onEdit;
+                        let action = onRemove;
+                        this.buttonHandler(action, entityKey);
+
+                    }
+                }
+                )
+            );
+        }
+        
+        return React.createElement(
+            'div', {
+            className: "annotation-buttons"
+        },
+            // Button for accepting annotation, calling onEdit and rerunning source component
+            React.createElement(
+                IconButton, {
+                name: "Annotation__button_yes",
+                // active,
+                label: "Samþykkja",
+                title: "Samþykkja uppástungu",
+                icon: "glyphicon glyphicon-ok normal",
+                onClick: () => {
+                    let action = annClass === "wording" ? onRemove : onEdit;
+
+                    this.buttonHandler(action, entityKey);
+
+                }
+            }
+            ),
+            // Button for declining annotation, removing annotation entity
+            // onRemove and entityKey passed as props and called further down
+            React.createElement(
+                DeclineButton, {
+                name: "Annotation__button_no",
+                // active,
+                label: "Hafna",
+                title: "Hafna uppástungu",
+                icon: "glyphicon glyphicon-remove normal",
+                onRemove: onRemove,
+                entityKey: entityKey,
+            }
+            )
+        );
+    }
+
     render() {
         const {
             entityKey,
@@ -503,112 +725,82 @@ class AnnotationEntity extends React.Component {
 
         const { showTooltipAt } = this.state;
         const annCode = data.code;
-        const annClass = getAnnotationClass(annCode)
+        const annClass = getAnnotationClass(annCode);
 
-        console.log("Annotation code:", annCode)
-        console.log("Annotation class:", annClass)
+        // console.log("Annotation code:", annCode);
+        // console.log("Annotation class:", annClass);
 
 
-        // 'ann' element, conteins the annotation 
+        // 'ann' element, contains the in-line annotation and children
         return React.createElement(
             "ann", {
-                role: "button",
-                onMouseUp: this.openTooltip,
-                className: `${annClass}`
-            },
+            role: "button",
+            onMouseUp: this.openTooltip,
+            className: `${annClass}`
+        },
             React.createElement(
                 "span", {
-                    className: "Annotated__text"
-                },
+                className: "Annotated__text"
+            },
                 children
             ),
             showTooltipAt &&
             // Portal for popover/tooltip
             React.createElement(
                 Portal, {
-                    onClose: this.closeTooltip,
-                    closeOnClick: true,
-                    closeOnType: true,
-                    closeOnResize: true
-                },
+                onClose: this.closeTooltip,
+                closeOnClick: true,
+                closeOnType: true,
+                closeOnResize: true
+            },
                 // Popover component
                 React.createElement(
                     Popover, {
-                        target: showTooltipAt,
-                        direction: "top",
-                        // annClass: annClass,
-                        clsName: `Tooltip Annotation-${annClass}`
-                    },
+                    target: showTooltipAt,
+                    direction: "top",
+                    // annClass: annClass,
+                    clsName: `Tooltip Annotation-${annClass}`
+                },
                     // div for popover contents
                     React.createElement(
                         "div", {
-                            className: "ann-popover-contents"
-                        },
+                        className: "ann-popover-contents"
+                    },
                         // div for annoatation text message
                         React.createElement(
                             "div", {
-                                className: "ann-text"
-                            },
+                            className: "ann-text"
+                        },
                             formatAnnotation(this.props.data.text)
                         ),
 
                         // div for annotation detail if present
                         typeof this.props.data.detail !== "undefined" && this.props.data.detail !== null ?
-                        React.createElement(
-                            "div", {
+                            React.createElement(
+                                "div", {
                                 className: "ann-detail"
                             },
-                            formatAnnotation(this.props.data.detail)
-                        ) :
-                        null
+                                annClass === "parse-error" ?
+                                    formatAnnotation(this.props.data.detail, ". <br><b>Setningin gæti verið vitlaus!</b>")
+                                    :
+                                    formatAnnotation(this.props.data.detail)
+                            ) :
+                            null
                     ),
-                    // Button for accepting annotation, calling onEdit and rerunning source component
                     React.createElement(
-                        IconButton, {
-                            name: "Annotation__button_yes",
-                            // active,
-                            label: "Samþykkja",
-                            title: "Samþykkja uppástungu",
-                            icon: "glyphicon glyphicon-ok normal",
-                            onClick: () => {
-                                    this.buttonHandler(onEdit, entityKey)
-                                }
-                                // onClick: onEdit.bind(this.props.data.suggest, entityKey),
-                        }
-                        // "button",
-                        // {
-                        //     type: "button",
-                        //     className: "Annotation__button_yes",
-                        //     //   onClick: onEdit.bind(null, entityKey)
-                        //     onClick: onRemove.bind(null, entityKey),
-                        //     icon: "check"
-                        // },
-                        // "Samþykkja"
-                    ),
-                    // Button for declining annotation, removing annotation entity
-                    React.createElement(
-                        DeclineButton, {
-                            name: "Annotation__button_no",
-                            // active,
-                            label: "Hafna",
-                            title: "Hafna uppástungu",
-                            icon: "glyphicon glyphicon-remove normal",
-                            // onClick: () => {
-                            //     this.buttonHandler(onRemove, entityKey);
-                            // }
+                        this.popoverButtons,
+                        {
+                            annClass: annClass,
+                            buttonHandler: this.buttonHandler,
+                            entityKey: entityKey,
+                            onRemove: onRemove,
+                            onEdit: onEdit,
                         }
                     )
-                    //     React.createElement(
-                    // "button",
-                    // {
-                    //   type: "button",
-                    //   className: "Annotation__button_no",
-                    //   onClick: onRemove.bind(null, entityKey)
-                    // },
-                    // "Hafna"
+
+
                 )
             )
-
         );
     }
 }
@@ -678,7 +870,7 @@ class DeclineButton extends React.Component {
         // console.log(onCommand)
         command(key);
         this.setState({
-            showTooltipAt: null
+            showFeedbackAt: null
         });
     }
 
@@ -691,6 +883,8 @@ class DeclineButton extends React.Component {
             icon,
             onClick,
             onMouseUp,
+            onRemove,
+            entityKey
         } = this.props;
 
         const { showTooltipOnHover } = this.state;
@@ -738,7 +932,7 @@ class DeclineButton extends React.Component {
                 React.createElement(
                     Popover, {
                     target: showFeedbackAt,
-                    direction: "left",
+                    direction: "bottom-left",
                     clsName: "Tooltip Feedback"
                     // annClass: annClass
                 },
@@ -763,9 +957,9 @@ class DeclineButton extends React.Component {
                                 // active,
                                 label: "Ekki villa",
                                 title: "Merkti textinn inniheldur ekki villu",
-                                icon: "glyphicon glyphicon-remove normal",
+                                icon: "glyphicon glyphicon-circle-remove normal",
                                 onClick: () => {
-                                    this.buttonHandler(onEdit, entityKey);
+                                    this.buttonHandler(onRemove, entityKey);
                                 }
                             }
                             )
@@ -781,9 +975,9 @@ class DeclineButton extends React.Component {
                                 // active,
                                 label: "Röng ábending",
                                 title: "Ábendingin á ekki við villuna í textanum",
-                                icon: "glyphicon glyphicon-remove normal",
+                                icon: "glyphicon glyphicon-flag-waving normal",
                                 onClick: () => {
-                                    this.buttonHandler(onEdit, entityKey);
+                                    this.buttonHandler(onRemove, entityKey);
                                 }
                             }
                             )
@@ -799,9 +993,9 @@ class DeclineButton extends React.Component {
                                 // active,
                                 label: "Annað",
                                 title: "Hafna ábendingu af annarri ástæðu (þarf ekki að tilgreina)",
-                                icon: "glyphicon glyphicon-remove normal",
+                                icon: "glyphicon glyphicon-circle-question normal",
                                 onClick: () => {
-                                    this.buttonHandler(onEdit, entityKey);
+                                    this.buttonHandler(onRemove, entityKey);
                                 }
                             }
                             )
@@ -901,10 +1095,12 @@ const React = window.React;
 const TOP = "top";
 const LEFT = "left";
 const TOP_LEFT = "top-left";
+const BOTTOM_LEFT = "bottom-left";
 
 const getPopoverStyles = (target, direction) => {
   const top = window.pageYOffset + target.top;
   const left = window.pageXOffset + target.left;
+  const bottom = window.pageYOffset;
 
   switch (direction) {
     case TOP:
@@ -916,6 +1112,12 @@ const getPopoverStyles = (target, direction) => {
     case LEFT:
       return {
         top: top + target.height / 2,
+        left: left + target.width
+      };
+
+    case BOTTOM_LEFT:
+      return {
+        top,
         left: left + target.width
       };
 
@@ -931,7 +1133,7 @@ const getPopoverStyles = (target, direction) => {
 /**
  * A tooltip, with arbitrary content.
  */
-const Popover = ({ target, children, direction, clsName}) =>
+const Popover = ({ target, children, direction, clsName }) =>
   /*#__PURE__*/ React.createElement(
   "div",
   {
