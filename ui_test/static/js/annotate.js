@@ -137,6 +137,72 @@ function getReplacement(data) {
     return replacement;
 }
 
+function clearAnnotatedRanges(editorState) {
+
+    // NOT IMPLEMENTED ATM
+    // either runs without removing entities or crashes due to low-level error
+    // 
+    // Renoves already rendered annotations in editor content state
+    // should be applied on the editor state after the API call but before rendering new entites from call
+
+    var contentState = editorState.getCurrentContent();
+    console.log("Block map before entity removal/rendering:", contentState.getBlockMap());
+    const entitiesToRemove = [];
+    contentState.getBlockMap().forEach(contentBlock => {
+        // const blockKey = block.getKey();
+        // const blockText = block.getText();
+        contentBlock.findEntityRanges(character => {
+            if (character.getEntity() !== null) {
+                const entityKey = character.getEntity();
+                const entity = contentState.getEntity(entityKey);
+                if (entity !== null && contentState.getEntity(entityKey).getType() === 'ANNOTATION') {
+                    const anchorKey = contentBlock.key;
+                    const currentEntity = contentState.getEntity(character.getEntity());
+                    const start = currentEntity.start;
+                    const end = currentEntity.end;
+                    const selectedText = contentBlock.getText().slice(start, end);
+                    const originalStyle = contentBlock.getInlineStyleAt(start);
+                    // const blockSelection = SelectionState
+                    //     .createEmpty(anchorKey)
+                    //     .merge({
+                    //         anchorOffset: start,
+                    //         focusOffset: end,
+                    //     });
+                    const blockSelection = DraftUtils.getEntitySelection(editorState, entityKey);
+
+                    selectedEntity = {
+                        "key": currentEntity,
+                        "blockSelection": blockSelection,
+                        "selectedText": selectedText,
+                        "selectionStyle": originalStyle,
+                    };
+                    return true;
+                }
+            }
+            return false;
+        },
+            (start, end) => {
+                entitiesToRemove.push({ ...selectedEntity, start, end });
+            }
+        );
+
+    });
+
+    entitiesToRemove.forEach(entity => {
+        contentState = Modifier.replaceText(
+            contentState,
+            entity.blockSelection,
+            entity.selectedText,
+            entity.selectionStyle, // null, 
+            entity.key
+        );
+
+    });
+
+
+
+    return contentState;
+}
 
 class AnnotationSource extends React.Component {
 
@@ -148,6 +214,8 @@ class AnnotationSource extends React.Component {
             onComplete,
             entityKey
         } = this.props;
+
+
 
         // If statement catches if entityKey is set, indicating annotation has been approved
         if (entityKey !== undefined && entityKey !== null) {
@@ -301,30 +369,39 @@ class AnnotationSource extends React.Component {
                                         console.log("Undefined response, likely empty Block. BlockKey:", blockKey);
                                     }
 
-                                    // current content saved as base new content state
-                                    let newContentState = editorState.getCurrentContent();
 
-                                    // iterate over list of entities to render and add to new content state
-                                    entitiesToRender.forEach(entity => {
-                                        console.log("entity from list:", entity);
-                                        newContentState = Modifier.replaceText(
-                                            newContentState,
-                                            entity.blockSelection,
-                                            entity.selectedText,
-                                            entity.selectionStyle, // null, 
-                                            entity.key
-                                        );
-                                    });
-
-                                    // Create the new state as an undoable action.
-                                    const nextState = EditorState.push(
-                                        editorState,
-                                        newContentState,
-                                        "apply-entity"
-                                    );
-                                    // render next state through onComplete DraftTail method
-                                    onComplete(nextState);
                                 }
+
+
+
+
+
+                                // current content saved as base new content state
+                                // removes already annotated ranges (if annotation called on already annotated text!)
+                                let currentContent = editorState.getCurrentContent();
+
+                                // let currentContent = clearAnnotatedRanges(editorState);
+
+                                // iterate over list of entities to render and add to new content state
+                                entitiesToRender.forEach(entity => {
+                                    console.log("entity from list:", entity);
+                                    currentContent = Modifier.replaceText(
+                                        currentContent,
+                                        entity.blockSelection,
+                                        entity.selectedText,
+                                        entity.selectionStyle, // null, 
+                                        entity.key
+                                    );
+                                });
+
+                                // Create the new state as an undoable action.
+                                const nextState = EditorState.push(
+                                    editorState,
+                                    currentContent,
+                                    "apply-entity"
+                                );
+                                // render next state through onComplete DraftTail method
+                                onComplete(nextState);
                             }
                         })
                         .catch(err => console.log('Error:', err));
