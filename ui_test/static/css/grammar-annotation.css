@@ -1,0 +1,327 @@
+@font-face {
+  font-family: 'Glyphicons Regular';
+  /* src:  url('/static/fonts/glyphicons-regular.woff2') format('woff2'),
+        url('/static/fonts/glyphicons-regular.woff') format('woff'),
+        url('/static/fonts/glyphicons-regular.ttf') format('truetype') */
+  src:  url('../fonts/glyphicons-regular.woff2') format('woff2'),
+        url('../fonts/glyphicons-regular.woff') format('woff'),
+        url('../fonts/glyphicons-regular.ttf') format('truetype')
+  }
+
+.glyphicon {
+  position: relative;
+  top: 2px;
+  display: inline-block;
+  /*noinspection CssNoGenericFontName*/
+  font-family: 'Glyphicons Regular';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.glyphicon-remove:before {
+  content: "\e208";
+}
+.glyphicon-ok:before {
+  content: "\E199";
+}
+.glyphicon-circle-ok:before {
+  content: "\E194";
+}
+.glyphicon-circle-remove:before {
+  content: "\E193";
+}
+.glyphicon-circle-minus:before {
+  content: "\E192";
+}
+.glyphicon-circle-question:before {
+  content: "\E195";
+}
+.glyphicon-user:before {
+  content: "\E004";
+}
+.glyphicon-alert:before {
+  content: "\E079";
+}
+.glyphicon-flag-waving:before {
+  content: "\E267";
+}
+
+
+span.glyphicon {
+  margin-right: 12px;
+}
+
+.App {
+    font-family: sans-serif;
+    text-align: center;
+  }
+
+div.ann-text {
+  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-style: italic;
+  font-size: 120%;
+  color: #2e2e2e;
+  /* background-color: white; */
+  /* border: 1px solid #ff7c24; */
+  /* border-radius: 5px; */
+  word-wrap: break-word;
+  width: 300px;
+  padding: 6px;
+  margin-bottom: 0.5em;
+  /* cursor: pointer; */
+}
+
+div.ann-detail {
+  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #2e2e2e;
+  word-wrap: break-word;
+  width: 400px;
+  padding: 6px;
+  padding-top: 0px;
+  margin-bottom: 0.5em;
+}
+
+.Annotation-grammar-suggestion-top {
+  background-color: #fdebdf;
+  transform: translate(-25%, 2%);
+
+}
+
+.Annotation-grammar-error-top {
+  background-color: #fdebdf;
+  transform: translate(-25%, 2%);
+
+}
+
+.Annotation-unknown-word-top {
+  color: black;
+  background-color: #ffe9e9;
+  transform: translate(-25%, 2%);
+
+}
+
+.Annotation-spelling-top{
+  /* border-width: 5px;
+  border-style: solid;
+  border-color: #e29460; */
+  /* background-color: rgb(90, 86, 86); */
+  color: black;
+  background-color: #ffe9e9;
+  transform: translate(-25%, 2%);
+}
+
+.Annotation-wording-top {
+  color: black;
+  background-color: #f7ffe9;
+  transform: translate(-25%, 2%);
+}
+
+.Annotation-parse-error-top {
+  color: black;
+  background-color: #e9e9e9;
+  transform: translate(-25%, 2%);
+}
+
+
+
+
+ann {
+  /* background: #ff7c24; */
+  /* border: solid; */
+  /* border-width: thin;
+  border-radius: 5px;; */
+  /* box-shadow: 1px 1px 1px grey; */
+  text-decoration: underline #ffb27f;
+  /* text-decoration: underline #e97528; */
+  text-decoration-thickness: 20%;
+}
+
+ann:hover {
+  color: black;
+  background-color: #FFB07B;
+  border-radius: 3px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ann:focus{
+  background-color:red;
+} */
+
+ann:hover:active{
+  background-color:#e29460;
+  text-decoration: none;
+}
+
+ann.spelling {
+  /* background: #ff7c24; */
+  /* border: solid; */
+  /* border-width: thin;
+  border-radius: 5px;; */
+  /* box-shadow: 1px 1px 1px grey; */
+  text-decoration: underline #ff2727;
+  /* text-decoration: underline #e97528; */
+  text-decoration-thickness: 20%;
+}
+
+ann.spelling:hover {
+  /* color: white; */
+  background-color: #ff5959;
+  border-radius: 3px;
+  text-decoration: none;
+  /* text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; */
+  cursor: pointer;
+}
+
+ann.spelling:hover:active{
+  background-color:#ff5959;
+  text-decoration: none;
+}
+
+ann.unknown-word {
+  /* background: #ff7c24; */
+  /* border: solid; */
+  /* border-width: thin;
+  border-radius: 5px;; */
+  /* box-shadow: 1px 1px 1px grey; */
+  text-decoration: underline #ff2727;
+  /* text-decoration: underline #e97528; */
+  text-decoration-thickness: 20%;
+}
+
+ann.unknown-word:hover {
+  /* color: white; */
+  background-color: #ff5959;
+  border-radius: 3px;
+  text-decoration: none;
+  /* text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; */
+  cursor: pointer;
+}
+
+ann.unknown-word:hover:active{
+  background-color:#ff5959;
+  text-decoration: none;
+}
+
+ann.wording {
+  text-decoration: underline #91ff00;
+  /* text-decoration: underline #e97528; */
+  text-decoration-thickness: 20%;
+}
+
+ann.wording:hover {
+    /* color: white; */
+    background-color: #8bc029;
+    border-radius: 3px;
+    text-decoration: none;
+    /* text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; */
+    cursor: pointer;
+}
+
+ann.wording:hover:active{
+  background-color:#7eaf24;
+  text-decoration: none;
+}
+
+ann.parse-error {
+  text-decoration: underline #777777;
+  /* text-decoration: underline #e97528; */
+  text-decoration-thickness: 20%;
+}
+
+ann.parse-error:hover {
+    /* color: white; */
+    background-color: #c7c7c7;
+    border-radius: 3px;
+    text-decoration: none;
+    /* text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; */
+    cursor: pointer;
+}
+
+ann.parse-error:hover:active{
+  background-color:#808080;
+  text-decoration: none;
+}
+
+/* div.ann-spelling- */
+
+button.Annotation__button_yes{
+  background-color:limegreen;
+  border: None;
+  color:honeydew;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 4px;
+  /* font-weight: bold; */
+}
+button.Annotation__button_no{
+  background-color: rgb(219, 43, 43);
+  border: None;
+  color: honeydew;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 4px;
+  /* font-weight: bold; */
+}
+
+button.Annotation__button_no:active{
+  background-color: firebrick;
+}
+
+button.Annotation__button_yes:active{
+  background-color: rgb(34, 146, 34);
+}
+
+.Feedback-bottom-left{
+  /* border-width: 5px;
+  border-style: solid;
+  border-color: #e29460; */
+  /* background-color: rgb(90, 86, 86); */
+  color: black;
+  background-color: #e9e9e9;
+  transform: translate(5%, -75%);
+}
+
+
+div.feedback-title {
+  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #2e2e2e;
+  word-wrap: break-word;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  padding: 6px;
+  padding-top: 0px;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+
+button.feedback-button {
+  background-color: rgb(252, 252, 252);
+  border: None;
+  /* color: honeydew; */
+  padding: 6px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  border-radius: 4px;
+  /* font-weight: bold; */
+}
+
+button.feedback-button:active {
+  background-color: rgb(196, 196, 196);
+}
