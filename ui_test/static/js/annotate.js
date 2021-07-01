@@ -51,7 +51,13 @@ function processAPI(json) {
         for (var j = 0; j < json.result[i].length; j++) {
             // iterate through sentences
             // adjust likely errors in char locations from API
-            var anns = json.result[i][j]["annotations"];
+            var adjustedJson = adjustChars(json.result[i][j]);
+
+            // var anns = json.result[i][j].annotations;
+            var anns = adjustedJson.annotations;
+
+            // ADD SENTENCE TEXT TO ANNOTATION HERE
+
             // annotation added to return array
             var newArray = paragraphArray.concat(anns);
             paragraphArray = newArray;
@@ -83,6 +89,14 @@ function adjustChars(sentAnnotation) {
         const firstToken = sentAnnotation.annotations[i].start;
         const lastToken = sentAnnotation.annotations[i].end;
         var relevantTokens = range(firstToken, lastToken);
+
+        // all annotations ends need to increment by one
+        sentAnnotation.annotations[i].end_char += 1;
+        // only tokens starting with whitespace need to increment start by one
+        if (sentAnnotation.tokens[firstToken].o.match(/^ /)) {
+            sentAnnotation.annotations[i].start_char += 1;
+        }
+
         // for (var index in relevantTokens) {
 
         //     if (sentAnnotation.tokens[index].charAt(0) == ' '){
@@ -90,18 +104,18 @@ function adjustChars(sentAnnotation) {
         //     } 
         // }
         // console.log("current token:", '"'+sentAnnotation.tokens[lastToken].o+'"')
-        console.log(sentAnnotation.tokens[lastToken].o.charAt(0));
-        if (sentAnnotation.tokens[lastToken].o.charAt(0).trim() === '') {
-            console.log("Editing token offset:", sentAnnotation.tokens[lastToken].o);
-            aggrChar += 1;
-            offsetChange = aggrChar;
-            console.log("Offset change:", offsetChange);
-            if (sentAnnotation.annotations[i].start_char !== 0) {
-                sentAnnotation.annotations[i].start_char += offsetChange;
-            }
-            sentAnnotation.annotations[i].end_char += offsetChange;
+        // console.log(sentAnnotation.tokens[lastToken].o.charAt(0));
+        // if (sentAnnotation.tokens[lastToken].o.charAt(0).trim() === '') {
+        //     console.log("Editing token offset:", sentAnnotation.tokens[lastToken].o);
+        //     aggrChar += 1;
+        //     offsetChange = aggrChar;
+        //     console.log("Offset change:", offsetChange);
+        //     if (sentAnnotation.annotations[i].start_char !== 0) {
+        //         sentAnnotation.annotations[i].start_char += offsetChange;
+        //     }
+        //     sentAnnotation.annotations[i].end_char += offsetChange;
 
-        }
+        // }
 
     }
     return sentAnnotation;
@@ -220,7 +234,7 @@ class AnnotationSource extends React.Component {
                                 // variable for aggregated text length
                                 var aggrLen = 0;
                                 // iterate over block keys in raw content blocks
-                                for (var blockKey in rawContentBlocks) {                                 
+                                for (var blockKey in rawContentBlocks) {
                                     // log current content block key
                                     console.log(rawContentBlocks[blockKey]);
                                     // check for empty API response
@@ -275,8 +289,11 @@ class AnnotationSource extends React.Component {
 
 
                                         });
+                                        console.log("Current block text content:", rawContentBlocks[blockKey].text);
+                                        console.log("Current block text length:", rawContentBlocks[blockKey].text.length);
                                         // length of current block text added to aggregated text length variable
-                                        aggrLen += rawContentBlocks[blockKey].text.length;
+                                        // + 2 to compensate "\n" in API input string between paragraphs
+                                        aggrLen += rawContentBlocks[blockKey].text.replace(/ +$/, "").length;
 
                                     } else {
                                         // API response was empty or undefined, usually because of an empty text block
