@@ -147,7 +147,7 @@ def register_annotation_feature(features):
         'draftail', feature_name, draftail_features.EntityFeature(
             control,
             js=['js/annotate-bundle.js'],
-            css={'all': ['css/correct.css']}
+            css={'all': ['css/grammar-annotation.css']}
         )
     )
 
