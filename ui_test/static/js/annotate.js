@@ -250,7 +250,7 @@ function clearAnnotatedRanges(editorState) {
     var contentState = editorState.getCurrentContent();
     console.log("Block map before entity removal/rendering:", contentState.getBlockMap());
     const entitiesToRemove = [];
-    contentState.getBlockMap().forEach(contentBlock => {
+    contentState.getBlockMap().forEach(contentBlock => { 
         // const blockKey = block.getKey();
         // const blockText = block.getText();
         contentBlock.findEntityRanges(character => {
@@ -258,27 +258,28 @@ function clearAnnotatedRanges(editorState) {
                 const entityKey = character.getEntity();
                 const entity = contentState.getEntity(entityKey);
                 if (entity !== null && contentState.getEntity(entityKey).getType() === 'ANNOTATION') {
-                    const anchorKey = contentBlock.key;
-                    const currentEntity = contentState.getEntity(character.getEntity());
-                    const start = currentEntity.start;
-                    const end = currentEntity.end;
-                    const selectedText = contentBlock.getText().slice(start, end);
-                    const originalStyle = contentBlock.getInlineStyleAt(start);
-                    // const blockSelection = SelectionState
-                    //     .createEmpty(anchorKey)
-                    //     .merge({
-                    //         anchorOffset: start,
-                    //         focusOffset: end,
-                    //     });
-                    const blockSelection = DraftUtils.getEntitySelection(editorState, entityKey);
+                    console.log("FOUND ANNOTATION ENTITY IN TEXT");
+                    // const anchorKey = contentBlock.key;
+                    // const currentEntity = contentState.getEntity(character.getEntity());
+                    // const start = currentEntity.start;
+                    // const end = currentEntity.end;
+                    // const selectedText = contentBlock.getText().slice(start, end);
+                    // const originalStyle = contentBlock.getInlineStyleAt(start);
+                    // // const blockSelection = SelectionState
+                    // //     .createEmpty(anchorKey)
+                    // //     .merge({
+                    // //         anchorOffset: start,
+                    // //         focusOffset: end,
+                    // //     });
+                    // const blockSelection = DraftUtils.getEntitySelection(editorState, entityKey);
 
-                    selectedEntity = {
-                        "key": currentEntity,
-                        "blockSelection": blockSelection,
-                        "selectedText": selectedText,
-                        "selectionStyle": originalStyle,
-                    };
-                    return true;
+                    // selectedEntity = {
+                    //     "key": currentEntity,
+                    //     "blockSelection": blockSelection,
+                    //     "selectedText": selectedText,
+                    //     "selectionStyle": originalStyle,
+                    // };
+                    // return true;
                 }
             }
             return false;
