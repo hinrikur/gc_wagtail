@@ -48,16 +48,16 @@ function processAPI(json) {
     for (var i = 0; i < json.result.length; i++) {
         // iterate through paragraphs
         var paragraphArray = [];
+        // console.log("Paragraph before par adjust", json.result[i]);
+        json.result[i] = adjustChars(json.result[i]);
+        // console.log("Paragraph after par adjust", json.result[i]);
         for (var j = 0; j < json.result[i].length; j++) {
             // iterate through sentences
             // adjust likely errors in char locations from API
-            var adjustedJson = adjustChars(json.result[i][j]);
+            // var adjustedJson = adjustChars(json.result[i][j]);
 
             // var anns = json.result[i][j].annotations;
-            var anns = adjustedJson.annotations;
-
-            // ADD SENTENCE TEXT TO ANNOTATION HERE
-
+            // Sentence text added to annotation data
             // annotation added to return array
             var newArray = paragraphArray.concat(anns);
             paragraphArray = newArray;
@@ -68,10 +68,8 @@ function processAPI(json) {
     return annotationArray;
 }
 
-// helper for adjusting wrong character spans in API response
-// not used currently
-// more low level fix likely needed (In GreynirCorrect or Yfirlestur API)
-function adjustChars(sentAnnotation) {
+// normalize each paragraph's token lists (per sent) to start at char index 0
+function adjustChars(paragraph) {
 
     function range(start, end) {
         var ans = [];
@@ -81,6 +79,65 @@ function adjustChars(sentAnnotation) {
         return ans;
     }
 
+    START_INDEX = paragraph[0].tokens[0].i;
+    console.log("Sentence start index:", START_INDEX)
+    
+        paragraph.forEach((sentence, sentIndex) => {
+            sentence.tokens.forEach((token, tokenIndex) => {
+                // console.log("Token and index:", token.o, token.i);
+                if (START_INDEX !== 0) {
+                paragraph[sentIndex].tokens[tokenIndex].i -= START_INDEX;
+                }
+                // console.log("Token after adjust:", token.o, token.i);
+            });
+            sentence.annotations.forEach((annotation, annIndex) => {
+                
+                const firstTokenIndex = annotation.start; 
+                const lastTokenIndex = annotation.end;
+                var relevantTokens = range(firstTokenIndex, lastTokenIndex);
+                
+                // console.log("Relevant tokens:", relevantTokens)
+                
+                var annLength = 0;
+                relevantTokens.forEach(index => {
+                    // console.log("selected token from range:", sentence.tokens[index]);
+                    annLength += sentence.tokens[index].o.length;
+                });
+                // console.log("processed ann length:", annLength);
+                
+                
+                // console.log("New start Char:", annotation.start_char);
+                paragraph[sentIndex].annotations[annIndex].start_char = sentence.tokens[firstTokenIndex].i;
+                // console.log("Start char after change:", annotation.start_char)
+                paragraph[sentIndex].annotations[annIndex].end_char = annotation.start_char + annLength;
+                
+                // if (paragraph[sentIndex].tokens[lastTokenIndex].o.match(/^ /) || lastTokenIndex === 0) {
+                //     paragraph[sentIndex].annotations[annIndex].end_char += 1;
+                // }
+                // only tokens starting with whitespace need to increment start by one
+                if (paragraph[sentIndex].tokens[firstTokenIndex].o.match(/^ /)) {
+                    paragraph[sentIndex].annotations[annIndex].start_char += 1;
+                }
+            });
+        });
+    
+    return paragraph;
+}
+
+
+// helper for adjusting wrong character spans in API response
+// not used currently
+// more low level fix likely needed (In GreynirCorrect or Yfirlestur API)
+function XadjustChars(sentAnnotation) {
+
+    // function range(start, end) {
+    //     var ans = [];
+    //     for (let i = start; i <= end; i++) {
+    //         ans.push(i);
+    //     }
+    //     return ans;
+    // }
+
     // counter for aggregated changes
     var aggrChar = 1;
     for (var i = 0; i < sentAnnotation.annotations.length; i++) {
@@ -88,10 +145,13 @@ function adjustChars(sentAnnotation) {
         // console.log(sentAnnotation.annotations[i])
         const firstToken = sentAnnotation.annotations[i].start;
         const lastToken = sentAnnotation.annotations[i].end;
-        var relevantTokens = range(firstToken, lastToken);
+        // var relevantTokens = range(firstToken, lastToken);
 
         // all annotations ends need to increment by one
-        sentAnnotation.annotations[i].end_char += 1;
+        // sentAnnotation.annotations[i].end_char += 1;
+        if (sentAnnotation.tokens[lastToken].o.match(/^ /) || lastToken === 0) {
+            sentAnnotation.annotations[i].end_char += 1;
+        }
         // only tokens starting with whitespace need to increment start by one
         if (sentAnnotation.tokens[firstToken].o.match(/^ /)) {
             sentAnnotation.annotations[i].start_char += 1;
@@ -320,10 +380,13 @@ class AnnotationSource extends React.Component {
                                             const currentContentBlock = currentContent.getBlockForKey(anchorKey);
                                             console.log("anchorKey:", anchorKey);
                                             console.log("currentContentBock, via anchorKey:", currentContentBlock);
-                                            // each annotation start and end char index reduced by aggregated char length (aggrLen)
-                                            // API looks at location in total text, DrafTail looks at location in current block
-                                            const start = annotation.start_char - aggrLen;
-                                            const end = annotation.end_char - aggrLen;
+                                            // // each annotation start and end char index reduced by aggregated char length (aggrLen)
+                                            // // API looks at location in total text, DrafTail looks at location in current block
+                                            // const start = annotation.start_char - aggrLen;
+                                            // const end = annotation.end_char - aggrLen;
+                                            // NOTE: aggrLen fix moved to ProcessAPI method
+                                            const start = annotation.start_char;
+                                            const end = annotation.end_char;
                                             // text for annotation selected from content block text, with inline style
                                             const selectedText = currentContentBlock.getText().slice(start, end);
                                             const selectionStyle = currentContentBlock.getInlineStyleAt(start);
