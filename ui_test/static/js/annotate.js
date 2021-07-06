@@ -39,9 +39,48 @@ async function callGreynirAPI(url = '', data = {}) {
     }
 }
 
+async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") {
+    // filter relevant annotation info from data
+    // send annotation feedback to Yfirlestur.is API
+    function filterData(data) {
+        const filtered = {
+            sentence: data.sent,
+            code: data.code,
+            annotation: data.text,
+            start: data.start,
+            end: data.end,
+            correction: data.suggest,
+            feedback: feedback,
+            reason: reason
+        };
+        return filtered;
+    }
+    if (data === "") {
+        return;
+    } else {
+        data = filterData(data)
+        console.log("Data to send to API:", data);
+
+        // post here
+    }
+}
+
 // iterates over API response JSON and returns flat
 // array of annotations (annotationArray)
 function processAPI(json) {
+
+    // collect tokens into single string and add to annotations
+    function insertSentenceText(sentence, annotations) {
+        var sentString = '';
+        sentence.tokens.forEach(token => {
+            sentString += token.o;
+        });
+        annotations.forEach(ann => {
+            ann.sent = sentString;
+        });
+        return annotations;
+    }
+
     // empty return array defined
     var annotationArray = [];
     // iterate through outer array
@@ -58,6 +97,7 @@ function processAPI(json) {
 
             // var anns = json.result[i][j].annotations;
             // Sentence text added to annotation data
+            var anns = insertSentenceText(json.result[i][j], json.result[i][j].annotations);            
             // annotation added to return array
             var newArray = paragraphArray.concat(anns);
             paragraphArray = newArray;
@@ -181,7 +221,7 @@ function XadjustChars(sentAnnotation) {
     return sentAnnotation;
 }
 
-function getReplacement(data) {
+function getReplacement(data, annotatedText) {
     // finds valid replacement text in annotation data
     var replacement;
     if (data.suggest === "") {
@@ -190,6 +230,8 @@ function getReplacement(data) {
         var realSuggest = data.text.match(/'[^']*'/)[0];
         realSuggest = realSuggest.substring(1, realSuggest.length - 1);
         replacement = realSuggest;
+    } else if (data.suggest === null) {
+        replacement = annotatedText;
     } else {
         // otherwise returns .suggest value
         replacement = data.suggest;
@@ -406,7 +448,7 @@ class AnnotationSource extends React.Component {
                                             const annEntity = currentContent.createEntity(
                                                 entityType.type,
                                                 'MUTABLE', // DraftTail entity mutability
-                                                annotation // data from API
+                                                {annotation, replyGreynirAPI} // data from API
                                             );
                                             // last created DraftTail entity extracted 
                                             const annotationEntityKey = annEntity.getLastCreatedEntityKey();

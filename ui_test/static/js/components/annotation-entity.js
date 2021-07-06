@@ -126,6 +126,9 @@ class AnnotationEntity extends React.Component {
         const entityKey = props.entityKey;
         const onRemove = props.onRemove;
         const onEdit = props.onEdit;
+        const data = props.data;
+        const annData = data.annotation;
+        const postData = data.replyGreynirAPI;
 
         const SINGLE_BUTTON_ACCEPT = ["parse-error", "unknown-word"]
 
@@ -144,7 +147,7 @@ class AnnotationEntity extends React.Component {
                     icon: "glyphicon glyphicon-ok normal",
                     onClick: () => {
                         let action = onRemove;
-
+                        postData('fake-url', annData, "reject")
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -170,6 +173,7 @@ class AnnotationEntity extends React.Component {
                     onClick: () => {
                         // let action = annClass === "wording" ? onRemove : onEdit;
                         let action = onRemove;
+                        postData('fake-url', annData, "reject")
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -187,6 +191,7 @@ class AnnotationEntity extends React.Component {
                     onClick: () => {
                         // let action = annClass === "wording" ? onRemove : onEdit;
                         let action = onRemove;
+                        postData('fake-url', annData, "reject")
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -209,7 +214,8 @@ class AnnotationEntity extends React.Component {
                 icon: "glyphicon glyphicon-ok normal",
                 onClick: () => {
                     let action = annClass === "wording" ? onRemove : onEdit;
-
+                    let reply = annClass === "wording" ? "reject" : "accept";
+                    postData('fake-url', annData, reply)
                     this.buttonHandler(action, entityKey);
 
                 }
@@ -226,6 +232,7 @@ class AnnotationEntity extends React.Component {
                 icon: "glyphicon glyphicon-remove normal",
                 onRemove: onRemove,
                 entityKey: entityKey,
+                data: data
             }
             )
         );
@@ -241,7 +248,7 @@ class AnnotationEntity extends React.Component {
         } = this.props;
 
         const { showTooltipAt } = this.state;
-        const annCode = data.code;
+        const annCode = data.annotation.code;
         const annClass = getAnnotationClass(annCode);
 
         // console.log("Annotation code:", annCode);
@@ -288,19 +295,19 @@ class AnnotationEntity extends React.Component {
                             "div", {
                             className: "ann-text"
                         },
-                            formatAnnotation(this.props.data.text)
+                            formatAnnotation(this.props.data.annotation.text)
                         ),
 
                         // div for annotation detail if present
-                        typeof this.props.data.detail !== "undefined" && this.props.data.detail !== null ?
+                        typeof this.props.data.annotation.detail !== "undefined" && this.props.data.annotation.detail !== null ?
                             React.createElement(
                                 "div", {
                                 className: "ann-detail"
                             },
                                 annClass === "parse-error" ?
-                                    formatAnnotation(this.props.data.detail, ". <br><b>Setningin gæti verið vitlaus!</b>")
+                                    formatAnnotation(this.props.data.annotation.detail, ". <br><b>Setningin gæti verið vitlaus!</b>")
                                     :
-                                    formatAnnotation(this.props.data.detail)
+                                    formatAnnotation(this.props.data.annotation.detail)
                             ) :
                             null
                     ),
@@ -312,6 +319,7 @@ class AnnotationEntity extends React.Component {
                             entityKey: entityKey,
                             onRemove: onRemove,
                             onEdit: onEdit,
+                            data: data
                         }
                     )
 

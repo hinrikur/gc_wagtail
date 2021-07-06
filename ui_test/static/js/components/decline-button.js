@@ -75,8 +75,12 @@ class DeclineButton extends React.Component {
             onClick,
             onMouseUp,
             onRemove,
-            entityKey
+            entityKey,
+            data
         } = this.props;
+
+        const annData = data.annotation;
+        const postData = data.replyGreynirAPI;
 
         const { showTooltipOnHover } = this.state;
         const { showFeedbackAt } = this.state;
@@ -150,6 +154,7 @@ class DeclineButton extends React.Component {
                                 title: "Merkti textinn inniheldur ekki villu",
                                 icon: "glyphicon glyphicon-circle-remove normal",
                                 onClick: () => {
+                                    postData('fake-url', annData, "reject", "not-error");
                                     this.buttonHandler(onRemove, entityKey);
                                 }
                             }
@@ -168,6 +173,7 @@ class DeclineButton extends React.Component {
                                 title: "Ábendingin á ekki við villuna í textanum",
                                 icon: "glyphicon glyphicon-flag-waving normal",
                                 onClick: () => {
+                                    postData('fake-url', annData, "reject", "wrong-error");
                                     this.buttonHandler(onRemove, entityKey);
                                 }
                             }
@@ -186,6 +192,7 @@ class DeclineButton extends React.Component {
                                 title: "Hafna ábendingu af annarri ástæðu (þarf ekki að tilgreina)",
                                 icon: "glyphicon glyphicon-circle-question normal",
                                 onClick: () => {
+                                    postData('fake-url', annData, "reject", "other");
                                     this.buttonHandler(onRemove, entityKey);
                                 }
                             }
