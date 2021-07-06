@@ -329,11 +329,14 @@ class AnnotationSource extends React.Component {
             // get entity inline style
             const currentBlock = currentContent.getBlockMap().get(entityToReplace.getStartKey());
             const start = entityToReplace.getAnchorOffset();
+            const end = entityToReplace.getFocusOffset();
             const originalStyle = currentBlock.getInlineStyleAt(start);
             // get entity data
             const data = currentContent.getEntity(entityKey).getData();
+            // get annotated text from entity
+            const annotatedText = currentBlock.getText().slice(start, end);
             // get suggestion text from entity data
-            const suggestionText = getReplacement(data);
+            const suggestionText = getReplacement(data.annotation, annotatedText);
             // replace the annotation entity via DraftJS Modifier
             const correctedEntity = Modifier.replaceText(
                 currentContent,
