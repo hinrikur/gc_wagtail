@@ -40,25 +40,65 @@ async function callGreynirAPI(url = '', data = {}) {
     }
 }
 
+async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") {
+    // filter relevant annotation info from data
+    // send annotation feedback to Yfirlestur.is API
+    function filterData(data) {
+        const filtered = {
+            sentence: data.sent,
+            code: data.code,
+            annotation: data.text,
+            start: data.start,
+            end: data.end,
+            correction: data.suggest,
+            feedback: feedback,
+            reason: reason
+        };
+        return filtered;
+    }
+    if (data === "") {
+        return;
+    } else {
+        data = filterData(data)
+        console.log("Data to send to API:", data);
+
+        // post here
+    }
+}
+
 // iterates over API response JSON and returns flat
 // array of annotations (annotationArray)
 function processAPI(json) {
+
+    // collect tokens into single string and add to annotations
+    function insertSentenceText(sentence, annotations) {
+        var sentString = '';
+        sentence.tokens.forEach(token => {
+            sentString += token.o;
+        });
+        annotations.forEach(ann => {
+            ann.sent = sentString;
+        });
+        return annotations;
+    }
+
     // empty return array defined
     var annotationArray = [];
     // iterate through outer array
     for (var i = 0; i < json.result.length; i++) {
         // iterate through paragraphs
         var paragraphArray = [];
+        // console.log("Paragraph before par adjust", json.result[i]);
+        json.result[i] = adjustChars(json.result[i]);
+        // console.log("Paragraph after par adjust", json.result[i]);
         for (var j = 0; j < json.result[i].length; j++) {
             // iterate through sentences
             // adjust likely errors in char locations from API
-            var adjustedJson = adjustChars(json.result[i][j]);
+            // var adjustedJson = adjustChars(json.result[i][j]);
 
             // var anns = json.result[i][j].annotations;
-            var anns = adjustedJson.annotations;
-
-            // ADD SENTENCE TEXT TO ANNOTATION HERE
-
+            // Sentence text added to annotation data
+            var anns = insertSentenceText(json.result[i][j], json.result[i][j].annotations);            
             // annotation added to return array
             var newArray = paragraphArray.concat(anns);
             paragraphArray = newArray;
@@ -69,10 +109,8 @@ function processAPI(json) {
     return annotationArray;
 }
 
-// helper for adjusting wrong character spans in API response
-// not used currently
-// more low level fix likely needed (In GreynirCorrect or Yfirlestur API)
-function adjustChars(sentAnnotation) {
+// normalize each paragraph's token lists (per sent) to start at char index 0
+function adjustChars(paragraph) {
 
     function range(start, end) {
         var ans = [];
@@ -82,6 +120,65 @@ function adjustChars(sentAnnotation) {
         return ans;
     }
 
+    START_INDEX = paragraph[0].tokens[0].i;
+    console.log("Sentence start index:", START_INDEX)
+    
+        paragraph.forEach((sentence, sentIndex) => {
+            sentence.tokens.forEach((token, tokenIndex) => {
+                // console.log("Token and index:", token.o, token.i);
+                if (START_INDEX !== 0) {
+                paragraph[sentIndex].tokens[tokenIndex].i -= START_INDEX;
+                }
+                // console.log("Token after adjust:", token.o, token.i);
+            });
+            sentence.annotations.forEach((annotation, annIndex) => {
+                
+                const firstTokenIndex = annotation.start; 
+                const lastTokenIndex = annotation.end;
+                var relevantTokens = range(firstTokenIndex, lastTokenIndex);
+                
+                // console.log("Relevant tokens:", relevantTokens)
+                
+                var annLength = 0;
+                relevantTokens.forEach(index => {
+                    // console.log("selected token from range:", sentence.tokens[index]);
+                    annLength += sentence.tokens[index].o.length;
+                });
+                // console.log("processed ann length:", annLength);
+                
+                
+                // console.log("New start Char:", annotation.start_char);
+                paragraph[sentIndex].annotations[annIndex].start_char = sentence.tokens[firstTokenIndex].i;
+                // console.log("Start char after change:", annotation.start_char)
+                paragraph[sentIndex].annotations[annIndex].end_char = annotation.start_char + annLength;
+                
+                // if (paragraph[sentIndex].tokens[lastTokenIndex].o.match(/^ /) || lastTokenIndex === 0) {
+                //     paragraph[sentIndex].annotations[annIndex].end_char += 1;
+                // }
+                // only tokens starting with whitespace need to increment start by one
+                if (paragraph[sentIndex].tokens[firstTokenIndex].o.match(/^ /)) {
+                    paragraph[sentIndex].annotations[annIndex].start_char += 1;
+                }
+            });
+        });
+    
+    return paragraph;
+}
+
+
+// helper for adjusting wrong character spans in API response
+// not used currently
+// more low level fix likely needed (In GreynirCorrect or Yfirlestur API)
+function XadjustChars(sentAnnotation) {
+
+    // function range(start, end) {
+    //     var ans = [];
+    //     for (let i = start; i <= end; i++) {
+    //         ans.push(i);
+    //     }
+    //     return ans;
+    // }
+
     // counter for aggregated changes
     var aggrChar = 1;
     for (var i = 0; i < sentAnnotation.annotations.length; i++) {
@@ -89,10 +186,13 @@ function adjustChars(sentAnnotation) {
         // console.log(sentAnnotation.annotations[i])
         const firstToken = sentAnnotation.annotations[i].start;
         const lastToken = sentAnnotation.annotations[i].end;
-        var relevantTokens = range(firstToken, lastToken);
+        // var relevantTokens = range(firstToken, lastToken);
 
         // all annotations ends need to increment by one
-        sentAnnotation.annotations[i].end_char += 1;
+        // sentAnnotation.annotations[i].end_char += 1;
+        if (sentAnnotation.tokens[lastToken].o.match(/^ /) || lastToken === 0) {
+            sentAnnotation.annotations[i].end_char += 1;
+        }
         // only tokens starting with whitespace need to increment start by one
         if (sentAnnotation.tokens[firstToken].o.match(/^ /)) {
             sentAnnotation.annotations[i].start_char += 1;
@@ -122,7 +222,7 @@ function adjustChars(sentAnnotation) {
     return sentAnnotation;
 }
 
-function getReplacement(data) {
+function getReplacement(data, annotatedText) {
     // finds valid replacement text in annotation data
     var replacement;
     if (data.suggest === "") {
@@ -131,6 +231,8 @@ function getReplacement(data) {
         var realSuggest = data.text.match(/'[^']*'/)[0];
         realSuggest = realSuggest.substring(1, realSuggest.length - 1);
         replacement = realSuggest;
+    } else if (data.suggest === null) {
+        replacement = annotatedText;
     } else {
         // otherwise returns .suggest value
         replacement = data.suggest;
@@ -149,7 +251,7 @@ function clearAnnotatedRanges(editorState) {
     var contentState = editorState.getCurrentContent();
     console.log("Block map before entity removal/rendering:", contentState.getBlockMap());
     const entitiesToRemove = [];
-    contentState.getBlockMap().forEach(contentBlock => {
+    contentState.getBlockMap().forEach(contentBlock => { 
         // const blockKey = block.getKey();
         // const blockText = block.getText();
         contentBlock.findEntityRanges(character => {
@@ -157,27 +259,28 @@ function clearAnnotatedRanges(editorState) {
                 const entityKey = character.getEntity();
                 const entity = contentState.getEntity(entityKey);
                 if (entity !== null && contentState.getEntity(entityKey).getType() === 'ANNOTATION') {
-                    const anchorKey = contentBlock.key;
-                    const currentEntity = contentState.getEntity(character.getEntity());
-                    const start = currentEntity.start;
-                    const end = currentEntity.end;
-                    const selectedText = contentBlock.getText().slice(start, end);
-                    const originalStyle = contentBlock.getInlineStyleAt(start);
-                    // const blockSelection = SelectionState
-                    //     .createEmpty(anchorKey)
-                    //     .merge({
-                    //         anchorOffset: start,
-                    //         focusOffset: end,
-                    //     });
-                    const blockSelection = DraftUtils.getEntitySelection(editorState, entityKey);
+                    console.log("FOUND ANNOTATION ENTITY IN TEXT");
+                    // const anchorKey = contentBlock.key;
+                    // const currentEntity = contentState.getEntity(character.getEntity());
+                    // const start = currentEntity.start;
+                    // const end = currentEntity.end;
+                    // const selectedText = contentBlock.getText().slice(start, end);
+                    // const originalStyle = contentBlock.getInlineStyleAt(start);
+                    // // const blockSelection = SelectionState
+                    // //     .createEmpty(anchorKey)
+                    // //     .merge({
+                    // //         anchorOffset: start,
+                    // //         focusOffset: end,
+                    // //     });
+                    // const blockSelection = DraftUtils.getEntitySelection(editorState, entityKey);
 
-                    selectedEntity = {
-                        "key": currentEntity,
-                        "blockSelection": blockSelection,
-                        "selectedText": selectedText,
-                        "selectionStyle": originalStyle,
-                    };
-                    return true;
+                    // selectedEntity = {
+                    //     "key": currentEntity,
+                    //     "blockSelection": blockSelection,
+                    //     "selectedText": selectedText,
+                    //     "selectionStyle": originalStyle,
+                    // };
+                    // return true;
                 }
             }
             return false;
@@ -228,11 +331,14 @@ class AnnotationSource extends React.Component {
             // get entity inline style
             const currentBlock = currentContent.getBlockMap().get(entityToReplace.getStartKey());
             const start = entityToReplace.getAnchorOffset();
+            const end = entityToReplace.getFocusOffset();
             const originalStyle = currentBlock.getInlineStyleAt(start);
             // get entity data
             const data = currentContent.getEntity(entityKey).getData();
+            // get annotated text from entity
+            const annotatedText = currentBlock.getText().slice(start, end);
             // get suggestion text from entity data
-            const suggestionText = getReplacement(data);
+            const suggestionText = getReplacement(data.annotation, annotatedText);
             // replace the annotation entity via DraftJS Modifier
             const correctedEntity = Modifier.replaceText(
                 currentContent,
@@ -321,10 +427,13 @@ class AnnotationSource extends React.Component {
                                             const currentContentBlock = currentContent.getBlockForKey(anchorKey);
                                             console.log("anchorKey:", anchorKey);
                                             console.log("currentContentBock, via anchorKey:", currentContentBlock);
-                                            // each annotation start and end char index reduced by aggregated char length (aggrLen)
-                                            // API looks at location in total text, DrafTail looks at location in current block
-                                            const start = annotation.start_char - aggrLen;
-                                            const end = annotation.end_char - aggrLen;
+                                            // // each annotation start and end char index reduced by aggregated char length (aggrLen)
+                                            // // API looks at location in total text, DrafTail looks at location in current block
+                                            // const start = annotation.start_char - aggrLen;
+                                            // const end = annotation.end_char - aggrLen;
+                                            // NOTE: aggrLen fix moved to ProcessAPI method
+                                            const start = annotation.start_char;
+                                            const end = annotation.end_char;
                                             // text for annotation selected from content block text, with inline style
                                             const selectedText = currentContentBlock.getText().slice(start, end);
                                             const selectionStyle = currentContentBlock.getInlineStyleAt(start);
@@ -344,7 +453,7 @@ class AnnotationSource extends React.Component {
                                             const annEntity = currentContent.createEntity(
                                                 entityType.type,
                                                 'MUTABLE', // DraftTail entity mutability
-                                                annotation // data from API
+                                                {annotation, replyGreynirAPI} // data from API
                                             );
                                             // last created DraftTail entity extracted 
                                             const annotationEntityKey = annEntity.getLastCreatedEntityKey();
@@ -609,6 +718,9 @@ class AnnotationEntity extends React.Component {
         const entityKey = props.entityKey;
         const onRemove = props.onRemove;
         const onEdit = props.onEdit;
+        const data = props.data;
+        const annData = data.annotation;
+        const postData = data.replyGreynirAPI;
 
         const SINGLE_BUTTON_ACCEPT = ["parse-error", "unknown-word"]
 
@@ -627,7 +739,7 @@ class AnnotationEntity extends React.Component {
                     icon: "glyphicon glyphicon-ok normal",
                     onClick: () => {
                         let action = onRemove;
-
+                        postData('fake-url', annData, "reject")
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -653,6 +765,7 @@ class AnnotationEntity extends React.Component {
                     onClick: () => {
                         // let action = annClass === "wording" ? onRemove : onEdit;
                         let action = onRemove;
+                        postData('fake-url', annData, "reject")
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -670,6 +783,7 @@ class AnnotationEntity extends React.Component {
                     onClick: () => {
                         // let action = annClass === "wording" ? onRemove : onEdit;
                         let action = onRemove;
+                        postData('fake-url', annData, "reject")
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -692,7 +806,8 @@ class AnnotationEntity extends React.Component {
                 icon: "glyphicon glyphicon-ok normal",
                 onClick: () => {
                     let action = annClass === "wording" ? onRemove : onEdit;
-
+                    let reply = annClass === "wording" ? "reject" : "accept";
+                    postData('fake-url', annData, reply)
                     this.buttonHandler(action, entityKey);
 
                 }
@@ -709,6 +824,7 @@ class AnnotationEntity extends React.Component {
                 icon: "glyphicon glyphicon-remove normal",
                 onRemove: onRemove,
                 entityKey: entityKey,
+                data: data
             }
             )
         );
@@ -724,7 +840,7 @@ class AnnotationEntity extends React.Component {
         } = this.props;
 
         const { showTooltipAt } = this.state;
-        const annCode = data.code;
+        const annCode = data.annotation.code;
         const annClass = getAnnotationClass(annCode);
 
         // console.log("Annotation code:", annCode);
@@ -771,19 +887,19 @@ class AnnotationEntity extends React.Component {
                             "div", {
                             className: "ann-text"
                         },
-                            formatAnnotation(this.props.data.text)
+                            formatAnnotation(this.props.data.annotation.text)
                         ),
 
                         // div for annotation detail if present
-                        typeof this.props.data.detail !== "undefined" && this.props.data.detail !== null ?
+                        typeof this.props.data.annotation.detail !== "undefined" && this.props.data.annotation.detail !== null ?
                             React.createElement(
                                 "div", {
                                 className: "ann-detail"
                             },
                                 annClass === "parse-error" ?
-                                    formatAnnotation(this.props.data.detail, ". <br><b>Setningin gæti verið vitlaus!</b>")
+                                    formatAnnotation(this.props.data.annotation.detail, ". <br><b>Setningin gæti verið vitlaus!</b>")
                                     :
-                                    formatAnnotation(this.props.data.detail)
+                                    formatAnnotation(this.props.data.annotation.detail)
                             ) :
                             null
                     ),
@@ -795,6 +911,7 @@ class AnnotationEntity extends React.Component {
                             entityKey: entityKey,
                             onRemove: onRemove,
                             onEdit: onEdit,
+                            data: data
                         }
                     )
 
@@ -884,8 +1001,12 @@ class DeclineButton extends React.Component {
             onClick,
             onMouseUp,
             onRemove,
-            entityKey
+            entityKey,
+            data
         } = this.props;
+
+        const annData = data.annotation;
+        const postData = data.replyGreynirAPI;
 
         const { showTooltipOnHover } = this.state;
         const { showFeedbackAt } = this.state;
@@ -959,6 +1080,7 @@ class DeclineButton extends React.Component {
                                 title: "Merkti textinn inniheldur ekki villu",
                                 icon: "glyphicon glyphicon-circle-remove normal",
                                 onClick: () => {
+                                    postData('fake-url', annData, "reject", "not-error");
                                     this.buttonHandler(onRemove, entityKey);
                                 }
                             }
@@ -977,6 +1099,7 @@ class DeclineButton extends React.Component {
                                 title: "Ábendingin á ekki við villuna í textanum",
                                 icon: "glyphicon glyphicon-flag-waving normal",
                                 onClick: () => {
+                                    postData('fake-url', annData, "reject", "wrong-error");
                                     this.buttonHandler(onRemove, entityKey);
                                 }
                             }
@@ -995,6 +1118,7 @@ class DeclineButton extends React.Component {
                                 title: "Hafna ábendingu af annarri ástæðu (þarf ekki að tilgreina)",
                                 icon: "glyphicon glyphicon-circle-question normal",
                                 onClick: () => {
+                                    postData('fake-url', annData, "reject", "other");
                                     this.buttonHandler(onRemove, entityKey);
                                 }
                             }
