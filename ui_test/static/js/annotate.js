@@ -406,7 +406,7 @@ class AnnotationSource extends React.Component {
                                 const entitiesToRender = [];
 
                                 // variable for aggregated text length
-                                var aggrLen = 0;
+                                // var aggrLen = 0;
                                 // iterate over block keys in raw content blocks
                                 for (var blockKey in rawContentBlocks) {
                                     // log current content block key
@@ -414,6 +414,30 @@ class AnnotationSource extends React.Component {
                                     // check for empty API response
                                     if (typeof rawContentBlocks[blockKey].APIresponse !== "undefined") {
                                         // API response not empty
+
+                                        // checking for whitespace at start of block, per block
+                                        // editor content out of scope of adjustChars method,
+                                        const whiteSpaceLen = (function () {
+                                            const ignoreTypes = [
+                                                "ordered-list-item",
+                                                "unordered-list-item"
+                                            ];
+                                            const blockText = rawContentBlocks[blockKey].text;
+                                            const blockType = rawContentBlocks[blockKey].type;
+                                            const whiteSpace = blockText.match(/^ +/);
+                                            let len = 0;
+                                            if (whiteSpace === null) {
+                                                return len;
+                                            } else if (ignoreTypes.includes(blockType)) {
+                                                return len;
+                                            } else {
+                                                len = whiteSpace[0].length; 
+                                                return len;
+                                            }
+                                        })();
+
+                                        console.log(`Start whitespace length for key ${blockKey}:`, whiteSpaceLen);
+                                        
                                         // each content block assigned its relevant text annotations
                                         rawContentBlocks[blockKey].APIresponse.forEach(annotation => {
 
@@ -426,13 +450,16 @@ class AnnotationSource extends React.Component {
                                             const currentContentBlock = currentContent.getBlockForKey(anchorKey);
                                             console.log("anchorKey:", anchorKey);
                                             console.log("currentContentBock, via anchorKey:", currentContentBlock);
+                                            
                                             // // each annotation start and end char index reduced by aggregated char length (aggrLen)
                                             // // API looks at location in total text, DrafTail looks at location in current block
                                             // const start = annotation.start_char - aggrLen;
                                             // const end = annotation.end_char - aggrLen;
                                             // NOTE: aggrLen fix moved to ProcessAPI method
-                                            const start = annotation.start_char;
-                                            const end = annotation.end_char;
+
+                                            // length of par-start whitespace added to char indexes (0 +)
+                                            const start = annotation.start_char + whiteSpaceLen;
+                                            const end = annotation.end_char + whiteSpaceLen;
                                             // text for annotation selected from content block text, with inline style
                                             const selectedText = currentContentBlock.getText().slice(start, end);
                                             const selectionStyle = currentContentBlock.getInlineStyleAt(start);
@@ -443,6 +470,8 @@ class AnnotationSource extends React.Component {
                                                     anchorOffset: start,
                                                     focusOffset: end,
                                                 });
+                                            
+                                            // TODO: Check for entity in selection here
 
                                             console.log("Text to annotate: " + selectedText);
                                             console.log("Start offset:", start);
@@ -452,7 +481,10 @@ class AnnotationSource extends React.Component {
                                             const annEntity = currentContent.createEntity(
                                                 entityType.type,
                                                 'MUTABLE', // DraftTail entity mutability
-                                                {annotation, replyGreynirAPI} // data from API
+                                                {
+                                                    annotation,     // data from API 
+                                                    replyGreynirAPI // method for sending feedback
+                                                }
                                             );
                                             // last created DraftTail entity extracted 
                                             const annotationEntityKey = annEntity.getLastCreatedEntityKey();
@@ -470,11 +502,12 @@ class AnnotationSource extends React.Component {
                                         console.log("Current block text length:", rawContentBlocks[blockKey].text.length);
                                         // length of current block text added to aggregated text length variable
                                         // + 2 to compensate "\n" in API input string between paragraphs
-                                        aggrLen += rawContentBlocks[blockKey].text.replace(/ +$/, "").length;
+                                        // aggrLen += rawContentBlocks[blockKey].text.replace(/ +$/, "").length;
 
                                     } else {
                                         // API response was empty or undefined, usually because of an empty text block
                                         // TODO: keep empty blocks in order with annotated blocks
+                                        //      NOTE: this is acheived in current workflow
                                         console.log("Undefined response, likely empty Block. BlockKey:", blockKey);
                                     }
 
