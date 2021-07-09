@@ -134,14 +134,23 @@ function adjustChars(paragraph) {
                 
                 const firstTokenIndex = annotation.start; 
                 const lastTokenIndex = annotation.end;
-                var relevantTokens = range(firstTokenIndex, lastTokenIndex);
+                const relevantTokens = range(firstTokenIndex, lastTokenIndex);
                 
                 // console.log("Relevant tokens:", relevantTokens)
                 
                 var annLength = 0;
                 relevantTokens.forEach(index => {
                     // console.log("selected token from range:", sentence.tokens[index]);
-                    annLength += sentence.tokens[index].o.length;
+
+                    // hacky approach to prevent inserted tokens from joining original annotation span length
+                    // ex. "ennþá" -> "enn þá" annotates as if original span is "ennþáþá" 
+                    if (typeof sentence.tokens[index+1] === 'undefined') {
+                        annLength += sentence.tokens[index].o.length;
+                    } else if (sentence.tokens[index].i !== sentence.tokens[index+1].i) {
+                        // const nextTokenStart = sentence.tokens[index+1].i;
+                        annLength += sentence.tokens[index].o.length;
+                    }
+                    
                 });
                 // console.log("processed ann length:", annLength);
                 
