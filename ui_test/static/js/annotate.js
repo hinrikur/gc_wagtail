@@ -81,6 +81,18 @@ function processAPI(json) {
         return annotations;
     }
 
+    // discards additional annotations if parse error in sentence
+    // done so annotations don't render on top of each other
+    // NOTE: fairly nuclear approach 
+    function filterParseErrors(annotations) {
+        for (var i = 0; i < annotations.length; i++) {
+            if (annotations[i].code.includes("E001")) {
+                return [annotations[i]];
+            }
+        }
+        return annotations;
+    }
+
     // empty return array defined
     var annotationArray = [];
     // iterate through outer array
@@ -94,8 +106,7 @@ function processAPI(json) {
             // iterate through sentences
             // adjust likely errors in char locations from API
             // var adjustedJson = adjustChars(json.result[i][j]);
-
-            // var anns = json.result[i][j].annotations;
+            var anns = filterParseErrors(json.result[i][j].annotations);
             // Sentence text added to annotation data
             var anns = insertSentenceText(json.result[i][j], json.result[i][j].annotations);            
             // annotation added to return array
