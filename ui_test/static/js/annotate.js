@@ -51,7 +51,9 @@ async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") 
             end: data.end,
             correction: data.suggest,
             feedback: feedback,
-            reason: reason
+            reason: reason,
+            token: data.token,
+            nonce: data.nonce
         };
         return filtered;
     }
@@ -61,7 +63,22 @@ async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") 
         data = filterData(data)
         console.log("Data to send to API:", data);
 
-        // post here
+        fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST',
+            body: JSON.stringify(data), 
+            headers: {
+                'Content-type': 'application/json' 
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.reject(response);
+        }).then(function (data) {
+            console.log(data);
+        }).catch(function (error) {
+            console.warn('Something went wrong with API feedback.', error);
+        });
     }
 }
 
@@ -106,12 +123,18 @@ function processAPI(json) {
             // iterate through sentences
             // adjust likely errors in char locations from API
             // var adjustedJson = adjustChars(json.result[i][j]);
+            const currentSentence = json.result[i][j];
             var anns = filterParseErrors(json.result[i][j].annotations);
+            anns.forEach(ann => {
+                ann.sent = currentSentence.original;
+                ann.token = currentSentence.token;
+                ann.nonce = currentSentence.nonce;
+            });
             // Sentence text added to annotation data
-            var anns = insertSentenceText(json.result[i][j], json.result[i][j].annotations);            
+            // var anns = insertSentenceText(json.result[i][j], json.result[i][j].annotations);            
             // annotation added to return array
-            var newArray = paragraphArray.concat(anns);
-            paragraphArray = newArray;
+            // var newArray = ;
+            paragraphArray = paragraphArray.concat(anns);
         }
         annotationArray.push(paragraphArray);
     }
@@ -438,6 +461,7 @@ class AnnotationSource extends React.Component {
                                         // checking for whitespace at start of block, per block
                                         // editor content out of scope of adjustChars method,
                                         const whiteSpaceLen = (function () {
+                                            // whitespace in front of list items should be ignored
                                             const ignoreTypes = [
                                                 "ordered-list-item",
                                                 "unordered-list-item"
