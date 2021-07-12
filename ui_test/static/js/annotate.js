@@ -39,17 +39,28 @@ async function callGreynirAPI(url = '', data = {}) {
     }
 }
 
+
+
 async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") {
     // filter relevant annotation info from data
     // send annotation feedback to Yfirlestur.is API
     function filterData(data) {
-        const filtered = {
+        var correction;
+        // correction = data.suggest;
+        if (data.suggest == "") {
+            correction = "empty";
+        } else if (data.suggest == null) {
+            correction = "null";
+        } else {
+            correction = data.suggest;
+        }
+        const filtered = { 
             sentence: data.sent,
             code: data.code,
             annotation: data.text,
             start: data.start,
             end: data.end,
-            correction: data.suggest,
+            correction: correction,
             feedback: feedback,
             reason: reason,
             token: data.token,
@@ -60,17 +71,22 @@ async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") 
     if (data === "") {
         return;
     } else {
-        data = filterData(data)
+        data = filterData(data);
         console.log("Data to send to API:", data);
 
-        fetch('https://jsonplaceholder.typicode.com/posts', {
+        url = 'https://yfirlestur.is/feedback.api';
+
+        await fetch(url, {
             method: 'POST',
+            scheme: 'https',
             body: JSON.stringify(data), 
             headers: {
-                'Content-type': 'application/json' 
+                'Content-type': 'application/json',
+                'Access-Control-Allow-Origin': 'https://yfirlestur.is/feedback.api'
             }
         }).then(function (response) {
             if (response.ok) {
+                // console.log(response.json())
                 return response.json();
             }
             return Promise.reject(response);
