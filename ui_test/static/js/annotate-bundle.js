@@ -40,29 +40,62 @@ async function callGreynirAPI(url = '', data = {}) {
     }
 }
 
+
+
 async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") {
     // filter relevant annotation info from data
     // send annotation feedback to Yfirlestur.is API
     function filterData(data) {
-        const filtered = {
+        var correction;
+        // correction = data.suggest;
+        if (data.suggest == "") {
+            correction = "empty";
+        } else if (data.suggest == null) {
+            correction = "null";
+        } else {
+            correction = data.suggest;
+        }
+        const filtered = { 
             sentence: data.sent,
             code: data.code,
             annotation: data.text,
             start: data.start,
             end: data.end,
-            correction: data.suggest,
+            correction: correction,
             feedback: feedback,
-            reason: reason
+            reason: reason,
+            token: data.token,
+            nonce: data.nonce
         };
         return filtered;
     }
     if (data === "") {
         return;
     } else {
-        data = filterData(data)
+        data = filterData(data);
         console.log("Data to send to API:", data);
 
-        // post here
+        url = 'https://yfirlestur.is/feedback.api';
+
+        await fetch(url, {
+            method: 'POST',
+            scheme: 'https',
+            body: JSON.stringify(data), 
+            headers: {
+                'Content-type': 'application/json',
+                'Access-Control-Allow-Origin': 'https://yfirlestur.is/feedback.api'
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                // console.log(response.json())
+                return response.json();
+            }
+            return Promise.reject(response);
+        }).then(function (data) {
+            console.log(data);
+        }).catch(function (error) {
+            console.warn('Something went wrong with API feedback.', error);
+        });
     }
 }
 
@@ -82,6 +115,18 @@ function processAPI(json) {
         return annotations;
     }
 
+    // discards additional annotations if parse error in sentence
+    // done so annotations don't render on top of each other
+    // NOTE: fairly nuclear approach 
+    function filterParseErrors(annotations) {
+        for (var i = 0; i < annotations.length; i++) {
+            if (annotations[i].code.includes("E001")) {
+                return [annotations[i]];
+            }
+        }
+        return annotations;
+    }
+
     // empty return array defined
     var annotationArray = [];
     // iterate through outer array
@@ -95,13 +140,18 @@ function processAPI(json) {
             // iterate through sentences
             // adjust likely errors in char locations from API
             // var adjustedJson = adjustChars(json.result[i][j]);
-
-            // var anns = json.result[i][j].annotations;
+            const currentSentence = json.result[i][j];
+            var anns = filterParseErrors(json.result[i][j].annotations);
+            anns.forEach(ann => {
+                ann.sent = currentSentence.original;
+                ann.token = currentSentence.token;
+                ann.nonce = currentSentence.nonce;
+            });
             // Sentence text added to annotation data
-            var anns = insertSentenceText(json.result[i][j], json.result[i][j].annotations);            
+            // var anns = insertSentenceText(json.result[i][j], json.result[i][j].annotations);            
             // annotation added to return array
-            var newArray = paragraphArray.concat(anns);
-            paragraphArray = newArray;
+            // var newArray = ;
+            paragraphArray = paragraphArray.concat(anns);
         }
         annotationArray.push(paragraphArray);
     }
@@ -135,14 +185,23 @@ function adjustChars(paragraph) {
                 
                 const firstTokenIndex = annotation.start; 
                 const lastTokenIndex = annotation.end;
-                var relevantTokens = range(firstTokenIndex, lastTokenIndex);
+                const relevantTokens = range(firstTokenIndex, lastTokenIndex);
                 
                 // console.log("Relevant tokens:", relevantTokens)
                 
                 var annLength = 0;
                 relevantTokens.forEach(index => {
                     // console.log("selected token from range:", sentence.tokens[index]);
-                    annLength += sentence.tokens[index].o.length;
+
+                    // hacky approach to prevent inserted tokens from joining original annotation span length
+                    // ex. "ennþá" -> "enn þá" annotates as if original span is "ennþáþá" 
+                    if (typeof sentence.tokens[index+1] === 'undefined') {
+                        annLength += sentence.tokens[index].o.length;
+                    } else if (sentence.tokens[index].i !== sentence.tokens[index+1].i) {
+                        // const nextTokenStart = sentence.tokens[index+1].i;
+                        annLength += sentence.tokens[index].o.length;
+                    }
+                    
                 });
                 // console.log("processed ann length:", annLength);
                 
@@ -407,7 +466,7 @@ class AnnotationSource extends React.Component {
                                 const entitiesToRender = [];
 
                                 // variable for aggregated text length
-                                var aggrLen = 0;
+                                // var aggrLen = 0;
                                 // iterate over block keys in raw content blocks
                                 for (var blockKey in rawContentBlocks) {
                                     // log current content block key
@@ -415,6 +474,31 @@ class AnnotationSource extends React.Component {
                                     // check for empty API response
                                     if (typeof rawContentBlocks[blockKey].APIresponse !== "undefined") {
                                         // API response not empty
+
+                                        // checking for whitespace at start of block, per block
+                                        // editor content out of scope of adjustChars method,
+                                        const whiteSpaceLen = (function () {
+                                            // whitespace in front of list items should be ignored
+                                            const ignoreTypes = [
+                                                "ordered-list-item",
+                                                "unordered-list-item"
+                                            ];
+                                            const blockText = rawContentBlocks[blockKey].text;
+                                            const blockType = rawContentBlocks[blockKey].type;
+                                            const whiteSpace = blockText.match(/^ +/);
+                                            let len = 0;
+                                            if (whiteSpace === null) {
+                                                return len;
+                                            } else if (ignoreTypes.includes(blockType)) {
+                                                return len;
+                                            } else {
+                                                len = whiteSpace[0].length; 
+                                                return len;
+                                            }
+                                        })();
+
+                                        console.log(`Start whitespace length for key ${blockKey}:`, whiteSpaceLen);
+                                        
                                         // each content block assigned its relevant text annotations
                                         rawContentBlocks[blockKey].APIresponse.forEach(annotation => {
 
@@ -427,13 +511,16 @@ class AnnotationSource extends React.Component {
                                             const currentContentBlock = currentContent.getBlockForKey(anchorKey);
                                             console.log("anchorKey:", anchorKey);
                                             console.log("currentContentBock, via anchorKey:", currentContentBlock);
+                                            
                                             // // each annotation start and end char index reduced by aggregated char length (aggrLen)
                                             // // API looks at location in total text, DrafTail looks at location in current block
                                             // const start = annotation.start_char - aggrLen;
                                             // const end = annotation.end_char - aggrLen;
                                             // NOTE: aggrLen fix moved to ProcessAPI method
-                                            const start = annotation.start_char;
-                                            const end = annotation.end_char;
+
+                                            // length of par-start whitespace added to char indexes (0 +)
+                                            const start = annotation.start_char + whiteSpaceLen;
+                                            const end = annotation.end_char + whiteSpaceLen;
                                             // text for annotation selected from content block text, with inline style
                                             const selectedText = currentContentBlock.getText().slice(start, end);
                                             const selectionStyle = currentContentBlock.getInlineStyleAt(start);
@@ -444,6 +531,8 @@ class AnnotationSource extends React.Component {
                                                     anchorOffset: start,
                                                     focusOffset: end,
                                                 });
+                                            
+                                            // TODO: Check for entity in selection here
 
                                             console.log("Text to annotate: " + selectedText);
                                             console.log("Start offset:", start);
@@ -453,7 +542,10 @@ class AnnotationSource extends React.Component {
                                             const annEntity = currentContent.createEntity(
                                                 entityType.type,
                                                 'MUTABLE', // DraftTail entity mutability
-                                                {annotation, replyGreynirAPI} // data from API
+                                                {
+                                                    annotation,     // data from API 
+                                                    replyGreynirAPI // method for sending feedback
+                                                }
                                             );
                                             // last created DraftTail entity extracted 
                                             const annotationEntityKey = annEntity.getLastCreatedEntityKey();
@@ -471,11 +563,12 @@ class AnnotationSource extends React.Component {
                                         console.log("Current block text length:", rawContentBlocks[blockKey].text.length);
                                         // length of current block text added to aggregated text length variable
                                         // + 2 to compensate "\n" in API input string between paragraphs
-                                        aggrLen += rawContentBlocks[blockKey].text.replace(/ +$/, "").length;
+                                        // aggrLen += rawContentBlocks[blockKey].text.replace(/ +$/, "").length;
 
                                     } else {
                                         // API response was empty or undefined, usually because of an empty text block
                                         // TODO: keep empty blocks in order with annotated blocks
+                                        //      NOTE: this is acheived in current workflow
                                         console.log("Undefined response, likely empty Block. BlockKey:", blockKey);
                                     }
 
