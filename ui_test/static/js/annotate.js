@@ -54,7 +54,7 @@ async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") 
         } else {
             correction = data.suggest;
         }
-        const filtered = { 
+        const filtered = {
             sentence: data.sent,
             code: data.code,
             annotation: data.text,
@@ -79,7 +79,7 @@ async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") 
         await fetch(url, {
             method: 'POST',
             scheme: 'https',
-            body: JSON.stringify(data), 
+            body: JSON.stringify(data),
             headers: {
                 'Content-type': 'application/json',
                 'Access-Control-Allow-Origin': 'https://yfirlestur.is/feedback.api'
@@ -158,6 +158,7 @@ function processAPI(json) {
     return annotationArray;
 }
 
+
 // normalize each paragraph's token lists (per sent) to start at char index 0
 function adjustChars(paragraph) {
 
@@ -170,114 +171,57 @@ function adjustChars(paragraph) {
     }
 
     START_INDEX = paragraph[0].tokens[0].i;
-    console.log("Sentence start index:", START_INDEX)
-    
-        paragraph.forEach((sentence, sentIndex) => {
-            sentence.tokens.forEach((token, tokenIndex) => {
-                // console.log("Token and index:", token.o, token.i);
-                if (START_INDEX !== 0) {
+    console.log("Sentence start index:", START_INDEX);
+
+    paragraph.forEach((sentence, sentIndex) => {
+        sentence.tokens.forEach((token, tokenIndex) => {
+            // console.log("Token and index:", token.o, token.i);
+            if (START_INDEX !== 0) {
                 paragraph[sentIndex].tokens[tokenIndex].i -= START_INDEX;
-                }
-                // console.log("Token after adjust:", token.o, token.i);
-            });
-            sentence.annotations.forEach((annotation, annIndex) => {
-                
-                const firstTokenIndex = annotation.start; 
-                const lastTokenIndex = annotation.end;
-                const relevantTokens = range(firstTokenIndex, lastTokenIndex);
-                
-                // console.log("Relevant tokens:", relevantTokens)
-                
-                var annLength = 0;
-                relevantTokens.forEach(index => {
-                    // console.log("selected token from range:", sentence.tokens[index]);
-
-                    // hacky approach to prevent inserted tokens from joining original annotation span length
-                    // ex. "ennþá" -> "enn þá" annotates as if original span is "ennþáþá" 
-                    if (typeof sentence.tokens[index+1] === 'undefined') {
-                        annLength += sentence.tokens[index].o.length;
-                    } else if (sentence.tokens[index].i !== sentence.tokens[index+1].i) {
-                        // const nextTokenStart = sentence.tokens[index+1].i;
-                        annLength += sentence.tokens[index].o.length;
-                    }
-                    
-                });
-                // console.log("processed ann length:", annLength);
-                
-                
-                // console.log("New start Char:", annotation.start_char);
-                paragraph[sentIndex].annotations[annIndex].start_char = sentence.tokens[firstTokenIndex].i;
-                // console.log("Start char after change:", annotation.start_char)
-                paragraph[sentIndex].annotations[annIndex].end_char = annotation.start_char + annLength;
-                
-                // if (paragraph[sentIndex].tokens[lastTokenIndex].o.match(/^ /) || lastTokenIndex === 0) {
-                //     paragraph[sentIndex].annotations[annIndex].end_char += 1;
-                // }
-                // only tokens starting with whitespace need to increment start by one
-                if (paragraph[sentIndex].tokens[firstTokenIndex].o.match(/^ /)) {
-                    paragraph[sentIndex].annotations[annIndex].start_char += 1;
-                }
-            });
+            }
+            // console.log("Token after adjust:", token.o, token.i);
         });
-    
+        sentence.annotations.forEach((annotation, annIndex) => {
+
+            const firstTokenIndex = annotation.start;
+            const lastTokenIndex = annotation.end;
+            const relevantTokens = range(firstTokenIndex, lastTokenIndex);
+
+            // console.log("Relevant tokens:", relevantTokens)
+
+            var annLength = 0;
+            relevantTokens.forEach(index => {
+                // console.log("selected token from range:", sentence.tokens[index]);
+
+                // hacky approach to prevent inserted tokens from joining original annotation span length
+                // ex. "ennþá" -> "enn þá" annotates as if original span is "ennþáþá" 
+                if (typeof sentence.tokens[index + 1] === 'undefined') {
+                    annLength += sentence.tokens[index].o.length;
+                } else if (sentence.tokens[index].i !== sentence.tokens[index + 1].i) {
+                    // const nextTokenStart = sentence.tokens[index+1].i;
+                    annLength += sentence.tokens[index].o.length;
+                }
+
+            });
+            // console.log("processed ann length:", annLength);
+
+
+            // console.log("New start Char:", annotation.start_char);
+            paragraph[sentIndex].annotations[annIndex].start_char = sentence.tokens[firstTokenIndex].i;
+            // console.log("Start char after change:", annotation.start_char)
+            paragraph[sentIndex].annotations[annIndex].end_char = annotation.start_char + annLength;
+
+            // if (paragraph[sentIndex].tokens[lastTokenIndex].o.match(/^ /) || lastTokenIndex === 0) {
+            //     paragraph[sentIndex].annotations[annIndex].end_char += 1;
+            // }
+            // only tokens starting with whitespace need to increment start by one
+            if (paragraph[sentIndex].tokens[firstTokenIndex].o.match(/^ /)) {
+                paragraph[sentIndex].annotations[annIndex].start_char += 1;
+            }
+        });
+    });
+
     return paragraph;
-}
-
-
-// helper for adjusting wrong character spans in API response
-// not used currently
-// more low level fix likely needed (In GreynirCorrect or Yfirlestur API)
-function XadjustChars(sentAnnotation) {
-
-    // function range(start, end) {
-    //     var ans = [];
-    //     for (let i = start; i <= end; i++) {
-    //         ans.push(i);
-    //     }
-    //     return ans;
-    // }
-
-    // counter for aggregated changes
-    var aggrChar = 1;
-    for (var i = 0; i < sentAnnotation.annotations.length; i++) {
-        // console.log('fsdfsdjkafl;sdjfklasd;jfklsed')
-        // console.log(sentAnnotation.annotations[i])
-        const firstToken = sentAnnotation.annotations[i].start;
-        const lastToken = sentAnnotation.annotations[i].end;
-        // var relevantTokens = range(firstToken, lastToken);
-
-        // all annotations ends need to increment by one
-        // sentAnnotation.annotations[i].end_char += 1;
-        if (sentAnnotation.tokens[lastToken].o.match(/^ /) || lastToken === 0) {
-            sentAnnotation.annotations[i].end_char += 1;
-        }
-        // only tokens starting with whitespace need to increment start by one
-        if (sentAnnotation.tokens[firstToken].o.match(/^ /)) {
-            sentAnnotation.annotations[i].start_char += 1;
-        }
-
-        // for (var index in relevantTokens) {
-
-        //     if (sentAnnotation.tokens[index].charAt(0) == ' '){
-        //         ann.start_char += 1;
-        //     } 
-        // }
-        // console.log("current token:", '"'+sentAnnotation.tokens[lastToken].o+'"')
-        // console.log(sentAnnotation.tokens[lastToken].o.charAt(0));
-        // if (sentAnnotation.tokens[lastToken].o.charAt(0).trim() === '') {
-        //     console.log("Editing token offset:", sentAnnotation.tokens[lastToken].o);
-        //     aggrChar += 1;
-        //     offsetChange = aggrChar;
-        //     console.log("Offset change:", offsetChange);
-        //     if (sentAnnotation.annotations[i].start_char !== 0) {
-        //         sentAnnotation.annotations[i].start_char += offsetChange;
-        //     }
-        //     sentAnnotation.annotations[i].end_char += offsetChange;
-
-        // }
-
-    }
-    return sentAnnotation;
 }
 
 function getReplacement(data, annotatedText) {
@@ -298,72 +242,218 @@ function getReplacement(data, annotatedText) {
     return replacement;
 }
 
+// return true if there is at least one annotation entity in editor
+function checkForAnnotations(rawState) {
+    var result = false;
+    // console.log("rawState", rawState);
+    const entities = rawState.entityMap;
+    // console.log("entityMap", entities);
+    
+
+    for (const key in entities) {
+        // console.log(`IN THE LOOP ${key}`);
+        const entity = entities[key];
+        // console.log("entity:", entity);
+        // console.log("entity type:", entity.type);
+        if (entity.type === "ANNOTATION") {
+            // console.log("ANNOTATION found");
+            result =  true;
+        }
+    }
+    return result;
+}
+
 function clearAnnotatedRanges(editorState) {
 
-    // NOT IMPLEMENTED ATM
-    // either runs without removing entities or crashes due to low-level error
-    // 
-    // Renoves already rendered annotations in editor content state
-    // should be applied on the editor state after the API call but before rendering new entites from call
-
     var contentState = editorState.getCurrentContent();
+
     console.log("Block map before entity removal/rendering:", contentState.getBlockMap());
-    const entitiesToRemove = [];
-    contentState.getBlockMap().forEach(contentBlock => { 
-        // const blockKey = block.getKey();
-        // const blockText = block.getText();
+    const rangesToRemove = [];
+    contentState.getBlockMap().forEach(contentBlock => {
         contentBlock.findEntityRanges(character => {
+            // FILTER
             if (character.getEntity() !== null) {
                 const entityKey = character.getEntity();
                 const entity = contentState.getEntity(entityKey);
                 if (entity !== null && contentState.getEntity(entityKey).getType() === 'ANNOTATION') {
-                    console.log("FOUND ANNOTATION ENTITY IN TEXT");
-                    // const anchorKey = contentBlock.key;
-                    // const currentEntity = contentState.getEntity(character.getEntity());
-                    // const start = currentEntity.start;
-                    // const end = currentEntity.end;
-                    // const selectedText = contentBlock.getText().slice(start, end);
-                    // const originalStyle = contentBlock.getInlineStyleAt(start);
-                    // // const blockSelection = SelectionState
-                    // //     .createEmpty(anchorKey)
-                    // //     .merge({
-                    // //         anchorOffset: start,
-                    // //         focusOffset: end,
-                    // //     });
-                    // const blockSelection = DraftUtils.getEntitySelection(editorState, entityKey);
-
-                    // selectedEntity = {
-                    //     "key": currentEntity,
-                    //     "blockSelection": blockSelection,
-                    //     "selectedText": selectedText,
-                    //     "selectionStyle": originalStyle,
-                    // };
-                    // return true;
+                    // console.log("FOUND ANNOTATION ENTITY IN TEXT");
+                    return true;
                 }
             }
             return false;
         },
+            // CALLBACK
             (start, end) => {
-                entitiesToRemove.push({ ...selectedEntity, start, end });
+                const blockKey = contentBlock.getKey();
+                rangesToRemove.push([start, end, blockKey]);
             }
         );
 
     });
 
-    entitiesToRemove.forEach(entity => {
-        contentState = Modifier.replaceText(
-            contentState,
-            entity.blockSelection,
-            entity.selectedText,
-            entity.selectionStyle, // null, 
-            entity.key
-        );
+    return rangesToRemove;
+}
 
-    });
+function createAnnotationEntities(editorState, response) {
+
+    const rawState = convertToRaw(editorState.getCurrentContent());
+    var rawContentBlocks = rawState.blocks;
+
+    var entitiesToRender = [];
+
+    // processed response logged to console
+    console.log("Array of annotations:", response);
+    // response flattened to a array of annotation data objects
+    // each paragraph annotation matched with a content block
+    var i = 0;
+    for (var key in rawContentBlocks) {
+        // content block skipped if no text present 
+        // (to match with API reply)
+        const blockText = rawContentBlocks[key].text;
+        if (blockText.match(/^\s*$/)) { continue; }
+
+        // console.log(key);
+        // console.log(processedResponse[i]);
+        // console.log(rawContentBlocks[key]);
+        rawContentBlocks[key]["APIresponse"] = response[i];
+        i++;
+    }
+
+    console.log("rawContentBlocks after addition:", rawContentBlocks);
+
+    // iterate over block keys in raw content blocks
+    for (var blockKey in rawContentBlocks) {
+        // log current content block key
+        console.log(rawContentBlocks[blockKey]);
+        // check for empty API response
+        if (typeof rawContentBlocks[blockKey].APIresponse !== "undefined") {
+            // API response not empty
+
+            // checking for whitespace at start of block, per block
+            // editor content out of scope of adjustChars method,
+            const whiteSpaceLen = (function () {
+                // whitespace in front of list items should be ignored
+                const ignoreTypes = [
+                    "ordered-list-item",
+                    "unordered-list-item"
+                ];
+                const blockText = rawContentBlocks[blockKey].text;
+                const blockType = rawContentBlocks[blockKey].type;
+                const whiteSpace = blockText.match(/^ +/);
+                let len = 0;
+                if (whiteSpace === null) {
+                    return len;
+                } else if (ignoreTypes.includes(blockType)) {
+                    return len;
+                } else {
+                    len = whiteSpace[0].length;
+                    return len;
+                }
+            })();
+
+            console.log(`Start whitespace length for key ${blockKey}:`, whiteSpaceLen);
+
+            // each content block assigned its relevant text annotations
+            rawContentBlocks[blockKey].APIresponse.forEach(annotation => {
+
+                const anchorKey = rawContentBlocks[blockKey].key;
+                let currentContent = editorState.getCurrentContent();
+                // 
+                console.log("currentContent:", currentContent);
+                console.log("blockMap:", currentContent.getBlockMap());
+                // 
+                const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+                console.log("anchorKey:", anchorKey);
+                console.log("currentContentBock, via anchorKey:", currentContentBlock);
+
+                // // each annotation start and end char index reduced by aggregated char length (aggrLen)
+                // // API looks at location in total text, DrafTail looks at location in current block
+                // const start = annotation.start_char - aggrLen;
+                // const end = annotation.end_char - aggrLen;
+                // NOTE: aggrLen fix moved to ProcessAPI method
+
+                // length of par-start whitespace added to char indexes (0 +)
+                const start = annotation.start_char + whiteSpaceLen;
+                const end = annotation.end_char + whiteSpaceLen;
+                // text for annotation selected from content block text, with inline style
+                const selectedText = currentContentBlock.getText().slice(start, end);
+                const selectionStyle = currentContentBlock.getInlineStyleAt(start);
+
+                const blockSelection = SelectionState
+                    .createEmpty(anchorKey)
+                    .merge({
+                        anchorOffset: start,
+                        focusOffset: end,
+                    });
+
+                // TODO: Check for entity in selection here
+
+                console.log("Text to annotate: " + selectedText);
+                console.log("Start offset:", start);
+                console.log("End offset:", end);
+
+                // The annotation entity contains information sent from the API during annotation
+                const annEntity = currentContent.createEntity(
+                    'ANNOTATION',
+                    'MUTABLE', // DraftTail entity mutability
+                    {
+                        annotation,     // data from API 
+                        replyGreynirAPI // method for sending feedback
+                    }
+                );
+                // last created DraftTail entity extracted 
+                const annotationEntityKey = annEntity.getLastCreatedEntityKey();
+                // last created pushed to toRender array
+                entitiesToRender.push({
+                    "key": annotationEntityKey,
+                    "blockSelection": blockSelection,
+                    "selectedText": selectedText,
+                    "selectionStyle": selectionStyle,
+                });
 
 
+            });
+            console.log("Current block text content:", rawContentBlocks[blockKey].text);
+            console.log("Current block text length:", rawContentBlocks[blockKey].text.length);
+            // length of current block text added to aggregated text length variable
+            // + 2 to compensate "\n" in API input string between paragraphs
+            // aggrLen += rawContentBlocks[blockKey].text.replace(/ +$/, "").length;
 
-    return contentState;
+        } else {
+            // API response was empty or undefined, usually because of an empty text block
+            // TODO: keep empty blocks in order with annotated blocks
+            //      NOTE: this is acheived in current workflow
+            console.log("Undefined response, likely empty Block. BlockKey:", blockKey);
+        }
+    }
+    return entitiesToRender;
+}
+
+function replaceAnnotation(editorState, entityKey) {
+    // get entity to replace (via Draftail utils)
+    const entityToReplace = DraftUtils.getEntitySelection(editorState, entityKey);
+    // get editor content (via DraftJS API)
+    const currentContent = editorState.getCurrentContent();
+    // get entity inline style
+    const currentBlock = currentContent.getBlockMap().get(entityToReplace.getStartKey());
+    const start = entityToReplace.getAnchorOffset();
+    const end = entityToReplace.getFocusOffset();
+    const originalStyle = currentBlock.getInlineStyleAt(start);
+    // get entity data
+    const data = currentContent.getEntity(entityKey).getData();
+    // get annotated text from entity
+    const annotatedText = currentBlock.getText().slice(start, end);
+    // get suggestion text from entity data
+    const suggestionText = getReplacement(data.annotation, annotatedText);
+    // replace the annotation entity via DraftJS Modifier
+    const correctedEntity = Modifier.replaceText(
+        currentContent,
+        entityToReplace,
+        suggestionText,
+        originalStyle,
+        null
+    );
+    return correctedEntity;
 }
 
 class AnnotationSource extends React.Component {
@@ -377,34 +467,12 @@ class AnnotationSource extends React.Component {
             entityKey
         } = this.props;
 
-
-
         // If statement catches if entityKey is set, indicating annotation has been approved
         if (entityKey !== undefined && entityKey !== null) {
 
-            // get entity to replace (via Draftail utils)
-            const entityToReplace = DraftUtils.getEntitySelection(editorState, entityKey);
-            // get editor content (via DraftJS API)
-            const currentContent = editorState.getCurrentContent();
-            // get entity inline style
-            const currentBlock = currentContent.getBlockMap().get(entityToReplace.getStartKey());
-            const start = entityToReplace.getAnchorOffset();
-            const end = entityToReplace.getFocusOffset();
-            const originalStyle = currentBlock.getInlineStyleAt(start);
-            // get entity data
-            const data = currentContent.getEntity(entityKey).getData();
-            // get annotated text from entity
-            const annotatedText = currentBlock.getText().slice(start, end);
-            // get suggestion text from entity data
-            const suggestionText = getReplacement(data.annotation, annotatedText);
-            // replace the annotation entity via DraftJS Modifier
-            const correctedEntity = Modifier.replaceText(
-                currentContent,
-                entityToReplace,
-                suggestionText,
-                originalStyle,
-                null
-            );
+            // entity content replaced with correction from API
+            const correctedEntity = replaceAnnotation(editorState, entityKey)
+
             // push to EditorState
             const correctedState = EditorState.push(editorState, correctedEntity, 'apply-entity');
             onComplete(correctedState);
@@ -423,190 +491,107 @@ class AnnotationSource extends React.Component {
 
                     // rawState of editor extracted
                     const rawState = convertToRaw(editorState.getCurrentContent());
-                    // Text extracted by mapping to array and joining with newline
-                    let textObject = rawState.blocks.map(object => object.text);
-                    let toCorrectArray = Object.values(textObject);
-                    const rawText = toCorrectArray.join('\n');
-                    // raw content blocks set as variable
-                    var rawContentBlocks = rawState.blocks;
+                    // checked for annotations in text
+                    const editorHasAnnotations = checkForAnnotations(rawState);
 
-                    // async API call made
-                    // NOTE: Editory content update (rendering annotations) now performed completely inside .then() block
-                    callGreynirAPI("https://yfirlestur.is/correct.api", rawText)
-                        .then(response => {
-                            if (response === null) {
-                                console.log(`Empty block for key ${key}. Skipping...`);
-                            } else {
-                                // raw response logged to console
-                                console.log("API response:", response);
-                                // response flattened to a array of arrays of annotation data objects
-                                const processedResponse = processAPI(response);
-                                // processed response logged to console
-                                console.log("Array of annotations:", processedResponse);
-                                // response flattened to a array of annotation data objects
-                                var i = 0;
-                                // each paragraph annotation matched with a content block
-                                for (var key in rawContentBlocks) {
-                                    // content block skipped if no text present 
-                                    // (to match with API reply)
-                                    const blockText = rawContentBlocks[key].text;
-                                    if (blockText.match(/^\s*$/)) { continue; }
+                    console.log("editorHasAnnotations", editorHasAnnotations);
 
-                                    // console.log(key);
-                                    // console.log(processedResponse[i]);
-                                    // console.log(rawContentBlocks[key]);
-                                    rawContentBlocks[key]["APIresponse"] = processedResponse[i];
-                                    i++;
-                                }
+                    switch (editorHasAnnotations) {
 
-                                console.log("rawContentBlocks after addition:", rawContentBlocks);
+                        case true:
 
-                                // container array for entities that will be rendered in the editor
-                                const entitiesToRender = [];
+                            let currentContent = editorState.getCurrentContent();
+                            const rangesToRemove = clearAnnotatedRanges(editorState);
 
-                                // variable for aggregated text length
-                                // var aggrLen = 0;
-                                // iterate over block keys in raw content blocks
-                                for (var blockKey in rawContentBlocks) {
-                                    // log current content block key
-                                    console.log(rawContentBlocks[blockKey]);
-                                    // check for empty API response
-                                    if (typeof rawContentBlocks[blockKey].APIresponse !== "undefined") {
-                                        // API response not empty
+                            console.log(rangesToRemove);
 
-                                        // checking for whitespace at start of block, per block
-                                        // editor content out of scope of adjustChars method,
-                                        const whiteSpaceLen = (function () {
-                                            // whitespace in front of list items should be ignored
-                                            const ignoreTypes = [
-                                                "ordered-list-item",
-                                                "unordered-list-item"
-                                            ];
-                                            const blockText = rawContentBlocks[blockKey].text;
-                                            const blockType = rawContentBlocks[blockKey].type;
-                                            const whiteSpace = blockText.match(/^ +/);
-                                            let len = 0;
-                                            if (whiteSpace === null) {
-                                                return len;
-                                            } else if (ignoreTypes.includes(blockType)) {
-                                                return len;
-                                            } else {
-                                                len = whiteSpace[0].length; 
-                                                return len;
-                                            }
-                                        })();
-
-                                        console.log(`Start whitespace length for key ${blockKey}:`, whiteSpaceLen);
-                                        
-                                        // each content block assigned its relevant text annotations
-                                        rawContentBlocks[blockKey].APIresponse.forEach(annotation => {
-
-                                            const anchorKey = rawContentBlocks[blockKey].key;
-                                            let currentContent = editorState.getCurrentContent();
-                                            // 
-                                            console.log("currentContent:", currentContent);
-                                            console.log("blockMap:", currentContent.getBlockMap());
-                                            // 
-                                            const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-                                            console.log("anchorKey:", anchorKey);
-                                            console.log("currentContentBock, via anchorKey:", currentContentBlock);
-                                            
-                                            // // each annotation start and end char index reduced by aggregated char length (aggrLen)
-                                            // // API looks at location in total text, DrafTail looks at location in current block
-                                            // const start = annotation.start_char - aggrLen;
-                                            // const end = annotation.end_char - aggrLen;
-                                            // NOTE: aggrLen fix moved to ProcessAPI method
-
-                                            // length of par-start whitespace added to char indexes (0 +)
-                                            const start = annotation.start_char + whiteSpaceLen;
-                                            const end = annotation.end_char + whiteSpaceLen;
-                                            // text for annotation selected from content block text, with inline style
-                                            const selectedText = currentContentBlock.getText().slice(start, end);
-                                            const selectionStyle = currentContentBlock.getInlineStyleAt(start);
-
-                                            const blockSelection = SelectionState
-                                                .createEmpty(anchorKey)
-                                                .merge({
-                                                    anchorOffset: start,
-                                                    focusOffset: end,
-                                                });
-                                            
-                                            // TODO: Check for entity in selection here
-
-                                            console.log("Text to annotate: " + selectedText);
-                                            console.log("Start offset:", start);
-                                            console.log("End offset:", end);
-
-                                            // The annotation entity contains information sent from the API during annotation
-                                            const annEntity = currentContent.createEntity(
-                                                entityType.type,
-                                                'MUTABLE', // DraftTail entity mutability
-                                                {
-                                                    annotation,     // data from API 
-                                                    replyGreynirAPI // method for sending feedback
-                                                }
-                                            );
-                                            // last created DraftTail entity extracted 
-                                            const annotationEntityKey = annEntity.getLastCreatedEntityKey();
-                                            // last created pushed to toRender array
-                                            entitiesToRender.push({
-                                                "key": annotationEntityKey,
-                                                "blockSelection": blockSelection,
-                                                "selectedText": selectedText,
-                                                "selectionStyle": selectionStyle,
-                                            });
-
-
-                                        });
-                                        console.log("Current block text content:", rawContentBlocks[blockKey].text);
-                                        console.log("Current block text length:", rawContentBlocks[blockKey].text.length);
-                                        // length of current block text added to aggregated text length variable
-                                        // + 2 to compensate "\n" in API input string between paragraphs
-                                        // aggrLen += rawContentBlocks[blockKey].text.replace(/ +$/, "").length;
-
-                                    } else {
-                                        // API response was empty or undefined, usually because of an empty text block
-                                        // TODO: keep empty blocks in order with annotated blocks
-                                        //      NOTE: this is acheived in current workflow
-                                        console.log("Undefined response, likely empty Block. BlockKey:", blockKey);
-                                    }
-
-
-                                }
-
-
-
-
-
-                                // current content saved as base new content state
-                                // removes already annotated ranges (if annotation called on already annotated text!)
-                                let currentContent = editorState.getCurrentContent();
-
-                                // let currentContent = clearAnnotatedRanges(editorState);
-
-                                // iterate over list of entities to render and add to new content state
-                                entitiesToRender.forEach(entity => {
-                                    console.log("entity from list:", entity);
-                                    currentContent = Modifier.replaceText(
-                                        currentContent,
-                                        entity.blockSelection,
-                                        entity.selectedText,
-                                        entity.selectionStyle, // null, 
-                                        entity.key
-                                    );
-                                });
-
-                                // Create the new state as an undoable action.
-                                const nextState = EditorState.push(
-                                    editorState,
+                            // let currentContent = clearAnnotatedRanges(editorState);
+                            rangesToRemove.forEach(range => {
+                                const start = range[0];
+                                const end = range[1];
+                                const blockKey = range[2];
+                                const blockSelection = SelectionState
+                                    .createEmpty(blockKey)
+                                    .merge({
+                                        anchorOffset: start,
+                                        focusOffset: end,
+                                    });
+                                currentContent = Modifier.applyEntity(
                                     currentContent,
-                                    "apply-entity"
+                                    blockSelection,
+                                    null
                                 );
-                                // render next state through onComplete DraftTail method
-                                onComplete(nextState);
-                            }
-                        })
-                        .catch(err => console.log('Error:', err));
+                            });
+
+                            // Create the new state as an undoable action.
+                            const nextState = EditorState.push(
+                                editorState,
+                                currentContent,
+                                "apply-entity"
+                            );
+                            // render next state through onComplete DraftTail method
+                            onComplete(nextState);
+                            break;
+
+                        case false:
+
+
+                            // Text extracted by mapping to array and joining with newline
+                            let textObject = rawState.blocks.map(object => object.text);
+                            let toCorrectArray = Object.values(textObject);
+                            const rawText = toCorrectArray.join('\n');
+
+                            // async API call made
+                            // NOTE: Editor content update (rendering annotations) now performed completely inside .then() block
+                            callGreynirAPI("https://yfirlestur.is/correct.api", rawText)
+                                .then(response => {
+                                    if (response === null) {
+                                        // this shouldn't be tripped
+                                        console.log(`Empty block for key ${key}. Skipping...`);
+                                    } else {
+                                        // raw response logged to console
+                                        console.log("API response:", response);
+
+                                        // response flattened to a array of arrays of annotation data objects
+                                        const processedResponse = processAPI(response);
+
+                                        // container array for entities that will be rendered in the editor
+                                        const entitiesToRender = createAnnotationEntities(editorState, processedResponse);
+
+                                        // current content saved as base new content state
+                                        let currentContent = editorState.getCurrentContent();
+
+                                        // let currentContent = clearAnnotatedRanges(editorState);
+
+                                        // iterate over list of entities to render and add to new content state
+                                        entitiesToRender.forEach(entity => {
+                                            console.log("entity from list:", entity);
+                                            currentContent = Modifier.replaceText(
+                                                currentContent,
+                                                entity.blockSelection,
+                                                entity.selectedText,
+                                                entity.selectionStyle, // null, 
+                                                entity.key
+                                            );
+                                        });
+
+                                        // Create the new state as an undoable action.
+                                        const nextState = EditorState.push(
+                                            editorState,
+                                            currentContent,
+                                            "apply-entity"
+                                        );
+                                        // window.alert(`${entitiesToRender.length} ábendingar fundust!`);
+                                        // render next state through onComplete DraftTail method
+                                        onComplete(nextState);
+                                    }
+                                })
+                                .catch(err => console.log('Error:', err));
+                            break;
+
+                        default:
+                            break;
+                    }
 
                     break;
 
