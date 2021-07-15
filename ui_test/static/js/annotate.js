@@ -639,12 +639,13 @@ class AnnotationSource extends React.Component {
                                 const removedAnnotation = currentContent.getEntity(entityKey);
                                 console.log("removedAnnotation", removedAnnotation);
                                 const entityData = removedAnnotation.getData();
+                                // NOTE: feedback api call on mass delete not performed
                                 // POST entity data with feedback
-                                replyGreynirAPI("",
-                                    entityData.annotation,
-                                    "reject",
-                                    "mass-reject"
-                                );
+                                // replyGreynirAPI("",
+                                //     entityData.annotation,
+                                //     "reject",
+                                //     "mass-reject"
+                                // );
                             });
 
                             // Create the new state as an undoable action.
