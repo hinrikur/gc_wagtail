@@ -612,41 +612,41 @@ class AnnotationSource extends React.Component {
                         case true:
 
                             let currentContent = editorState.getCurrentContent();
-                            const rangesToRemove = getAnnotatedRanges(editorState);
+                            // const rangesToRemove = getAnnotatedRanges(editorState);
 
-                            console.log(rangesToRemove);
+                            // console.log(rangesToRemove);
 
-                            rangesToRemove.forEach(range => {
-                                // entity location information
-                                const start = range[0];
-                                const end = range[1];
-                                const blockKey = range[2];
-                                const entityKey = range[3];
-                                // entity selection state
-                                const blockSelection = SelectionState
-                                    .createEmpty(blockKey)
-                                    .merge({
-                                        anchorOffset: start,
-                                        focusOffset: end,
-                                    });
-                                // entity removed by applying null "entity" on selection
-                                currentContent = Modifier.applyEntity(
-                                    currentContent,
-                                    blockSelection,
-                                    null
-                                );
-                                // gather entity being deleted
-                                const removedAnnotation = currentContent.getEntity(entityKey);
-                                console.log("removedAnnotation", removedAnnotation);
-                                const entityData = removedAnnotation.getData();
-                                // NOTE: feedback api call on mass delete not performed
-                                // POST entity data with feedback
-                                // replyGreynirAPI("",
-                                //     entityData.annotation,
-                                //     "reject",
-                                //     "mass-reject"
-                                // );
-                            });
+                            // rangesToRemove.forEach(range => {
+                            //     // entity location information
+                            //     const start = range[0];
+                            //     const end = range[1];
+                            //     const blockKey = range[2];
+                            //     const entityKey = range[3];
+                            //     // entity selection state
+                            //     const blockSelection = SelectionState
+                            //         .createEmpty(blockKey)
+                            //         .merge({
+                            //             anchorOffset: start,
+                            //             focusOffset: end,
+                            //         });
+                            //     // entity removed by applying null "entity" on selection
+                            //     currentContent = Modifier.applyEntity(
+                            //         currentContent,
+                            //         blockSelection,
+                            //         null
+                            //     );
+                            //     // gather entity being deleted
+                            //     const removedAnnotation = currentContent.getEntity(entityKey);
+                            //     console.log("removedAnnotation", removedAnnotation);
+                            //     const entityData = removedAnnotation.getData();
+                            //     // NOTE: feedback api call on mass delete not performed
+                            //     // POST entity data with feedback
+                            //     // replyGreynirAPI("",
+                            //     //     entityData.annotation,
+                            //     //     "reject",
+                            //     //     "mass-reject"
+                            //     // );
+                            // });
 
                             // Create the new state as an undoable action.
                             const nextState = EditorState.push(
@@ -709,7 +709,11 @@ class AnnotationSource extends React.Component {
                                         onComplete(nextState);
                                     }
                                 })
-                                .catch(err => console.log('Error:', err));
+                                .catch(err => {
+                                    window.alert("Villa í leiðréttingu!")
+                                    console.log('Error:', err);
+                                });
+
                             break;
 
                         default:
@@ -733,6 +737,7 @@ class AnnotationSource extends React.Component {
                 default:
                     // Other / Error
                     console.log("Annotation case not caught (ERROR)");
+                    window.alert("Error: Empty editor check failed");
                     break;
             }
         }
