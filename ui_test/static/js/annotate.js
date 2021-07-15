@@ -273,6 +273,20 @@ function getReplacement(annotation, annotatedText) {
     return replacement;
 }
 
+function checkEntityClash(annStart, annEnd, entities) {
+    var clash = false;
+    if (entities.length !== 0) {
+        entities.forEach(location => {
+            const entityStart = location[0];
+            const entityEnd = location[1];
+            if (annStart <= entityEnd && entityStart <= annEnd) {
+                clash = true;
+            }
+        });
+    }
+    return clash;
+}
+
 // return true if there is at least one annotation entity in editor
 function checkForAnnotations(rawState) {
     var result = false;
@@ -294,7 +308,41 @@ function checkForAnnotations(rawState) {
     return result;
 }
 
-function clearAnnotatedRanges(editorState) {
+function getOtherEntityRanges(editorState) {
+    var contentState = editorState.getCurrentContent();
+
+    // console.log("Block map before entity removal/rendering:", contentState.getBlockMap());
+    const entityRanges = {};
+    contentState.getBlockMap().forEach(contentBlock => {
+        // if (!(rangesToRemove.hasOwnProperty(blockKey))){
+        const blockKey = contentBlock.getKey();
+        entityRanges[blockKey] = [];
+        // }            
+        contentBlock.findEntityRanges(character => {
+            // FILTER
+            if (character.getEntity() !== null) {
+                const entityKey = character.getEntity();
+                const entity = contentState.getEntity(entityKey);
+                if (entity !== null && contentState.getEntity(entityKey).getType() !== 'ANNOTATION') {
+                    // console.log("FOUND ANNOTATION ENTITY IN TEXT");
+                    return true;
+                }
+            }
+            return false;
+        },
+            // CALLBACK
+            (start, end) => {
+                // const blockKey = contentBlock.getKey();
+                entityRanges[blockKey].push([start, end]);
+                // console.log("ent ranges", entityRanges);
+            }
+        );
+
+    });
+
+    return entityRanges;
+}
+
 
     var contentState = editorState.getCurrentContent();
 
@@ -331,6 +379,10 @@ function createAnnotationEntities(editorState, response) {
     var rawContentBlocks = rawState.blocks;
 
     var entitiesToRender = [];
+
+    const otherEntityRanges = getOtherEntityRanges(editorState);
+
+    console.log("otherEntityRanges:", otherEntityRanges);
 
     // processed response logged to console
     console.log("Array of annotations:", response);
@@ -428,24 +480,37 @@ function createAnnotationEntities(editorState, response) {
                 console.log("Start offset:", start);
                 console.log("End offset:", end);
 
-                // The annotation entity contains information sent from the API during annotation
-                const annEntity = currentContent.createEntity(
-                    'ANNOTATION',
-                    'MUTABLE', // DraftTail entity mutability
-                    {
-                        annotation,     // data from API 
-                        replyGreynirAPI // method for sending feedback
-                    }
-                );
+                // Check for entity clash in entity range
+                const entitiesInBLock = otherEntityRanges[anchorKey];
+                const entityClash = checkEntityClash(start, end, entitiesInBLock);
+
+                if (entityClash) {
+                    console.log(`Entity clash: Skipping annotation for "${selectedText}", block anchor key: ${anchorKey}`);
+                } else {
+                    // create annotation entity
+                    // the annotation entity contains information sent from the API during annotation
+                    const annEntity = currentContent.createEntity(
+                        'ANNOTATION',
+                        'MUTABLE', // Drafttail entity mutability
+                        {
+                            annotation,      // data from API 
+                            replyGreynirAPI  // method for sending feedback
+                        }
+                    );
+                    // last created DraftTail entity extracted 
                 // last created DraftTail entity extracted 
-                const annotationEntityKey = annEntity.getLastCreatedEntityKey();
-                // last created pushed to toRender array
-                entitiesToRender.push({
-                    "key": annotationEntityKey,
-                    "blockSelection": blockSelection,
-                    "selectedText": selectedText,
-                    "selectionStyle": selectionStyle,
-                });
+                    // last created DraftTail entity extracted 
+                    const annotationEntityKey = annEntity.getLastCreatedEntityKey();
+                    // last created pushed to toRender array
+                    entitiesToRender.push({
+                        "key": annotationEntityKey,
+                        "blockSelection": blockSelection,
+                        "selectedText": selectedText,
+                        "selectionStyle": selectionStyle,
+                    });
+                }
+
+
 
 
             });
