@@ -147,7 +147,7 @@ class AnnotationEntity extends React.Component {
                     icon: "glyphicon glyphicon-ok normal",
                     onClick: () => {
                         let action = onRemove;
-                        postData('fake-url', annData, "reject")
+                        postData('fake-url', annData, "reject");
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -173,7 +173,7 @@ class AnnotationEntity extends React.Component {
                     onClick: () => {
                         // let action = annClass === "wording" ? onRemove : onEdit;
                         let action = onRemove;
-                        postData('fake-url', annData, "reject")
+                        postData('fake-url', annData, "reject");
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -198,6 +198,42 @@ class AnnotationEntity extends React.Component {
                 }
                 )
             );
+        } else if (annClass === "wording-plus") {
+            return React.createElement(
+                'div', {
+                className: "annotation-buttons"
+            },
+                // Button for accepting annotation, calling onEdit and rerunning source component
+                React.createElement(
+                    IconButton, {
+                    name: "Annotation__button_yes",
+                    label: "Sammála",
+                    title: "Uppástungan á við hér",
+                    icon: "glyphicon glyphicon-ok normal",
+                    onClick: () => {
+                        // let action = annClass === "wording" ? onRemove : onEdit;
+                        let action = onRemove;
+                        postData('fake-url', annData, "reject");
+                        this.buttonHandler(action, entityKey);
+
+                    }
+                }
+                ),
+
+                // Button for declining annotation, removing annotation entity
+                // onRemove and entityKey passed as props and called further down
+                React.createElement(
+                    DeclineButton, {
+                    name: "Annotation__button_no",
+                    label: "Ósammála",
+                    title: "Uppástungan á ekki við hér",
+                    icon: "glyphicon glyphicon-remove normal",
+                    onRemove: onRemove,
+                    entityKey: entityKey,
+                    data: data
+                }
+                )
+            );
         }
         
         return React.createElement(
@@ -215,7 +251,7 @@ class AnnotationEntity extends React.Component {
                 onClick: () => {
                     let action = annClass === "wording" ? onRemove : onEdit;
                     let reply = annClass === "wording" ? "reject" : "accept";
-                    postData('fake-url', annData, reply)
+                    postData('fake-url', annData, reply);
                     this.buttonHandler(action, entityKey);
 
                 }
@@ -244,12 +280,13 @@ class AnnotationEntity extends React.Component {
             children,
             onEdit,
             onRemove,
-            data
+            data,
         } = this.props;
 
         const { showTooltipAt } = this.state;
         const annCode = data.annotation.code;
-        const annClass = getAnnotationClass(annCode);
+        // const annClass = getAnnotationClass(annCode);
+        const annClass = data.annClass;
 
         // console.log("Annotation code:", annCode);
         // console.log("Annotation class:", annClass);

@@ -224,20 +224,51 @@ function adjustChars(paragraph) {
     return paragraph;
 }
 
-function getReplacement(data, annotatedText) {
+function getAnnotationClass(code, replacement, annotatedText) {
+    // Converts error's code from API to one of three classes
+    // Relevant for rendering of annotation 
+
+    var cls; // return variable
+
+    const classMap = {
+        "C": "grammar-error", // Compound error
+        "N": "grammar-suggestion", // Punctuation error - N  
+        "P": "grammar-suggestion", // Phrase error - P
+        "W": "grammar-suggestion", // Spelling suggestion - W (not used in GreynirCorrect atm)
+        "Z": "spelling", // Capitalization error - Z
+        "A": "spelling", // Abbreviation - A
+        "S": "spelling", // Spelling error - S
+        "U": "unknown-word", // Unknown word - U (nothing can be done)
+        "T": "wording", // Taboo warning
+        "E": "parse-error" // Error in parsing step
+    };
+
+    // classes with non-conventional UI
+    const specialClasses = ["unknown-word", "wording", "parse-error"];
+    const normalClasses = ["spelling", "grammar-error", "grammar-suggestion"];
+
+    var codeChar = code.charAt(0);
+    cls = classMap[codeChar];
+    if (annotatedText === replacement && normalClasses.includes(cls)) {
+        cls = "wording-plus";
+    }
+    return cls;
+}
+
+function getReplacement(annotation, annotatedText) {
     // finds valid replacement text in annotation data
     var replacement;
-    if (data.suggest === "") {
+    if (annotation.suggest === "") {
         // in case of empty .suggest field in data,
         // example from .text field extracted with regex
-        var realSuggest = data.text.match(/'[^']*'/)[0];
+        var realSuggest = annotation.text.match(/'[^']*'/)[0];
         realSuggest = realSuggest.substring(1, realSuggest.length - 1);
         replacement = realSuggest;
-    } else if (data.suggest === null) {
+    } else if (annotation.suggest === null) {
         replacement = annotatedText;
     } else {
         // otherwise returns .suggest value
-        replacement = data.suggest;
+        replacement = annotation.suggest;
     }
     return replacement;
 }
@@ -379,6 +410,11 @@ function createAnnotationEntities(editorState, response) {
                 const selectedText = currentContentBlock.getText().slice(start, end);
                 const selectionStyle = currentContentBlock.getInlineStyleAt(start);
 
+                // additional annotation data to add to entity
+                const textReplacement = getReplacement(annotation, selectedText);
+                const annClass = getAnnotationClass(annotation.code, textReplacement, selectedText);
+
+                // selectionState for annotation render
                 const blockSelection = SelectionState
                     .createEmpty(anchorKey)
                     .merge({
