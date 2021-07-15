@@ -215,6 +215,12 @@ function adjustChars(paragraph) {
     return paragraph;
 }
 
+function annScrollPosition() {
+    let x = window.pageXOffset;
+    let y = window.pageYOffset;
+    return [x, y];
+}
+
 function getAnnotationClass(code, replacement, annotatedText) {
     // Converts error's code from API to one of three classes
     // Relevant for rendering of annotation 
@@ -572,6 +578,12 @@ class AnnotationSource extends React.Component {
                 // push to EditorState
                 const correctedState = EditorState.push(editorState, correctedEntity, 'apply-entity');
                 onComplete(correctedState);
+                const [x, y] = annScrollPosition();
+                                        
+                setTimeout(() => {
+                    window.scrollTo(x,y);
+                    console.log("scroll completed")
+                }, 20);
             } else {
                 console.log(`Incorrect entity selected.\nType: ${entityToReplace.type()}\nText:`);
             }
