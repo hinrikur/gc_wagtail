@@ -9,12 +9,6 @@ const convertToRaw = window.DraftJS.convertToRaw;
 
 const AnnotationEntity = require('./components/annotation-entity.js');
 
-// Debug API responses (hard-coded) imported
-// const processResponce = require('./components/processAPI.js');
-// const dummyApi = require('./components/modifiedReference.json');
-// const dummyApi = require('./components/correctedReference.json');
-// const dummyApi = require('./components/showcaseResponse');
-
 // Example POST method implementation:
 async function callGreynirAPI(url = '', data = {}) {
     if (data === "") {
@@ -38,8 +32,6 @@ async function callGreynirAPI(url = '', data = {}) {
         return response.json(); // parses JSON response into native JavaScript objects
     }
 }
-
-
 
 async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") {
     // filter relevant annotation info from data
@@ -157,7 +149,6 @@ function processAPI(json) {
 
     return annotationArray;
 }
-
 
 // normalize each paragraph's token lists (per sent) to start at char index 0
 function adjustChars(paragraph) {
@@ -293,7 +284,7 @@ function checkForAnnotations(rawState) {
     // console.log("rawState", rawState);
     const entities = rawState.entityMap;
     // console.log("entityMap", entities);
-    
+
 
     for (const key in entities) {
         // console.log(`IN THE LOOP ${key}`);
@@ -302,7 +293,7 @@ function checkForAnnotations(rawState) {
         // console.log("entity type:", entity.type);
         if (entity.type === "ANNOTATION") {
             // console.log("ANNOTATION found");
-            result =  true;
+            result = true;
         }
     }
     return result;
@@ -343,6 +334,7 @@ function getOtherEntityRanges(editorState) {
     return entityRanges;
 }
 
+function getAnnotatedRanges(editorState) {
 
     var contentState = editorState.getCurrentContent();
 
@@ -364,7 +356,8 @@ function getOtherEntityRanges(editorState) {
             // CALLBACK
             (start, end) => {
                 const blockKey = contentBlock.getKey();
-                rangesToRemove.push([start, end, blockKey]);
+                const entitykey = contentBlock.getEntityAt(start);
+                rangesToRemove.push([start, end, blockKey, entitykey]);
             }
         );
 
@@ -443,7 +436,7 @@ function createAnnotationEntities(editorState, response) {
                 let currentContent = editorState.getCurrentContent();
                 // 
                 console.log("currentContent:", currentContent);
-                console.log("blockMap:", currentContent.getBlockMap());
+                // console.log("blockMap:", currentContent.getBlockMap());
                 // 
                 const currentContentBlock = currentContent.getBlockForKey(anchorKey);
                 console.log("anchorKey:", anchorKey);
@@ -474,7 +467,6 @@ function createAnnotationEntities(editorState, response) {
                         focusOffset: end,
                     });
 
-                // TODO: Check for entity in selection here
 
                 console.log("Text to annotate: " + selectedText);
                 console.log("Start offset:", start);
@@ -493,12 +485,12 @@ function createAnnotationEntities(editorState, response) {
                         'ANNOTATION',
                         'MUTABLE', // Drafttail entity mutability
                         {
+                            textReplacement, // processed replacement text
+                            annClass,        // processed annotation error class
                             annotation,      // data from API 
                             replyGreynirAPI  // method for sending feedback
                         }
                     );
-                    // last created DraftTail entity extracted 
-                // last created DraftTail entity extracted 
                     // last created DraftTail entity extracted 
                     const annotationEntityKey = annEntity.getLastCreatedEntityKey();
                     // last created pushed to toRender array
@@ -522,8 +514,6 @@ function createAnnotationEntities(editorState, response) {
 
         } else {
             // API response was empty or undefined, usually because of an empty text block
-            // TODO: keep empty blocks in order with annotated blocks
-            //      NOTE: this is acheived in current workflow
             console.log("Undefined response, likely empty Block. BlockKey:", blockKey);
         }
     }
@@ -531,7 +521,8 @@ function createAnnotationEntities(editorState, response) {
 }
 
 function replaceAnnotation(editorState, entityKey) {
-    // get entity to replace (via Draftail utils)
+
+    // get entity selection to replace (via Draftail utils)
     const entityToReplace = DraftUtils.getEntitySelection(editorState, entityKey);
     // get editor content (via DraftJS API)
     const currentContent = editorState.getCurrentContent();
@@ -545,7 +536,7 @@ function replaceAnnotation(editorState, entityKey) {
     // get annotated text from entity
     const annotatedText = currentBlock.getText().slice(start, end);
     // get suggestion text from entity data
-    const suggestionText = getReplacement(data.annotation, annotatedText);
+    const suggestionText = data.textReplacement;
     // replace the annotation entity via DraftJS Modifier
     const correctedEntity = Modifier.replaceText(
         currentContent,
@@ -570,13 +561,20 @@ class AnnotationSource extends React.Component {
 
         // If statement catches if entityKey is set, indicating annotation has been approved
         if (entityKey !== undefined && entityKey !== null) {
-
-            // entity content replaced with correction from API
-            const correctedEntity = replaceAnnotation(editorState, entityKey)
-
-            // push to EditorState
-            const correctedState = EditorState.push(editorState, correctedEntity, 'apply-entity');
-            onComplete(correctedState);
+            // extract loaded entity with entityKey
+            const currentContent = editorState.getCurrentContent();
+            const entityToReplace = currentContent.getEntity(entityKey);
+            // check whether correct entity type
+            // replaced if ANNOTATION, skipped and logged if not
+            if (entityToReplace.type === "ANNOTATION") {
+                // entity content replaced with correction from API
+                const correctedEntity = replaceAnnotation(editorState, entityKey);
+                // push to EditorState
+                const correctedState = EditorState.push(editorState, correctedEntity, 'apply-entity');
+                onComplete(correctedState);
+            } else {
+                console.log(`Incorrect entity selected.\nType: ${entityToReplace.type()}\nText:`);
+            }
 
         } else {
 
@@ -592,35 +590,48 @@ class AnnotationSource extends React.Component {
 
                     // rawState of editor extracted
                     const rawState = convertToRaw(editorState.getCurrentContent());
-                    // checked for annotations in text
+                    // checked whether there are annotations in the text
                     const editorHasAnnotations = checkForAnnotations(rawState);
 
                     console.log("editorHasAnnotations", editorHasAnnotations);
 
                     switch (editorHasAnnotations) {
-
+                        // remove all annotation entities from the editor
                         case true:
 
                             let currentContent = editorState.getCurrentContent();
-                            const rangesToRemove = clearAnnotatedRanges(editorState);
+                            const rangesToRemove = getAnnotatedRanges(editorState);
 
                             console.log(rangesToRemove);
 
-                            // let currentContent = clearAnnotatedRanges(editorState);
                             rangesToRemove.forEach(range => {
+                                // entity location information
                                 const start = range[0];
                                 const end = range[1];
                                 const blockKey = range[2];
+                                const entityKey = range[3];
+                                // entity selection state
                                 const blockSelection = SelectionState
                                     .createEmpty(blockKey)
                                     .merge({
                                         anchorOffset: start,
                                         focusOffset: end,
                                     });
+                                // entity removed by applying null "entity" on selection
                                 currentContent = Modifier.applyEntity(
                                     currentContent,
                                     blockSelection,
                                     null
+                                );
+                                // gather entity being deleted
+                                const removedAnnotation = currentContent.getEntity(entityKey);
+                                console.log("removedAnnotation", removedAnnotation);
+                                const entityData = removedAnnotation.getData();
+                                // POST entity data with feedback
+                                replyGreynirAPI("",
+                                    entityData.annotation,
+                                    "reject",
+                                    "mass-reject"
                                 );
                             });
 
@@ -661,8 +672,6 @@ class AnnotationSource extends React.Component {
 
                                         // current content saved as base new content state
                                         let currentContent = editorState.getCurrentContent();
-
-                                        // let currentContent = clearAnnotatedRanges(editorState);
 
                                         // iterate over list of entities to render and add to new content state
                                         entitiesToRender.forEach(entity => {
@@ -721,8 +730,6 @@ class AnnotationSource extends React.Component {
         return null;
     }
 }
-
-
 
 const Annotation = (props) => {
 
