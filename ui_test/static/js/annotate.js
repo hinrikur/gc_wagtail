@@ -253,9 +253,14 @@ function getAnnotationClass(code, replacement, annotatedText) {
 }
 
 function getReplacement(annotation, annotatedText) {
+
+    // code classes intended for wording UI class if suggest is empty
+    const intendedWording = ["U", "T", "E"];
+    const code = annotation.code;
+    const codeStart = code.charAt(0);
     // finds valid replacement text in annotation data
     var replacement;
-    if (annotation.suggest === "") {
+    if (annotation.suggest === "" && intendedWording.includes(codeStart)) {
         // in case of empty .suggest field in data,
         // example from .text field extracted with regex
         var realSuggest = annotation.text.match(/'[^']*'/)[0];
@@ -456,14 +461,21 @@ function createAnnotationEntities(editorState, response) {
 
                 // length of par-start whitespace added to char indexes (0 +)
                 const start = annotation.start_char + whiteSpaceLen;
-                const end = annotation.end_char + whiteSpaceLen;
+                var end = annotation.end_char + whiteSpaceLen;
                 // text for annotation selected from content block text, with inline style
-                const selectedText = currentContentBlock.getText().slice(start, end);
+                var selectedText = currentContentBlock.getText().slice(start, end);
                 const selectionStyle = currentContentBlock.getInlineStyleAt(start);
 
                 // additional annotation data to add to entity
                 const textReplacement = getReplacement(annotation, selectedText);
                 const annClass = getAnnotationClass(annotation.code, textReplacement, selectedText);
+
+                // decreased start offset by 1 if replacement is empty string
+                if (textReplacement === "") {
+                    end += 1;
+                    selectedText += " ";
+                }
+                
 
                 // selectionState for annotation render
                 const blockSelection = SelectionState
