@@ -150,7 +150,7 @@ class AnnotationEntity extends React.Component {
                     icon: "glyphicon glyphicon-ok normal",
                     onClick: () => {
                         let action = onRemove;
-                        postData('fake-url', annData, "reject");
+                        postData('fake-url', annData, "accept");
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -176,7 +176,7 @@ class AnnotationEntity extends React.Component {
                     onClick: () => {
                         // let action = annClass === "wording" ? onRemove : onEdit;
                         let action = onRemove;
-                        postData('fake-url', annData, "reject");
+                        postData('fake-url', annData, "accept");
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -216,7 +216,7 @@ class AnnotationEntity extends React.Component {
                     onClick: () => {
                         // let action = annClass === "wording" ? onRemove : onEdit;
                         let action = onRemove;
-                        postData('fake-url', annData, "reject");
+                        postData('fake-url', annData, "accept");
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -289,7 +289,8 @@ class AnnotationEntity extends React.Component {
                 icon: "glyphicon glyphicon-ok normal",
                 onClick: () => {
                     let action = annClass === "wording" ? onRemove : onEdit;
-                    let reply = annClass === "wording" ? "reject" : "accept";
+                    // let reply = annClass === "wording" ? "reject" : "accept";
+                    let reply = "accept";
                     postData('fake-url', annData, reply);
                     this.buttonHandler(action, entityKey);
 
