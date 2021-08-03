@@ -130,7 +130,10 @@ class AnnotationEntity extends React.Component {
         const annData = data.annotation;
         const postData = data.replyGreynirAPI;
 
-        const SINGLE_BUTTON_ACCEPT = ["parse-error", "unknown-word"]
+        const SINGLE_BUTTON_ACCEPT = [
+                                    // "parse-error", 
+                                    "unknown-word"
+                                    ];
 
         if (SINGLE_BUTTON_ACCEPT.includes(annClass)){
 
@@ -227,6 +230,42 @@ class AnnotationEntity extends React.Component {
                     name: "Annotation__button_no",
                     label: "Ósammála",
                     title: "Uppástungan á ekki við hér",
+                    icon: "glyphicon glyphicon-remove normal",
+                    onRemove: onRemove,
+                    entityKey: entityKey,
+                    data: data
+                }
+                )
+            );
+        } else if (annClass === "parse-error") {
+            return React.createElement(
+                'div', {
+                className: "annotation-buttons"
+            },
+                // Button for accepting annotation, calling onEdit and rerunning source component
+                React.createElement(
+                    IconButton, {
+                    name: "Annotation__button_yes",
+                    label: "Rétt ábending",
+                    title: "Það er eitthvað að setningunni",
+                    icon: "glyphicon glyphicon-ok normal",
+                    onClick: () => {
+                        // let action = annClass === "wording" ? onRemove : onEdit;
+                        let action = onRemove;
+                        postData('fake-url', annData, "accept");
+                        this.buttonHandler(action, entityKey);
+
+                    }
+                }
+                ),
+
+                // Button for declining annotation, removing annotation entity
+                // onRemove and entityKey passed as props and called further down
+                React.createElement(
+                    DeclineButton, {
+                    name: "Annotation__button_no",
+                    label: "Röng ábending",
+                    title: "Það er ekkert að setningunni,\nábendingin er vitlaus",
                     icon: "glyphicon glyphicon-remove normal",
                     onRemove: onRemove,
                     entityKey: entityKey,
