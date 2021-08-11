@@ -9,8 +9,8 @@ const convertToRaw = window.DraftJS.convertToRaw;
 
 const AnnotationEntity = require('./components/annotation-entity.js');
 
-// Example POST method implementation:
 async function callGreynirAPI(url = '', data = {}) {
+    
     if (data === "") {
         // text is field is empty, returns null
         // NOTE: this was tripped when content blocks were annoatated one by one,
@@ -90,10 +90,68 @@ async function replyGreynirAPI(url = "", data = {}, feedback = "", reason = "") 
     }
 }
 
+/**
+ * Filters out in-line tags used in HTML rendering from raw text before sending to GreynirCorrect API call
+ * Matches tags at exactly end or start of line
+ * @param {string} editorText - concatenated raw text from Draftail editor
+ * @returns {string} filtered - input text with matched tags removed 
+ */
+function filterTextTags(editorText) {
+    const TAG_SEGMENT = "\\[(links|adspot|box|chart)\\]";
+    const LINE_START_TAG = "^" + TAG_SEGMENT + "(?=\\S)";
+    const LINE_END_TAG = "(?<=\\S|\\.)" + TAG_SEGMENT + "$";
+    const TAG_RE = new RegExp("(" + LINE_START_TAG + "|" + LINE_END_TAG + ")"); 
+    var filtered = editorText.replace(TAG_RE, "");
+    return filtered;
+}
+
+/**
+ * Finds in-line tags in a given string and returns length of the tag
+ * Only checks for tags at start of line, end of line doesn't affect char locations down the line
+ * @param {string} parText - any text (should be block text from Editor rawState)
+ * @returns {number} charDiff - length of filtered  
+ */
+function getFilteredCharDiff(parText) {
+    const LINE_START_TAG = /^\[(links|adspot|box|chart)\](?=\S)/;
+    const match = parText.match(LINE_START_TAG);
+    var charDiff = 0;
+    if (match !== null) {
+        charDiff += match[0].length;
+    }
+    return charDiff;
+}
+
+/**
+ * Compiles char location differences due to filter applied on text sent to API
+ * @param {Object} rawState - rawState of the Draftail editor contents
+ * @returns {Object} differenceMap - contains block key [string] : char length [int] pairs 
+ */
+function allFilteredDiffs(rawState) {
+    var differenceMap = {};
+    rawState.blocks.forEach(block => {
+        differenceMap[block.key] = getFilteredCharDiff(block.text);
+    });
+    return differenceMap;
+}
+
+/**
+ * check for in-line markers in editor content markers used for HTML rendering of editor content
+ * ex. [adspot] [links] etc.
+ * NOTE: only applied when checking for whole-bloc tag, i.e. `\n[adspace]\n`
+ * @param {string} blockText - whole content of a text block ( = paragraph)
+ * @returns {boolean} 
+ */
+function checkTextMarkers(blockText) {
+    BLOCK_MARKER = /^ *\[\S*\] *$/;
+    return BLOCK_MARKER.test(blockText);
+
+}
+
+
 // iterates over API response JSON and returns flat
 // array of annotations (annotationArray)
 function processAPI(json) {
-
+    
     // collect tokens into single string and add to annotations
     function insertSentenceText(sentence, annotations) {
         var sentString = '';
@@ -381,12 +439,14 @@ function createAnnotationEntities(editorState, response) {
 
     const rawState = convertToRaw(editorState.getCurrentContent());
     var rawContentBlocks = rawState.blocks;
-
-    var entitiesToRender = [];
-
+    // char length of filtered in-line tags extracted
+    const filteredCharDiffs = allFilteredDiffs(rawState);
+    console.log(filteredCharDiffs);
+    // check for other entities in a given range
     const otherEntityRanges = getOtherEntityRanges(editorState);
-
     console.log("otherEntityRanges:", otherEntityRanges);
+    // return array declared
+    var entitiesToRender = [];
 
     // processed response logged to console
     console.log("Array of annotations:", response);
@@ -412,8 +472,11 @@ function createAnnotationEntities(editorState, response) {
     for (var blockKey in rawContentBlocks) {
         // log current content block key
         console.log(rawContentBlocks[blockKey]);
+        const markerBlock = checkTextMarkers(rawContentBlocks[blockKey].text)
         // check for empty API response
-        if (typeof rawContentBlocks[blockKey].APIresponse !== "undefined") {
+        if (markerBlock) {
+            console.log(`Markerblock: Skipping block with text "${rawContentBlocks[blockKey].text}", key ${blockKey}`);
+        } else if (typeof rawContentBlocks[blockKey].APIresponse !== "undefined") {
             // API response not empty
 
             // checking for whitespace at start of block, per block
@@ -460,8 +523,9 @@ function createAnnotationEntities(editorState, response) {
                 // NOTE: aggrLen fix moved to ProcessAPI method
 
                 // length of par-start whitespace added to char indexes (0 +)
-                const start = annotation.start_char + whiteSpaceLen;
-                var end = annotation.end_char + whiteSpaceLen;
+                // NOTE: hack for adding filtered character differences ([adspce], [links] etc.)
+                const start = annotation.start_char + whiteSpaceLen + filteredCharDiffs[anchorKey];
+                var end = annotation.end_char + whiteSpaceLen + filteredCharDiffs[anchorKey];
                 // text for annotation selected from content block text, with inline style
                 var selectedText = currentContentBlock.getText().slice(start, end);
                 const selectionStyle = currentContentBlock.getInlineStyleAt(start);
@@ -624,42 +688,6 @@ class AnnotationSource extends React.Component {
                         case true:
 
                             let currentContent = editorState.getCurrentContent();
-                            // const rangesToRemove = getAnnotatedRanges(editorState);
-
-                            // console.log(rangesToRemove);
-
-                            // rangesToRemove.forEach(range => {
-                            //     // entity location information
-                            //     const start = range[0];
-                            //     const end = range[1];
-                            //     const blockKey = range[2];
-                            //     const entityKey = range[3];
-                            //     // entity selection state
-                            //     const blockSelection = SelectionState
-                            //         .createEmpty(blockKey)
-                            //         .merge({
-                            //             anchorOffset: start,
-                            //             focusOffset: end,
-                            //         });
-                            //     // entity removed by applying null "entity" on selection
-                            //     currentContent = Modifier.applyEntity(
-                            //         currentContent,
-                            //         blockSelection,
-                            //         null
-                            //     );
-                            //     // gather entity being deleted
-                            //     const removedAnnotation = currentContent.getEntity(entityKey);
-                            //     console.log("removedAnnotation", removedAnnotation);
-                            //     const entityData = removedAnnotation.getData();
-                            //     // NOTE: feedback api call on mass delete not performed
-                            //     // POST entity data with feedback
-                            //     // replyGreynirAPI("",
-                            //     //     entityData.annotation,
-                            //     //     "reject",
-                            //     //     "mass-reject"
-                            //     // );
-                            // });
-
                             // Create the new state as an undoable action.
                             const nextState = EditorState.push(
                                 editorState,
@@ -671,13 +699,11 @@ class AnnotationSource extends React.Component {
                             break;
 
                         case false:
-
-
                             // Text extracted by mapping to array and joining with newline
-                            let textObject = rawState.blocks.map(object => object.text);
-                            let toCorrectArray = Object.values(textObject);
-                            const rawText = toCorrectArray.join('\n');
-
+                            let parTexts = rawState.blocks.map(object => object.text);
+                            let filteredPars = parTexts.map(blockText => filterTextTags(blockText));
+                            const rawText = filteredPars.join('\n');
+                            
                             // async API call made
                             // NOTE: Editor content update (rendering annotations) now performed completely inside .then() block
                             callGreynirAPI("https://yfirlestur.is/correct.api", rawText)
