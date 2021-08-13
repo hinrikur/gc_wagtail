@@ -128,7 +128,8 @@ class DeclineButton extends React.Component {
                     Popover, {
                     target: showFeedbackAt,
                     direction: "bottom-left",
-                    clsName: "Tooltip Feedback"
+                    clsName: "Tooltip Feedback",
+                    id: "feedback_popover"
                     // annClass: annClass
                 },
                     React.createElement(
@@ -170,7 +171,7 @@ class DeclineButton extends React.Component {
                                 name: "feedback-button",
                                 // active,
                                 label: "Röng ábending",
-                                title: "Ábendingin á ekki við villuna í textanum",
+                                title: "Textinn inniheldur villu, en \nábendingin á ekki við villuna",
                                 icon: "glyphicon glyphicon-flag-waving normal",
                                 onClick: () => {
                                     postData('fake-url', annData, "reject", "wrong-error");

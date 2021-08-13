@@ -131,11 +131,11 @@ class AnnotationEntity extends React.Component {
         const postData = data.replyGreynirAPI;
 
         const SINGLE_BUTTON_ACCEPT = [
-                                    // "parse-error", 
-                                    "unknown-word"
-                                    ];
+            // "parse-error", // Parse errors now have a 2 button choice
+            "unknown-word"
+        ];
 
-        if (SINGLE_BUTTON_ACCEPT.includes(annClass)){
+        if (SINGLE_BUTTON_ACCEPT.includes(annClass)) {
 
             return React.createElement(
                 'div', {
@@ -145,8 +145,8 @@ class AnnotationEntity extends React.Component {
                     IconButton, {
                     name: "Annotation__button_yes",
                     // active,
-                    label: "Samþykkja",
-                    title: "Samþykkja uppástungu",
+                    label: "Loka ábendingu",
+                    title: "Loka ábendingu",
                     icon: "glyphicon glyphicon-ok normal",
                     onClick: () => {
                         let action = onRemove;
@@ -159,7 +159,7 @@ class AnnotationEntity extends React.Component {
             );
         }
 
-        if ( annClass === "wording" ) {
+        if (annClass === "wording") {
 
             return React.createElement(
                 'div', {
@@ -194,7 +194,7 @@ class AnnotationEntity extends React.Component {
                     onClick: () => {
                         // let action = annClass === "wording" ? onRemove : onEdit;
                         let action = onRemove;
-                        postData('fake-url', annData, "reject")
+                        postData('fake-url', annData, "reject");
                         this.buttonHandler(action, entityKey);
 
                     }
@@ -242,7 +242,7 @@ class AnnotationEntity extends React.Component {
                 'div', {
                 className: "annotation-buttons"
             },
-                // Button for accepting annotation, calling onEdit and rerunning source component
+                // Button for accepting annotation. Replies to API with 'accept'
                 React.createElement(
                     IconButton, {
                     name: "Annotation__button_yes",
@@ -259,22 +259,25 @@ class AnnotationEntity extends React.Component {
                 }
                 ),
 
-                // Button for declining annotation, removing annotation entity
-                // onRemove and entityKey passed as props and called further down
+                // generic IconButton NOT a DeclineButton 
+                // replies to API with 'reject' without rendering feedback menu.
                 React.createElement(
-                    DeclineButton, {
+                    IconButton, {
                     name: "Annotation__button_no",
                     label: "Röng ábending",
                     title: "Það er ekkert að setningunni,\nábendingin er vitlaus",
                     icon: "glyphicon glyphicon-remove normal",
-                    onRemove: onRemove,
-                    entityKey: entityKey,
-                    data: data
+                    onClick: () => {
+                        // let action = annClass === "wording" ? onRemove : onEdit;
+                        let action = onRemove;
+                        postData('fake-url', annData, "reject");
+                        this.buttonHandler(action, entityKey);
+                    }
                 }
                 )
             );
         }
-        
+
         return React.createElement(
             'div', {
             className: "annotation-buttons"
@@ -360,7 +363,8 @@ class AnnotationEntity extends React.Component {
                     target: showTooltipAt,
                     direction: "top",
                     // annClass: annClass,
-                    clsName: `Tooltip Annotation-${annClass}`
+                    clsName: `Tooltip Annotation-${annClass}`,
+                    id: "annotation_popover"
                 },
                     // div for popover contents
                     React.createElement(
