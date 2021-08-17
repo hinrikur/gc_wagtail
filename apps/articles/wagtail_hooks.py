@@ -73,14 +73,14 @@ class ArticlePageAdmin(ModelAdmin):
 
 modeladmin_register(ArticlePageAdmin)
 
-@hooks.register('insert_global_admin_js')
-def global_admin_js():
-    code_str1 = "<script async src='https://www.googletagmanager.com/gtag/js?id=UA-68611392-3'></script>"
-    code_str2 = "<script>window.dataLayer = window.dataLayer || [];"
-    code_str3 = "function gtag(){{dataLayer.push(arguments);}}"
-    code_str4 = "gtag('js', new Date());gtag('config', 'UA-68611392-3');</script>"
-    code_strs = code_str1 + code_str2 + code_str3 + code_str4
-    return format_html(format(code_strs))
+# @hooks.register('insert_global_admin_js')
+# def global_admin_js():
+#     code_str1 = "<script async src='https://www.googletagmanager.com/gtag/js?id=UA-68611392-3'></script>"
+#     code_str2 = "<script>window.dataLayer = window.dataLayer || [];"
+#     code_str3 = "function gtag(){{dataLayer.push(arguments);}}"
+#     code_str4 = "gtag('js', new Date());gtag('config', 'UA-68611392-3');</script>"
+#     code_strs = code_str1 + code_str2 + code_str3 + code_str4
+#     return format_html(format(code_strs))
 
 
 class NoFollowExternalLinkHandler(LinkHandler):
