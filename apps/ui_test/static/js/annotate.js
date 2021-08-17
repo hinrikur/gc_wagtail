@@ -1,6 +1,6 @@
 const React = window.React;
 
-const AnnotationEntity = require('./components/annotation-entity.js');
+const AnnotationEntity = require('./components/AnnotationEntity.js');
 const AnnotationSource = require('./sources/AnnotationSource.js');
 
 const Annotation = (props) => {
