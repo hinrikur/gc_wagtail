@@ -6,10 +6,9 @@ const DraftUtils = window.Draftail.DraftUtils;
 const SelectionState = window.DraftJS.SelectionState;
 const convertToRaw = window.DraftJS.convertToRaw;
 
-const AnnotationUtils = require('../utils/AnnotationUtils.js');
-const GreynirUtils = require('../utils/GreynirUtils.js');
+const AnnotationUtils = require('../utils/annotation-utils.js');
+const GreynirUtils = require('../utils/greynir-utils.js');
 const callGreynirAPI = GreynirUtils.callGreynirAPI;
-const replyGreynirAPI = GreynirUtils.replyGreynirAPI;
 const processAPI = GreynirUtils.processAPI;
 
 // const annScrollPosition = AnnotationUtils.annScrollPosition;

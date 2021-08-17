@@ -1,6 +1,6 @@
 const React = window.React;
 
-const PopoverUtils = require('../utils/PopoverUtils.js');
+const PopoverUtils = require('../utils/popover-utils.js');
 const getPopoverStyles = PopoverUtils.getPopoverStyles;
 
 /**

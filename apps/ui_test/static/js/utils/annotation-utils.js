@@ -5,7 +5,7 @@ const DraftUtils = window.Draftail.DraftUtils;
 const SelectionState = window.DraftJS.SelectionState;
 const convertToRaw = window.DraftJS.convertToRaw;
 
-const GreynirUtils = require('../utils/GreynirUtils.js');
+const GreynirUtils = require('./greynir-utils.js');
 const replyGreynirAPI = GreynirUtils.replyGreynirAPI;
 
 
