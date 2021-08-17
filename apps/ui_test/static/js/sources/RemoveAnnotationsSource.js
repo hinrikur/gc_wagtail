@@ -19,9 +19,7 @@ class RemoveAnnotationSource extends React.Component {
                 if (character.getEntity() !== null) {
                     const entityKey = character.getEntity();
                     const entity = contentState.getEntity(entityKey);
-                    if (entity !== null && contentState.getEntity(entityKey).getType() === 'ANNOTATION') {
-                        // console.log("FOUND ANNOTATION ENTITY IN TEXT");
-
+                    if (entity && entity.getType() === 'ANNOTATION') {
                         return true;
                     }
                 }

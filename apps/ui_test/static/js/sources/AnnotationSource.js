@@ -79,7 +79,7 @@ class AnnotationSource extends React.Component {
                     console.log("editorHasAnnotations", editorHasAnnotations);
 
                     switch (editorHasAnnotations) {
-                        // remove all annotation entities from the editor
+                        // Annotations already present - do nothing!
                         case true:
 
                             let currentContent = editorState.getCurrentContent();
@@ -92,7 +92,8 @@ class AnnotationSource extends React.Component {
                             // render next state through onComplete DraftTail method
                             onComplete(nextState);
                             break;
-
+                        
+                        // No annotations present - Annotate!
                         case false:
                             // Text extracted by mapping to array and joining with newline
                             let parTexts = rawState.blocks.map(object => object.text);
