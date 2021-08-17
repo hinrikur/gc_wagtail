@@ -1,15 +1,9 @@
 const React = window.React;
-const Modifier = window.DraftJS.Modifier;
-const DraftUtils = window.Draftail.DraftUtils;
 
-// const dangerouslySetInnerHTML = window.React.dangerouslySetInnerHTML()
-
-
-
-const Portal = require('./portal.js');
-const Popover = require('./popover.js');
-const IconButton = require('./icon-button.js');
-const DeclineButton = require('./decline-button.js');
+const Portal = require('./Portal.js');
+const Popover = require('./Popover.js');
+const IconButton = require('./IconButton.js');
+const DeclineButton = require('./DeclineButton.js');
 
 var entityMap = {
     '&': '&amp;',
@@ -52,32 +46,6 @@ function formatAnnotation(txt, note = "") {
     });
 }
 
-function getAnnotationClass(code) {
-    // Converts error's code from API to one of three classes
-    // Relevant for rendering of annotation 
-
-    var cls; // return variable
-
-    const classMap = {
-        "C": "grammar-error", // Compound error
-        "N": "grammar-suggestion", // Punctuation error - N  
-        "P": "grammar-suggestion", // Phrase error - P
-        "W": "grammar-suggestion", // Spelling suggestion - W (not used in GreynirCorrect atm)
-        "Z": "spelling", // Capitalization error - Z
-        "A": "spelling", // Abbreviation - A
-        "S": "spelling", // Spelling error - S
-        "U": "unknown-word", // Unknown word - U (nothing can be done)
-        "T": "wording", // Taboo warning
-        "E": "parse-error" // Error in parsing step
-    };
-
-    var codeChar = code.charAt(0);
-    cls = classMap[codeChar];
-    return cls;
-}
-
-
-
 class AnnotationEntity extends React.Component {
     constructor(props) {
         super(props);
@@ -108,7 +76,7 @@ class AnnotationEntity extends React.Component {
         });
     }
 
-    // handler for triggering Drafttail entity source via command passed
+    // handler for triggering Draftail entity source via command passed
     // removes entity with onRemove, triggers entity source with onEdit
     // closes popover/tooltip at button click (bug fix)
     buttonHandler(command, key) {

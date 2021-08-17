@@ -19,8 +19,4 @@ const Popover = ({ target, children, direction, clsName, id }) =>
   children
 );
 
-
-
-
-
 module.exports = Popover;

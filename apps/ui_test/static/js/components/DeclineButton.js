@@ -1,9 +1,9 @@
 const React = window.React;
 // const Icon = window.Draftail.Icon;
 
-const Portal = require('./portal.js');
-const Popover = require('./popover.js');
-const IconButton = require('./icon-button.js');
+const Portal = require('./Portal.js');
+const Popover = require('./Popover.js');
+const IconButton = require('./IconButton.js');
 
 class DeclineButton extends React.Component {
     constructor(props) {

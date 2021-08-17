@@ -1,7 +1,9 @@
 
 const React = window.React;
-// const Icon = window.Draftail.Icon;
 
+/**
+ * Generic button for UI. Icon defined by CSS
+ */
 class IconButton extends React.Component {
   constructor(props) {
     super(props);
