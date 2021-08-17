@@ -102,7 +102,7 @@ def register_remove_annotation_feature(features):
     features.register_editor_plugin(
         'draftail', feature_name, draftail_features.EntityFeature(
             control,
-            js=['js/remove-anns.js'],
+            js=['js/remove-anns-bundle.js'],
             css={'all': ['css/grammar-annotation.css']}
         )
     )
