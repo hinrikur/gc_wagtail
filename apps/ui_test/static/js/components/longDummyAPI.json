@@ -1,0 +1,529 @@
+[
+    {
+        "result": [
+            [
+                {
+                    "annotations": [
+                        {
+                            "code": "W001/w",
+                            "detail": null,
+                            "end": 3,
+                            "start": 3,
+                            "suggest": "óinnheimtra",
+                            "text": "Orðið 'innheimtra' gæti átt að vera 'óinnheimtra'"
+                        }
+                    ],
+                    "corrected": "Tekjur Reykjavíkurborgar vegna innheimtra fasteignaskatta námu 22 milljörðum króna í fyrra.",
+                    "tokens": [
+                        {
+                            "k": 6,
+                            "x": "Tekjur"
+                        },
+                        {
+                            "k": 6,
+                            "x": "Reykjavíkurborgar"
+                        },
+                        {
+                            "k": 6,
+                            "x": "vegna"
+                        },
+                        {
+                            "k": 6,
+                            "x": "innheimtra"
+                        },
+                        {
+                            "k": 6,
+                            "x": "fasteignaskatta"
+                        },
+                        {
+                            "k": 6,
+                            "x": "námu"
+                        },
+                        {
+                            "k": 13,
+                            "x": "22 milljörðum króna"
+                        },
+                        {
+                            "k": 6,
+                            "x": "í"
+                        },
+                        {
+                            "k": 6,
+                            "x": "fyrra"
+                        },
+                        {
+                            "k": 1,
+                            "x": "."
+                        }
+                    ]
+                },
+                {
+                    "annotations": [
+                        {
+                            "code": "S004",
+                            "detail": null,
+                            "end": 1,
+                            "start": 1,
+                            "suggest": "hækkuðu",
+                            "text": "Orðið 'hækuðu' var leiðrétt í 'hækkuðu'"
+                        },
+                        {
+                            "code": "U001",
+                            "detail": null,
+                            "end": 13,
+                            "start": 13,
+                            "suggest": "",
+                            "text": "Óþekkt orð: 'adfsafasfa'"
+                        }
+                    ],
+                    "corrected": "Þær hækkuðu alls um 813 milljónir króna á milli ára sem var 483 milljónum krónum minna en fjárhagsáætlun adfsafasfa hafði gert ráð fyrir.",
+                    "tokens": [
+                        {
+                            "k": 6,
+                            "x": "Þær"
+                        },
+                        {
+                            "k": 6,
+                            "x": "hækkuðu"
+                        },
+                        {
+                            "k": 6,
+                            "x": "alls"
+                        },
+                        {
+                            "k": 6,
+                            "x": "um"
+                        },
+                        {
+                            "k": 13,
+                            "x": "813 milljónir króna"
+                        },
+                        {
+                            "k": 6,
+                            "x": "á milli"
+                        },
+                        {
+                            "k": 6,
+                            "x": "ára"
+                        },
+                        {
+                            "k": 6,
+                            "x": "sem"
+                        },
+                        {
+                            "k": 6,
+                            "x": "var"
+                        },
+                        {
+                            "k": 13,
+                            "x": "483 milljónum krónum"
+                        },
+                        {
+                            "k": 6,
+                            "x": "minna"
+                        },
+                        {
+                            "k": 6,
+                            "x": "en"
+                        },
+                        {
+                            "k": 6,
+                            "x": "fjárhagsáætlun"
+                        },
+                        {
+                            "k": 6,
+                            "x": "adfsafasfa"
+                        },
+                        {
+                            "k": 6,
+                            "x": "hafði"
+                        },
+                        {
+                            "k": 6,
+                            "x": "gert"
+                        },
+                        {
+                            "k": 6,
+                            "x": "ráð"
+                        },
+                        {
+                            "k": 6,
+                            "x": "fyrir"
+                        },
+                        {
+                            "k": 1,
+                            "x": "."
+                        }
+                    ]
+                },
+                {
+                    "annotations": [],
+                    "corrected": "Alls er hækkunin á tekjustoðinni 3,8 prósent.",
+                    "tokens": [
+                        {
+                            "k": 6,
+                            "x": "Alls"
+                        },
+                        {
+                            "k": 6,
+                            "x": "er"
+                        },
+                        {
+                            "k": 6,
+                            "x": "hækkunin"
+                        },
+                        {
+                            "k": 6,
+                            "x": "á"
+                        },
+                        {
+                            "k": 6,
+                            "x": "tekjustoðinni"
+                        },
+                        {
+                            "k": 8,
+                            "x": "3,8 prósent"
+                        },
+                        {
+                            "k": 1,
+                            "x": "."
+                        }
+                    ]
+                },
+                {
+                    "annotations": [
+                        {
+                            "code": "P_WRONG_CASE_þgf_nf",
+                            "detail": "Sögnin 'að hlakka' er persónuleg. Frumlag hennar á að vera í nefnifalli í stað þágufalls.",
+                            "end": 1,
+                            "start": 0,
+                            "suggest": "",
+                            "text": "Á líklega að vera 'Öll börnin'"
+                        }
+                    ],
+                    "corrected": "Öllum börnunum hlakkar til jóla.",
+                    "tokens": [
+                        {
+                            "k": 6,
+                            "x": "Öllum"
+                        },
+                        {
+                            "k": 6,
+                            "x": "börnunum"
+                        },
+                        {
+                            "k": 6,
+                            "x": "hlakkar"
+                        },
+                        {
+                            "k": 6,
+                            "x": "til"
+                        },
+                        {
+                            "k": 6,
+                            "x": "jóla"
+                        },
+                        {
+                            "k": 1,
+                            "x": "."
+                        }
+                    ]
+                }
+            ]
+        ],
+        "stats": {
+            "ambiguity": 1.5780558833867904,
+            "num_parsed": 4,
+            "num_sentences": 4,
+            "num_tokens": 42
+        },
+        "text": "Tekjur Reykjavíkurborgar vegna innheimtra fasteignaskatta námu 22 milljörðum króna í fyrra. Þær hækuðu alls um 813 milljónir króna á milli ára sem var 483 milljónum krónum minna en fjárhagsáætlun adfsafasfa hafði gert ráð fyrir. Alls er hækkunin á tekjustoðinni 3,8 prósent. Öllum börnunum hlakkar til jóla.",
+        "valid": true
+    },
+    {
+        "result": [
+            [
+                {
+                    "annotations": [
+                        {
+                            "code": "S004",
+                            "detail": null,
+                            "end": 6,
+                            "start": 6,
+                            "suggest": "Reykjavíkurborgar",
+                            "text": "Orðið 'Reyjavíkurborgar' var leiðrétt í 'Reykjavíkurborgar'"
+                        },
+                        {
+                            "code": "T001/w",
+                            "detail": null,
+                            "end": 10,
+                            "start": 10,
+                            "suggest": "'lesbía'",
+                            "text": "Óheppilegt eða óviðurkvæmilegt orð, skárra væri t.d. 'lesbía'"
+                        }
+                    ],
+                    "corrected": "Þetta kemur fram í skýrslu fjármála- og áhættustýringasviðs Reykjavíkurborgar sem fylgdi með lessu hennar.",
+                    "tokens": [
+                        {
+                            "k": 6,
+                            "x": "Þetta"
+                        },
+                        {
+                            "k": 6,
+                            "x": "kemur"
+                        },
+                        {
+                            "k": 6,
+                            "x": "fram"
+                        },
+                        {
+                            "k": 6,
+                            "x": "í"
+                        },
+                        {
+                            "k": 6,
+                            "x": "skýrslu"
+                        },
+                        {
+                            "k": 6,
+                            "x": "fjármála- og áhættustýringasviðs"
+                        },
+                        {
+                            "k": 6,
+                            "x": "Reykjavíkurborgar"
+                        },
+                        {
+                            "k": 6,
+                            "x": "sem"
+                        },
+                        {
+                            "k": 6,
+                            "x": "fylgdi"
+                        },
+                        {
+                            "k": 6,
+                            "x": "með"
+                        },
+                        {
+                            "k": 6,
+                            "x": "lessu"
+                        },
+                        {
+                            "k": 6,
+                            "x": "hennar"
+                        },
+                        {
+                            "k": 1,
+                            "x": "."
+                        }
+                    ]
+                }
+            ]
+        ],
+        "stats": {
+            "ambiguity": 1.6454132887555681,
+            "num_parsed": 1,
+            "num_sentences": 1,
+            "num_tokens": 13
+        },
+        "text": "Þetta kemur fram í skýrslu fjármála- og áhættustýringasviðs Reyjavíkurborgar sem fylgdi með lessu hennar.",
+        "valid": true
+    },
+    {
+        "result": [
+            [
+                {
+                    "annotations": [
+                        {
+                            "code": "T001/w",
+                            "detail": "Sögnin 'afhomma' getur verið meiðandi þar sem hún gefur í skyn að samkynhneigð sé eiginleiki sem unnt og/eða æskilegt sé að fjarlægja.",
+                            "end": 11,
+                            "start": 11,
+                            "suggest": "'afhomma'",
+                            "text": "Óheppilegt eða óviðurkvæmilegt orð"
+                        },
+                        {
+                            "code": "C004/w",
+                            "detail": null,
+                            "end": 13,
+                            "start": 13,
+                            "suggest": "",
+                            "text": "'á' er að öllum líkindum ofaukið"
+                        },
+                        {
+                            "code": "S004",
+                            "detail": null,
+                            "end": 15,
+                            "start": 15,
+                            "suggest": "fasteignasköttum",
+                            "text": "Orðið 'fasteignaköttum' var leiðrétt í 'fasteignasköttum'"
+                        }
+                    ],
+                    "corrected": "Það þarf að leita langt aftur til að finna jafn litla afhommuð á á innheimtum fasteignasköttum og á síðasta ár, en tekjustofninn hækkaði um 2,9 milljarða króna milli 2018 og 2019 og um þrjá milljarða króna milli 2017 og 2018.",
+                    "tokens": [
+                        {
+                            "k": 6,
+                            "x": "Það"
+                        },
+                        {
+                            "k": 6,
+                            "x": "þarf"
+                        },
+                        {
+                            "k": 6,
+                            "x": "að"
+                        },
+                        {
+                            "k": 6,
+                            "x": "leita"
+                        },
+                        {
+                            "k": 6,
+                            "x": "langt"
+                        },
+                        {
+                            "k": 6,
+                            "x": "aftur"
+                        },
+                        {
+                            "k": 6,
+                            "x": "til"
+                        },
+                        {
+                            "k": 6,
+                            "x": "að"
+                        },
+                        {
+                            "k": 6,
+                            "x": "finna"
+                        },
+                        {
+                            "k": 6,
+                            "x": "jafn"
+                        },
+                        {
+                            "k": 6,
+                            "x": "litla"
+                        },
+                        {
+                            "k": 6,
+                            "x": "afhommuð"
+                        },
+                        {
+                            "k": 6,
+                            "x": "á"
+                        },
+                        {
+                            "k": 6,
+                            "x": "á"
+                        },
+                        {
+                            "k": 6,
+                            "x": "innheimtum"
+                        },
+                        {
+                            "k": 6,
+                            "x": "fasteignasköttum"
+                        },
+                        {
+                            "k": 6,
+                            "x": "og"
+                        },
+                        {
+                            "k": 6,
+                            "x": "á"
+                        },
+                        {
+                            "k": 6,
+                            "x": "síðasta"
+                        },
+                        {
+                            "k": 6,
+                            "x": "ár"
+                        },
+                        {
+                            "k": 1,
+                            "x": ","
+                        },
+                        {
+                            "k": 6,
+                            "x": "en"
+                        },
+                        {
+                            "k": 6,
+                            "x": "tekjustofninn"
+                        },
+                        {
+                            "k": 6,
+                            "x": "hækkaði"
+                        },
+                        {
+                            "k": 6,
+                            "x": "um"
+                        },
+                        {
+                            "k": 13,
+                            "x": "2,9 milljarða króna"
+                        },
+                        {
+                            "k": 6,
+                            "x": "milli"
+                        },
+                        {
+                            "k": 4,
+                            "x": "2018"
+                        },
+                        {
+                            "k": 6,
+                            "x": "og"
+                        },
+                        {
+                            "k": 4,
+                            "x": "2019"
+                        },
+                        {
+                            "k": 6,
+                            "x": "og"
+                        },
+                        {
+                            "k": 6,
+                            "x": "um"
+                        },
+                        {
+                            "k": 13,
+                            "x": "þrjá milljarða króna"
+                        },
+                        {
+                            "k": 6,
+                            "x": "milli"
+                        },
+                        {
+                            "k": 4,
+                            "x": "2017"
+                        },
+                        {
+                            "k": 6,
+                            "x": "og"
+                        },
+                        {
+                            "k": 4,
+                            "x": "2018"
+                        },
+                        {
+                            "k": 1,
+                            "x": "."
+                        }
+                    ]
+                }
+            ]
+        ],
+        "stats": {
+            "ambiguity": 2.074372666385423,
+            "num_parsed": 1,
+            "num_sentences": 1,
+            "num_tokens": 38
+        },
+        "text": "Það þarf að leita langt aftur til að finna jafn litla afhommun á á innheimtum fasteignaköttum og á síðasta ár, en tekjustofninn hækkaði um 2,9 millljarða króna milli 2018 og 2019 og um þrjá milljarða króna milli 2017 og 2018.",
+        "valid": true
+    }
+]

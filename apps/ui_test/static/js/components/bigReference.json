@@ -1,0 +1,2972 @@
+{
+    "result": [
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_aðaf",
+                        "detail": null,
+                        "end": 8,
+                        "end_char": 46,
+                        "start": 6,
+                        "start_char": 30,
+                        "suggest": "að gefnu tilefni",
+                        "text": "Orðasambandið 'af gefnu tilefni' var leiðrétt í 'að gefnu tilefni'",
+                        "sent": "Einn af drengjunum fór í sund af gefnu tilefni."
+                    }
+                ],
+                "corrected": "Einn af drengjunum fór í sund að gefnu tilefni.",
+                "nonce": "79722324",
+                "original": "Einn af drengjunum fór í sund af gefnu tilefni.",
+                "token": "9cb14c28b6d409f8c9dbd465de453ffc66c14774493c4025d5647ed42328c5d0",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Einn",
+                        "x": "Einn"
+                    },
+                    {
+                        "i": 4,
+                        "k": 6,
+                        "o": " af",
+                        "x": "af"
+                    },
+                    {
+                        "i": 7,
+                        "k": 6,
+                        "o": " drengjunum",
+                        "x": "drengjunum"
+                    },
+                    {
+                        "i": 18,
+                        "k": 6,
+                        "o": " fór",
+                        "x": "fór"
+                    },
+                    {
+                        "i": 22,
+                        "k": 6,
+                        "o": " í",
+                        "x": "í"
+                    },
+                    {
+                        "i": 24,
+                        "k": 6,
+                        "o": " sund",
+                        "x": "sund"
+                    },
+                    {
+                        "i": 29,
+                        "k": 6,
+                        "o": " af",
+                        "x": "að"
+                    },
+                    {
+                        "i": 32,
+                        "k": 6,
+                        "o": " gefnu",
+                        "x": "gefnu"
+                    },
+                    {
+                        "i": 38,
+                        "k": 6,
+                        "o": " tilefni",
+                        "x": "tilefni"
+                    },
+                    {
+                        "i": 46,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_EinnAf",
+                        "detail": "Nafnliðurinn 'einn af drengjunum' er í eintölu og með honum á því að vera sögn í eintölu.",
+                        "end": 3,
+                        "end_char": 23,
+                        "start": 3,
+                        "start_char": 19,
+                        "suggest": null,
+                        "text": "Sögnin 'fóru' á sennilega að vera í eintölu, ekki fleirtölu",
+                        "sent": "Einn af drengjunum fóru í sund."
+                    }
+                ],
+                "corrected": "Einn af drengjunum fóru í sund.",
+                "nonce": "25427539",
+                "original": "Einn af drengjunum fóru í sund.",
+                "token": "c8cd473a10c8e6bcc3ae3869d09745096bac3c3c5d302e000cfefd10a3646900",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Einn",
+                        "x": "Einn"
+                    },
+                    {
+                        "i": 4,
+                        "k": 6,
+                        "o": " af",
+                        "x": "af"
+                    },
+                    {
+                        "i": 7,
+                        "k": 6,
+                        "o": " drengjunum",
+                        "x": "drengjunum"
+                    },
+                    {
+                        "i": 18,
+                        "k": 6,
+                        "o": " fóru",
+                        "x": "fóru"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " í",
+                        "x": "í"
+                    },
+                    {
+                        "i": 25,
+                        "k": 6,
+                        "o": " sund",
+                        "x": "sund"
+                    },
+                    {
+                        "i": 30,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_FjöldiHluti",
+                        "detail": "Nafnliðurinn 'fjöldi þingmanna' er í eintölu og með honum á því að vera sögn í eintölu.",
+                        "end": 2,
+                        "end_char": 24,
+                        "start": 2,
+                        "start_char": 17,
+                        "suggest": null,
+                        "text": "Sögnin 'greiddu' á sennilega að vera í eintölu, ekki fleirtölu",
+                        "sent": "Fjöldi þingmanna greiddu atkvæði gegn tillögunni."
+                    }
+                ],
+                "corrected": "Fjöldi þingmanna greiddu atkvæði gegn tillögunni.",
+                "nonce": "99958857",
+                "original": "Fjöldi þingmanna greiddu atkvæði gegn tillögunni.",
+                "token": "4e2ae547512cc85a91235309be2591984e74658e38636b3937cd6ec0937bd685",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Fjöldi",
+                        "x": "Fjöldi"
+                    },
+                    {
+                        "i": 6,
+                        "k": 6,
+                        "o": " þingmanna",
+                        "x": "þingmanna"
+                    },
+                    {
+                        "i": 16,
+                        "k": 6,
+                        "o": " greiddu",
+                        "x": "greiddu"
+                    },
+                    {
+                        "i": 24,
+                        "k": 6,
+                        "o": " atkvæði",
+                        "x": "atkvæði"
+                    },
+                    {
+                        "i": 32,
+                        "k": 6,
+                        "o": " gegn",
+                        "x": "gegn"
+                    },
+                    {
+                        "i": 37,
+                        "k": 6,
+                        "o": " tillögunni",
+                        "x": "tillögunni"
+                    },
+                    {
+                        "i": 48,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_Að/w",
+                        "detail": "'að' er yfirleitt ofaukið í samtengingum á borð við 'áður en', 'síðan', 'enda þótt' o.s.frv.",
+                        "end": 5,
+                        "end_char": 25,
+                        "start": 5,
+                        "start_char": 23,
+                        "suggest": "",
+                        "text": "'að' er að öllum líkindum ofaukið",
+                        "sent": "Jón borðaði ís þar sem að hann var svangur."
+                    }
+                ],
+                "corrected": "Jón borðaði ís þar sem að hann var svangur.",
+                "nonce": "11337344",
+                "original": "Jón borðaði ís þar sem að hann var svangur.",
+                "token": "5ea0f51ba68fef4d3d001f56a597dc7b9bb395eb6fa69f6477c0fbfae1fcacf7",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 14,
+                        "o": "Jón",
+                        "x": "Jón"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " borðaði",
+                        "x": "borðaði"
+                    },
+                    {
+                        "i": 11,
+                        "k": 6,
+                        "o": " ís",
+                        "x": "ís"
+                    },
+                    {
+                        "i": 14,
+                        "k": 6,
+                        "o": " þar",
+                        "x": "þar"
+                    },
+                    {
+                        "i": 18,
+                        "k": 6,
+                        "o": " sem",
+                        "x": "sem"
+                    },
+                    {
+                        "i": 22,
+                        "k": 6,
+                        "o": " að",
+                        "x": "að"
+                    },
+                    {
+                        "i": 25,
+                        "k": 6,
+                        "o": " hann",
+                        "x": "hann"
+                    },
+                    {
+                        "i": 30,
+                        "k": 6,
+                        "o": " var",
+                        "x": "var"
+                    },
+                    {
+                        "i": 34,
+                        "k": 6,
+                        "o": " svangur",
+                        "x": "svangur"
+                    },
+                    {
+                        "i": 42,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_Að/w",
+                        "detail": "'að' er yfirleitt ofaukið í samtengingum á borð við 'áður en', 'síðan', 'enda þótt' o.s.frv.",
+                        "end": 6,
+                        "end_char": 26,
+                        "start": 6,
+                        "start_char": 24,
+                        "suggest": "",
+                        "text": "'að' er að öllum líkindum ofaukið",
+                        "sent": "'Jón borðaði ís þar sem að hann var svangur."
+                    }
+                ],
+                "corrected": "Jón borðaði ís þar sem að hann var svangur.",
+                "nonce": "59087096",
+                "original": "'Jón borðaði ís þar sem að hann var svangur.",
+                "token": "06bb9a9d4ca19076f2787b90027480c50db0c88587dde76e612214cb927682c9",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 1,
+                        "o": "'",
+                        "x": "'"
+                    },
+                    {
+                        "i": 1,
+                        "k": 14,
+                        "o": "Jón",
+                        "x": "Jón"
+                    },
+                    {
+                        "i": 4,
+                        "k": 6,
+                        "o": " borðaði",
+                        "x": "borðaði"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " ís",
+                        "x": "ís"
+                    },
+                    {
+                        "i": 15,
+                        "k": 6,
+                        "o": " þar",
+                        "x": "þar"
+                    },
+                    {
+                        "i": 19,
+                        "k": 6,
+                        "o": " sem",
+                        "x": "sem"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " að",
+                        "x": "að"
+                    },
+                    {
+                        "i": 26,
+                        "k": 6,
+                        "o": " hann",
+                        "x": "hann"
+                    },
+                    {
+                        "i": 31,
+                        "k": 6,
+                        "o": " var",
+                        "x": "var"
+                    },
+                    {
+                        "i": 35,
+                        "k": 6,
+                        "o": " svangur",
+                        "x": "svangur"
+                    },
+                    {
+                        "i": 43,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_ÞóAð",
+                        "detail": "Réttara er að nota samtenginguna 'að' í samhengi á borð við 'jafnvel þó að von sé á sólskini'.",
+                        "end": 3,
+                        "end_char": 17,
+                        "start": 3,
+                        "start_char": 15,
+                        "suggest": "þó að",
+                        "text": "'þó' á sennilega að vera 'þó að' (eða 'þótt')",
+                        "sent": "Jón borðaði ís þó hann væri svangur."
+                    }
+                ],
+                "corrected": "Jón borðaði ís þó hann væri svangur.",
+                "nonce": "15289209",
+                "original": "Jón borðaði ís þó hann væri svangur.",
+                "token": "6d35327df2465f6c77dbc5fb8c48d4691a580e4e5c5e3e91daf5bcc5ea381a8d",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 14,
+                        "o": "Jón",
+                        "x": "Jón"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " borðaði",
+                        "x": "borðaði"
+                    },
+                    {
+                        "i": 11,
+                        "k": 6,
+                        "o": " ís",
+                        "x": "ís"
+                    },
+                    {
+                        "i": 14,
+                        "k": 6,
+                        "o": " þó",
+                        "x": "þó"
+                    },
+                    {
+                        "i": 17,
+                        "k": 6,
+                        "o": " hann",
+                        "x": "hann"
+                    },
+                    {
+                        "i": 22,
+                        "k": 6,
+                        "o": " væri",
+                        "x": "væri"
+                    },
+                    {
+                        "i": 27,
+                        "k": 6,
+                        "o": " svangur",
+                        "x": "svangur"
+                    },
+                    {
+                        "i": 35,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_ÞóAð",
+                        "detail": "Réttara er að nota samtenginguna 'að' í samhengi á borð við 'jafnvel þó að von sé á sólskini'.",
+                        "end": 4,
+                        "end_char": 18,
+                        "start": 4,
+                        "start_char": 16,
+                        "suggest": "þó að",
+                        "text": "'þó' á sennilega að vera 'þó að' (eða 'þótt')",
+                        "sent": "'Jón borðaði ís þó hann væri svangur."
+                    }
+                ],
+                "corrected": "Jón borðaði ís þó hann væri svangur.",
+                "nonce": "36779044",
+                "original": "'Jón borðaði ís þó hann væri svangur.",
+                "token": "6e7a5a717f398c15a7f8bc7c507fbcf161e17ae66374d96e82305e564cdb5503",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 1,
+                        "o": "'",
+                        "x": "'"
+                    },
+                    {
+                        "i": 1,
+                        "k": 14,
+                        "o": "Jón",
+                        "x": "Jón"
+                    },
+                    {
+                        "i": 4,
+                        "k": 6,
+                        "o": " borðaði",
+                        "x": "borðaði"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " ís",
+                        "x": "ís"
+                    },
+                    {
+                        "i": 15,
+                        "k": 6,
+                        "o": " þó",
+                        "x": "þó"
+                    },
+                    {
+                        "i": 18,
+                        "k": 6,
+                        "o": " hann",
+                        "x": "hann"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " væri",
+                        "x": "væri"
+                    },
+                    {
+                        "i": 28,
+                        "k": 6,
+                        "o": " svangur",
+                        "x": "svangur"
+                    },
+                    {
+                        "i": 36,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_ÞóAð",
+                        "detail": "Réttara er að nota samtenginguna 'að' í samhengi á borð við 'jafnvel þó að von sé á sólskini'.",
+                        "end": 4,
+                        "end_char": 25,
+                        "start": 3,
+                        "start_char": 15,
+                        "suggest": "jafnvel þó að",
+                        "text": "'jafnvel þó' á sennilega að vera 'jafnvel þó að' (eða 'þótt')",
+                        "sent": "Jón borðaði ís jafnvel þó hann væri svangur."
+                    }
+                ],
+                "corrected": "Jón borðaði ís jafnvel þó hann væri svangur.",
+                "nonce": "50758989",
+                "original": "Jón borðaði ís jafnvel þó hann væri svangur.",
+                "token": "6bb7fbebffe4a080aac35b96d1e10e723d478fa9bb60ef481935ad45f905960a",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 14,
+                        "o": "Jón",
+                        "x": "Jón"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " borðaði",
+                        "x": "borðaði"
+                    },
+                    {
+                        "i": 11,
+                        "k": 6,
+                        "o": " ís",
+                        "x": "ís"
+                    },
+                    {
+                        "i": 14,
+                        "k": 6,
+                        "o": " jafnvel",
+                        "x": "jafnvel"
+                    },
+                    {
+                        "i": 22,
+                        "k": 6,
+                        "o": " þó",
+                        "x": "þó"
+                    },
+                    {
+                        "i": 25,
+                        "k": 6,
+                        "o": " hann",
+                        "x": "hann"
+                    },
+                    {
+                        "i": 30,
+                        "k": 6,
+                        "o": " væri",
+                        "x": "væri"
+                    },
+                    {
+                        "i": 35,
+                        "k": 6,
+                        "o": " svangur",
+                        "x": "svangur"
+                    },
+                    {
+                        "i": 43,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_ÞóAð",
+                        "detail": "Réttara er að nota samtenginguna 'að' í samhengi á borð við 'jafnvel þó að von sé á sólskini'.",
+                        "end": 5,
+                        "end_char": 26,
+                        "start": 4,
+                        "start_char": 16,
+                        "suggest": "jafnvel þó að",
+                        "text": "'jafnvel þó' á sennilega að vera 'jafnvel þó að' (eða 'þótt')",
+                        "sent": "'Jón borðaði ís jafnvel þó hann væri svangur."
+                    }
+                ],
+                "corrected": "Jón borðaði ís jafnvel þó hann væri svangur.",
+                "nonce": "09083705",
+                "original": "'Jón borðaði ís jafnvel þó hann væri svangur.",
+                "token": "ccfff270ca66eb78431ea0f159869aa1d832f0b9c35ee8fca35f27e24411c415",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 1,
+                        "o": "'",
+                        "x": "'"
+                    },
+                    {
+                        "i": 1,
+                        "k": 14,
+                        "o": "Jón",
+                        "x": "Jón"
+                    },
+                    {
+                        "i": 4,
+                        "k": 6,
+                        "o": " borðaði",
+                        "x": "borðaði"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " ís",
+                        "x": "ís"
+                    },
+                    {
+                        "i": 15,
+                        "k": 6,
+                        "o": " jafnvel",
+                        "x": "jafnvel"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " þó",
+                        "x": "þó"
+                    },
+                    {
+                        "i": 26,
+                        "k": 6,
+                        "o": " hann",
+                        "x": "hann"
+                    },
+                    {
+                        "i": 31,
+                        "k": 6,
+                        "o": " væri",
+                        "x": "væri"
+                    },
+                    {
+                        "i": 36,
+                        "k": 6,
+                        "o": " svangur",
+                        "x": "svangur"
+                    },
+                    {
+                        "i": 44,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [],
+                "corrected": "Jón borðaði ís þótt hann væri svangur.",
+                "nonce": "24957435",
+                "original": "Jón borðaði ís þótt hann væri svangur.",
+                "token": "59d8b3e8b12813a63b43f2a9815b825a75de8894a2efb0f66c85693e2a46f838",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 14,
+                        "o": "Jón",
+                        "x": "Jón"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " borðaði",
+                        "x": "borðaði"
+                    },
+                    {
+                        "i": 11,
+                        "k": 6,
+                        "o": " ís",
+                        "x": "ís"
+                    },
+                    {
+                        "i": 14,
+                        "k": 6,
+                        "o": " þótt",
+                        "x": "þótt"
+                    },
+                    {
+                        "i": 19,
+                        "k": 6,
+                        "o": " hann",
+                        "x": "hann"
+                    },
+                    {
+                        "i": 24,
+                        "k": 6,
+                        "o": " væri",
+                        "x": "væri"
+                    },
+                    {
+                        "i": 29,
+                        "k": 6,
+                        "o": " svangur",
+                        "x": "svangur"
+                    },
+                    {
+                        "i": 37,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [],
+                "corrected": "Jón borðaði ís þótt hann væri svangur.",
+                "nonce": "03760483",
+                "original": "'Jón borðaði ís þótt hann væri svangur.",
+                "token": "e52946691882991b7a66f7dc08656f1ef2a7ed7b0611453823bbd09bc8c9958e",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 1,
+                        "o": "'",
+                        "x": "'"
+                    },
+                    {
+                        "i": 1,
+                        "k": 14,
+                        "o": "Jón",
+                        "x": "Jón"
+                    },
+                    {
+                        "i": 4,
+                        "k": 6,
+                        "o": " borðaði",
+                        "x": "borðaði"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " ís",
+                        "x": "ís"
+                    },
+                    {
+                        "i": 15,
+                        "k": 6,
+                        "o": " þótt",
+                        "x": "þótt"
+                    },
+                    {
+                        "i": 20,
+                        "k": 6,
+                        "o": " hann",
+                        "x": "hann"
+                    },
+                    {
+                        "i": 25,
+                        "k": 6,
+                        "o": " væri",
+                        "x": "væri"
+                    },
+                    {
+                        "i": 30,
+                        "k": 6,
+                        "o": " svangur",
+                        "x": "svangur"
+                    },
+                    {
+                        "i": 38,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_AnnaðHvort",
+                        "detail": "Rita á 'annaðhvort' í samtengingu, til dæmis 'Annaðhvort fer ég út eða þú'. Rita á 'annað hvort' í tveimur orðum þegar um er að ræða fornöfn, til dæmis 'annað hvort systkinanna'.",
+                        "end": 4,
+                        "end_char": 25,
+                        "start": 3,
+                        "start_char": 14,
+                        "suggest": "annaðhvort",
+                        "text": "Í stað 'annað hvort' á sennilega að standa 'annaðhvort'",
+                        "sent": "Ég féll fyrir annað hvort fegurð hennar eða gáfum."
+                    }
+                ],
+                "corrected": "Ég féll fyrir annað hvort fegurð hennar eða gáfum.",
+                "nonce": "67628357",
+                "original": "Ég féll fyrir annað hvort fegurð hennar eða gáfum.",
+                "token": "78b5106f25c1ef5d594eba29180747c4f546f6c1edbdab55b1a29ade747b3413",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ég",
+                        "x": "Ég"
+                    },
+                    {
+                        "i": 2,
+                        "k": 6,
+                        "o": " féll",
+                        "x": "féll"
+                    },
+                    {
+                        "i": 7,
+                        "k": 6,
+                        "o": " fyrir",
+                        "x": "fyrir"
+                    },
+                    {
+                        "i": 13,
+                        "k": 6,
+                        "o": " annað",
+                        "x": "annað"
+                    },
+                    {
+                        "i": 19,
+                        "k": 6,
+                        "o": " hvort",
+                        "x": "hvort"
+                    },
+                    {
+                        "i": 25,
+                        "k": 6,
+                        "o": " fegurð",
+                        "x": "fegurð"
+                    },
+                    {
+                        "i": 32,
+                        "k": 6,
+                        "o": " hennar",
+                        "x": "hennar"
+                    },
+                    {
+                        "i": 39,
+                        "k": 6,
+                        "o": " eða",
+                        "x": "eða"
+                    },
+                    {
+                        "i": 43,
+                        "k": 6,
+                        "o": " gáfum",
+                        "x": "gáfum"
+                    },
+                    {
+                        "i": 49,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_Annaðhvort",
+                        "detail": "Rita á 'annað hvort' þegar um er að ræða fornöfn, til dæmis 'annað hvort systkinanna'. Rita á 'annaðhvort' í samtengingu, til dæmis 'Annaðhvort fer ég út eða þú'.",
+                        "end": 3,
+                        "end_char": 24,
+                        "start": 3,
+                        "start_char": 14,
+                        "suggest": "annað hvort",
+                        "text": "Í stað 'annaðhvort' á sennilega að standa 'annað hvort'",
+                        "sent": "Ég talaði við annaðhvort barnanna."
+                    }
+                ],
+                "corrected": "Ég talaði við annaðhvort barnanna.",
+                "nonce": "59913060",
+                "original": "Ég talaði við annaðhvort barnanna.",
+                "token": "e5b26bf9fdba869704785868051ee7fdad85a8c7d35e548db2ed50ba18fdffdc",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ég",
+                        "x": "Ég"
+                    },
+                    {
+                        "i": 2,
+                        "k": 6,
+                        "o": " talaði",
+                        "x": "talaði"
+                    },
+                    {
+                        "i": 9,
+                        "k": 6,
+                        "o": " við",
+                        "x": "við"
+                    },
+                    {
+                        "i": 13,
+                        "k": 6,
+                        "o": " annaðhvort",
+                        "x": "annaðhvort"
+                    },
+                    {
+                        "i": 24,
+                        "k": 6,
+                        "o": " barnanna",
+                        "x": "barnanna"
+                    },
+                    {
+                        "i": 33,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_FráÞvíAð",
+                        "detail": "Rétt er að nota samtenginguna 'að' í þessu samhengi, til dæmis 'allt frá því að Anna hóf námið'.",
+                        "end": 5,
+                        "end_char": 28,
+                        "start": 4,
+                        "start_char": 21,
+                        "suggest": "frá því að",
+                        "text": "'frá því' á sennilega að vera 'frá því að'",
+                        "sent": "Ég hef verið slappur frá því ég fékk sprautuna."
+                    }
+                ],
+                "corrected": "Ég hef verið slappur frá því ég fékk sprautuna.",
+                "nonce": "53622908",
+                "original": "Ég hef verið slappur frá því ég fékk sprautuna.",
+                "token": "543296645a8c7eb9afd36a21a8f5334dc884903fafbeb8eb7d9d541364a8d95c",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ég",
+                        "x": "Ég"
+                    },
+                    {
+                        "i": 2,
+                        "k": 6,
+                        "o": " hef",
+                        "x": "hef"
+                    },
+                    {
+                        "i": 6,
+                        "k": 6,
+                        "o": " verið",
+                        "x": "verið"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " slappur",
+                        "x": "slappur"
+                    },
+                    {
+                        "i": 20,
+                        "k": 6,
+                        "o": " frá",
+                        "x": "frá"
+                    },
+                    {
+                        "i": 24,
+                        "k": 6,
+                        "o": " því",
+                        "x": "því"
+                    },
+                    {
+                        "i": 28,
+                        "k": 6,
+                        "o": " ég",
+                        "x": "ég"
+                    },
+                    {
+                        "i": 31,
+                        "k": 6,
+                        "o": " fékk",
+                        "x": "fékk"
+                    },
+                    {
+                        "i": 36,
+                        "k": 6,
+                        "o": " sprautuna",
+                        "x": "sprautuna"
+                    },
+                    {
+                        "i": 46,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_FráÞvíAð",
+                        "detail": "Rétt er að nota samtenginguna 'að' í þessu samhengi, til dæmis 'allt frá því að Anna hóf námið'.",
+                        "end": 6,
+                        "end_char": 33,
+                        "start": 4,
+                        "start_char": 21,
+                        "suggest": "allt frá því að",
+                        "text": "'allt frá því' á sennilega að vera 'allt frá því að'",
+                        "sent": "Ég hef verið slappur allt frá því ég fékk sprautuna."
+                    }
+                ],
+                "corrected": "Ég hef verið slappur allt frá því ég fékk sprautuna.",
+                "nonce": "81638359",
+                "original": "Ég hef verið slappur allt frá því ég fékk sprautuna.",
+                "token": "08bc7ef3f319fccc913f11f4856133c68b125bed6e0220a7a0e6f9c91367ce8e",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ég",
+                        "x": "Ég"
+                    },
+                    {
+                        "i": 2,
+                        "k": 6,
+                        "o": " hef",
+                        "x": "hef"
+                    },
+                    {
+                        "i": 6,
+                        "k": 6,
+                        "o": " verið",
+                        "x": "verið"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " slappur",
+                        "x": "slappur"
+                    },
+                    {
+                        "i": 20,
+                        "k": 6,
+                        "o": " allt",
+                        "x": "allt"
+                    },
+                    {
+                        "i": 25,
+                        "k": 6,
+                        "o": " frá",
+                        "x": "frá"
+                    },
+                    {
+                        "i": 29,
+                        "k": 6,
+                        "o": " því",
+                        "x": "því"
+                    },
+                    {
+                        "i": 33,
+                        "k": 6,
+                        "o": " ég",
+                        "x": "ég"
+                    },
+                    {
+                        "i": 36,
+                        "k": 6,
+                        "o": " fékk",
+                        "x": "fékk"
+                    },
+                    {
+                        "i": 41,
+                        "k": 6,
+                        "o": " sprautuna",
+                        "x": "sprautuna"
+                    },
+                    {
+                        "i": 51,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_VístAð",
+                        "detail": "Rétt er að nota 'fyrst að' fremur en 'víst að'  til að tengja saman atburð og forsendu.",
+                        "end": 5,
+                        "end_char": 33,
+                        "start": 4,
+                        "start_char": 26,
+                        "suggest": "fyrst að",
+                        "text": "'víst að' á sennilega að vera 'fyrst að'",
+                        "sent": "Friðgeir vildi vera heima víst að Sigga yrði að vera heima."
+                    }
+                ],
+                "corrected": "Friðgeir vildi vera heima víst að Sigga yrði að vera heima.",
+                "nonce": "59312303",
+                "original": "Friðgeir vildi vera heima víst að Sigga yrði að vera heima.",
+                "token": "a9a0607003b907605f402d9484a707488a50ba6fe7a90f809c03c8846f6c6374",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 14,
+                        "o": "Friðgeir",
+                        "x": "Friðgeir"
+                    },
+                    {
+                        "i": 8,
+                        "k": 6,
+                        "o": " vildi",
+                        "x": "vildi"
+                    },
+                    {
+                        "i": 14,
+                        "k": 6,
+                        "o": " vera",
+                        "x": "vera"
+                    },
+                    {
+                        "i": 19,
+                        "k": 6,
+                        "o": " heima",
+                        "x": "heima"
+                    },
+                    {
+                        "i": 25,
+                        "k": 6,
+                        "o": " víst",
+                        "x": "víst"
+                    },
+                    {
+                        "i": 30,
+                        "k": 6,
+                        "o": " að",
+                        "x": "að"
+                    },
+                    {
+                        "i": 33,
+                        "k": 14,
+                        "o": " Sigga",
+                        "x": "Sigga"
+                    },
+                    {
+                        "i": 39,
+                        "k": 6,
+                        "o": " yrði",
+                        "x": "yrði"
+                    },
+                    {
+                        "i": 44,
+                        "k": 6,
+                        "o": " að",
+                        "x": "að"
+                    },
+                    {
+                        "i": 47,
+                        "k": 6,
+                        "o": " vera",
+                        "x": "vera"
+                    },
+                    {
+                        "i": 52,
+                        "k": 6,
+                        "o": " heima",
+                        "x": "heima"
+                    },
+                    {
+                        "i": 58,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [],
+                "corrected": "Friðgeir taldi víst að Sigga yrði að vera heima.",
+                "nonce": "05001326",
+                "original": "Friðgeir taldi víst að Sigga yrði að vera heima.",
+                "token": "b11bb844564c1aab81eb86c8d6ff0665d1449dd6f82a3a8bdffbc155cb65c6ab",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 14,
+                        "o": "Friðgeir",
+                        "x": "Friðgeir"
+                    },
+                    {
+                        "i": 8,
+                        "k": 6,
+                        "o": " taldi",
+                        "x": "taldi"
+                    },
+                    {
+                        "i": 14,
+                        "k": 6,
+                        "o": " víst",
+                        "x": "víst"
+                    },
+                    {
+                        "i": 19,
+                        "k": 6,
+                        "o": " að",
+                        "x": "að"
+                    },
+                    {
+                        "i": 22,
+                        "k": 14,
+                        "o": " Sigga",
+                        "x": "Sigga"
+                    },
+                    {
+                        "i": 28,
+                        "k": 6,
+                        "o": " yrði",
+                        "x": "yrði"
+                    },
+                    {
+                        "i": 33,
+                        "k": 6,
+                        "o": " að",
+                        "x": "að"
+                    },
+                    {
+                        "i": 36,
+                        "k": 6,
+                        "o": " vera",
+                        "x": "vera"
+                    },
+                    {
+                        "i": 41,
+                        "k": 6,
+                        "o": " heima",
+                        "x": "heima"
+                    },
+                    {
+                        "i": 47,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_NT_Heldur/w",
+                        "detail": "Yfirleitt nægir að nota 'en' í þessu samhengi.",
+                        "end": 5,
+                        "end_char": 30,
+                        "start": 5,
+                        "start_char": 24,
+                        "suggest": null,
+                        "text": "'heldur' er sennilega ofaukið",
+                        "sent": "Ég er ekki meiri fáviti heldur en þú."
+                    }
+                ],
+                "corrected": "Ég er ekki meiri fáviti heldur en þú.",
+                "nonce": "04751891",
+                "original": "Ég er ekki meiri fáviti heldur en þú.",
+                "token": "c5050c867dafd0ec320d64435a2d628fd173d5c34108d0eac444f401a24ba381",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ég",
+                        "x": "Ég"
+                    },
+                    {
+                        "i": 2,
+                        "k": 6,
+                        "o": " er",
+                        "x": "er"
+                    },
+                    {
+                        "i": 5,
+                        "k": 6,
+                        "o": " ekki",
+                        "x": "ekki"
+                    },
+                    {
+                        "i": 10,
+                        "k": 6,
+                        "o": " meiri",
+                        "x": "meiri"
+                    },
+                    {
+                        "i": 16,
+                        "k": 6,
+                        "o": " fáviti",
+                        "x": "fáviti"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " heldur",
+                        "x": "heldur"
+                    },
+                    {
+                        "i": 30,
+                        "k": 6,
+                        "o": " en",
+                        "x": "en"
+                    },
+                    {
+                        "i": 33,
+                        "k": 6,
+                        "o": " þú",
+                        "x": "þú"
+                    },
+                    {
+                        "i": 36,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "Z002",
+                        "detail": null,
+                        "end": 0,
+                        "end_char": 6,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Barnið",
+                        "text": "Orð á að byrja á hástaf: 'barnið'",
+                        "sent": "barnið fæddist í gær, en það er 3. strákur þeirra hjóna."
+                    }
+                ],
+                "corrected": "Barnið fæddist í gær, en það er 3. strákur þeirra hjóna.",
+                "nonce": "26212598",
+                "original": "barnið fæddist í gær, en það er 3. strákur þeirra hjóna.",
+                "token": "925c496ca8d6e3d0e0e2ca3f629ba75bb66c023d4694ec2eb62f9ab79d1aa21a",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "barnið",
+                        "x": "Barnið"
+                    },
+                    {
+                        "i": 6,
+                        "k": 6,
+                        "o": " fæddist",
+                        "x": "fæddist"
+                    },
+                    {
+                        "i": 14,
+                        "k": 6,
+                        "o": " í gær",
+                        "x": "í gær"
+                    },
+                    {
+                        "i": 20,
+                        "k": 1,
+                        "o": ",",
+                        "x": ","
+                    },
+                    {
+                        "i": 21,
+                        "k": 6,
+                        "o": " en",
+                        "x": "en"
+                    },
+                    {
+                        "i": 24,
+                        "k": 6,
+                        "o": " það",
+                        "x": "það"
+                    },
+                    {
+                        "i": 28,
+                        "k": 6,
+                        "o": " er",
+                        "x": "er"
+                    },
+                    {
+                        "i": 31,
+                        "k": 10,
+                        "o": " 3.",
+                        "x": "3."
+                    },
+                    {
+                        "i": 34,
+                        "k": 6,
+                        "o": " strákur",
+                        "x": "strákur"
+                    },
+                    {
+                        "i": 42,
+                        "k": 6,
+                        "o": " þeirra",
+                        "x": "þeirra"
+                    },
+                    {
+                        "i": 49,
+                        "k": 6,
+                        "o": " hjóna",
+                        "x": "hjóna"
+                    },
+                    {
+                        "i": 55,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [],
+                "corrected": "Ákæran beinist gegn Jóni og Friðberti.",
+                "nonce": "72100150",
+                "original": "Ákæran beinist gegn Jóni og Friðberti.",
+                "token": "0a4bc09f068c4807ecbf062f055896b6ca6137658168ac6e6038bd1e8cab8f33",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ákæran",
+                        "x": "Ákæran"
+                    },
+                    {
+                        "i": 6,
+                        "k": 6,
+                        "o": " beinist",
+                        "x": "beinist"
+                    },
+                    {
+                        "i": 14,
+                        "k": 6,
+                        "o": " gegn",
+                        "x": "gegn"
+                    },
+                    {
+                        "i": 19,
+                        "k": 14,
+                        "o": " Jóni",
+                        "x": "Jóni"
+                    },
+                    {
+                        "i": 24,
+                        "k": 6,
+                        "o": " og",
+                        "x": "og"
+                    },
+                    {
+                        "i": 27,
+                        "k": 14,
+                        "o": " Friðberti",
+                        "x": "Friðberti"
+                    },
+                    {
+                        "i": 37,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "Z002",
+                        "detail": null,
+                        "end": 0,
+                        "end_char": 7,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Deildin",
+                        "text": "Orð á að byrja á hástaf: 'deildin'",
+                        "sent": "deildin fer vel af stað í vetur."
+                    }
+                ],
+                "corrected": "Deildin fer vel af stað í vetur.",
+                "nonce": "67721666",
+                "original": "deildin fer vel af stað í vetur.",
+                "token": "2830239dae7eab18d14c01008bdd8f7831d5bb481b4ebf6b67e12352a6618738",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "deildin",
+                        "x": "Deildin"
+                    },
+                    {
+                        "i": 7,
+                        "k": 6,
+                        "o": " fer",
+                        "x": "fer"
+                    },
+                    {
+                        "i": 11,
+                        "k": 6,
+                        "o": " vel",
+                        "x": "vel"
+                    },
+                    {
+                        "i": 15,
+                        "k": 6,
+                        "o": " af",
+                        "x": "af"
+                    },
+                    {
+                        "i": 18,
+                        "k": 6,
+                        "o": " stað",
+                        "x": "stað"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " í",
+                        "x": "í"
+                    },
+                    {
+                        "i": 25,
+                        "k": 6,
+                        "o": " vetur",
+                        "x": "vetur"
+                    },
+                    {
+                        "i": 31,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [],
+                "corrected": "XVII. kafli: Um landsins gagn og nauðsynjar.",
+                "nonce": "95605635",
+                "original": "XVII. kafli: Um landsins gagn og nauðsynjar.",
+                "token": "ec6a54f8bf64521231e734fed0a08130c84c6aa26c4e310c70230030dff91b12",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 10,
+                        "o": "XVII.",
+                        "x": "XVII."
+                    },
+                    {
+                        "i": 5,
+                        "k": 6,
+                        "o": " kafli",
+                        "x": "kafli"
+                    },
+                    {
+                        "i": 11,
+                        "k": 1,
+                        "o": ":",
+                        "x": ":"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " Um",
+                        "x": "Um"
+                    },
+                    {
+                        "i": 15,
+                        "k": 6,
+                        "o": " landsins",
+                        "x": "landsins"
+                    },
+                    {
+                        "i": 24,
+                        "k": 6,
+                        "o": " gagn",
+                        "x": "gagn"
+                    },
+                    {
+                        "i": 29,
+                        "k": 6,
+                        "o": " og",
+                        "x": "og"
+                    },
+                    {
+                        "i": 32,
+                        "k": 6,
+                        "o": " nauðsynjar",
+                        "x": "nauðsynjar"
+                    },
+                    {
+                        "i": 43,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [],
+                "corrected": "Mér er annara um símann minn en orðspor mitt.",
+                "nonce": "53528453",
+                "original": "Mér er annara um símann minn en orðspor mitt.",
+                "token": "49b6ea1ed0742061f7680405a4161074971e827c36fd56f185cbaee5cc12dc10",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Mér",
+                        "x": "Mér"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " er",
+                        "x": "er"
+                    },
+                    {
+                        "i": 6,
+                        "k": 6,
+                        "o": " annara",
+                        "x": "annara"
+                    },
+                    {
+                        "i": 13,
+                        "k": 6,
+                        "o": " um",
+                        "x": "um"
+                    },
+                    {
+                        "i": 16,
+                        "k": 6,
+                        "o": " símann",
+                        "x": "símann"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " minn",
+                        "x": "minn"
+                    },
+                    {
+                        "i": 28,
+                        "k": 6,
+                        "o": " en",
+                        "x": "en"
+                    },
+                    {
+                        "i": 31,
+                        "k": 6,
+                        "o": " orðspor",
+                        "x": "orðspor"
+                    },
+                    {
+                        "i": 39,
+                        "k": 6,
+                        "o": " mitt",
+                        "x": "mitt"
+                    },
+                    {
+                        "i": 44,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þf_nf",
+                        "detail": "Sögnin 'að hlakka' er persónuleg. Frumlag hennar á að vera í nefnifalli í stað þolfalls.",
+                        "end": 0,
+                        "end_char": 3,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Ég",
+                        "text": "Á líklega að vera 'Ég'",
+                        "sent": "Mig hlakkaði til."
+                    }
+                ],
+                "corrected": "Mig hlakkaði til.",
+                "nonce": "59734611",
+                "original": "Mig hlakkaði til.",
+                "token": "92f0d88bf92eb281c4f93aaa19e948bc9e679b21f0fed0a6a94ffd9fb76a321f",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Mig",
+                        "x": "Mig"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " hlakkaði",
+                        "x": "hlakkaði"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " til",
+                        "x": "til"
+                    },
+                    {
+                        "i": 16,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þgf_nf",
+                        "detail": "Sögnin 'að hlakka' er persónuleg. Frumlag hennar á að vera í nefnifalli í stað þágufalls.",
+                        "end": 0,
+                        "end_char": 3,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Ég",
+                        "text": "Á líklega að vera 'Ég'",
+                        "sent": "Mér hlakkaði til."
+                    }
+                ],
+                "corrected": "Mér hlakkaði til.",
+                "nonce": "66691069",
+                "original": "Mér hlakkaði til.",
+                "token": "562050eda0790b97fbac8df0df04ca114b23f9fbdcfae1373521355db413a93c",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Mér",
+                        "x": "Mér"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " hlakkaði",
+                        "x": "hlakkaði"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " til",
+                        "x": "til"
+                    },
+                    {
+                        "i": 16,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_nf_þf",
+                        "detail": "Sögnin 'að dreyma' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað nefnifalls.",
+                        "end": 0,
+                        "end_char": 2,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Mig",
+                        "text": "Á líklega að vera 'Mig'",
+                        "sent": "Ég dreymdi köttinn."
+                    }
+                ],
+                "corrected": "Ég dreymdi köttinn.",
+                "nonce": "19384678",
+                "original": "Ég dreymdi köttinn.",
+                "token": "28aa1ca75ac1c9887a9446f091fce045f8d7bdce53d2025794c39905f73e6208",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ég",
+                        "x": "Ég"
+                    },
+                    {
+                        "i": 2,
+                        "k": 6,
+                        "o": " dreymdi",
+                        "x": "dreymdi"
+                    },
+                    {
+                        "i": 10,
+                        "k": 6,
+                        "o": " köttinn",
+                        "x": "köttinn"
+                    },
+                    {
+                        "i": 18,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þgf_þf",
+                        "detail": "Sögnin 'að dreyma' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað þágufalls.",
+                        "end": 0,
+                        "end_char": 3,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Mig",
+                        "text": "Á líklega að vera 'Mig'",
+                        "sent": "Mér dreymdi köttinn."
+                    }
+                ],
+                "corrected": "Mér dreymdi köttinn.",
+                "nonce": "69485835",
+                "original": "Mér dreymdi köttinn.",
+                "token": "2a4c30582b993e53bd9fca62ff9de33229628aa03508a43da661da1f0e085aae",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Mér",
+                        "x": "Mér"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " dreymdi",
+                        "x": "dreymdi"
+                    },
+                    {
+                        "i": 11,
+                        "k": 6,
+                        "o": " köttinn",
+                        "x": "köttinn"
+                    },
+                    {
+                        "i": 19,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "E001",
+                        "detail": "Þáttun brást í kring um 4. tóka ('kettinum.')",
+                        "end": 3,
+                        "end_char": 20,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": null,
+                        "text": "Málsgreinin fellur ekki að reglum",
+                        "sent": "Ég dreymdi kettinum."
+                    }
+                ],
+                "corrected": "Ég dreymdi kettinum.",
+                "nonce": "54171178",
+                "original": "Ég dreymdi kettinum.",
+                "token": "9aa5239baf0c8ca95dc526612ba707557291922b2791db8122455dc93c1a6f5d",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ég",
+                        "x": "Ég"
+                    },
+                    {
+                        "i": 2,
+                        "k": 6,
+                        "o": " dreymdi",
+                        "x": "dreymdi"
+                    },
+                    {
+                        "i": 10,
+                        "k": 6,
+                        "o": " kettinum",
+                        "x": "kettinum"
+                    },
+                    {
+                        "i": 19,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þf_nf",
+                        "detail": "Sögnin 'að kvíða' er persónuleg. Frumlag hennar á að vera í nefnifalli í stað þolfalls.",
+                        "end": 0,
+                        "end_char": 3,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Páll",
+                        "text": "Á líklega að vera 'Páll'",
+                        "sent": "Pál kveið fyrir skóladeginum."
+                    }
+                ],
+                "corrected": "Pál kveið fyrir skóladeginum.",
+                "nonce": "89093937",
+                "original": "Pál kveið fyrir skóladeginum.",
+                "token": "e6871b64a435a37730a1f59a9656830733b87e70c8a5bf2e8e5719065b0309c0",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 14,
+                        "o": "Pál",
+                        "x": "Pál"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " kveið",
+                        "x": "kveið"
+                    },
+                    {
+                        "i": 9,
+                        "k": 6,
+                        "o": " fyrir",
+                        "x": "fyrir"
+                    },
+                    {
+                        "i": 15,
+                        "k": 6,
+                        "o": " skóladeginum",
+                        "x": "skóladeginum"
+                    },
+                    {
+                        "i": 28,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þgf_nf",
+                        "detail": "Sögnin 'að kvíða' er persónuleg. Frumlag hennar á að vera í nefnifalli í stað þágufalls.",
+                        "end": 0,
+                        "end_char": 4,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Páll",
+                        "text": "Á líklega að vera 'Páll'",
+                        "sent": "Páli kveið fyrir skóladeginum."
+                    }
+                ],
+                "corrected": "Páli kveið fyrir skóladeginum.",
+                "nonce": "49244064",
+                "original": "Páli kveið fyrir skóladeginum.",
+                "token": "d8157fe4dc77164e4f49e630f5bf08297cceb1b5526078718b7e50623c6acdf9",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 14,
+                        "o": "Páli",
+                        "x": "Páli"
+                    },
+                    {
+                        "i": 4,
+                        "k": 6,
+                        "o": " kveið",
+                        "x": "kveið"
+                    },
+                    {
+                        "i": 10,
+                        "k": 6,
+                        "o": " fyrir",
+                        "x": "fyrir"
+                    },
+                    {
+                        "i": 16,
+                        "k": 6,
+                        "o": " skóladeginum",
+                        "x": "skóladeginum"
+                    },
+                    {
+                        "i": 29,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þgf_þf",
+                        "detail": "Sögnin 'að skorta' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað þágufalls.",
+                        "end": 1,
+                        "end_char": 12,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Unga fólkið",
+                        "text": "Á líklega að vera 'Unga fólkið'",
+                        "sent": "Unga fólkinu skortir aðhald."
+                    }
+                ],
+                "corrected": "Unga fólkinu skortir aðhald.",
+                "nonce": "14870278",
+                "original": "Unga fólkinu skortir aðhald.",
+                "token": "b62de871282a8d839d2681e8c290b78784909e040f0b37c38b821b4cbcb71efd",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Unga",
+                        "x": "Unga"
+                    },
+                    {
+                        "i": 4,
+                        "k": 6,
+                        "o": " fólkinu",
+                        "x": "fólkinu"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " skortir",
+                        "x": "skortir"
+                    },
+                    {
+                        "i": 20,
+                        "k": 6,
+                        "o": " aðhald",
+                        "x": "aðhald"
+                    },
+                    {
+                        "i": 27,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [],
+                "corrected": "Ég held að músinni hafi kviðið fyrir að hitta köttinn.",
+                "nonce": "32544923",
+                "original": "Ég held að músinni hafi kviðið fyrir að hitta köttinn.",
+                "token": "c2ab6e464a349221c5f02e33638515269d3526467ae42a0d259ed824c5a496e3",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ég",
+                        "x": "Ég"
+                    },
+                    {
+                        "i": 2,
+                        "k": 6,
+                        "o": " held",
+                        "x": "held"
+                    },
+                    {
+                        "i": 7,
+                        "k": 6,
+                        "o": " að",
+                        "x": "að"
+                    },
+                    {
+                        "i": 10,
+                        "k": 6,
+                        "o": " músinni",
+                        "x": "músinni"
+                    },
+                    {
+                        "i": 18,
+                        "k": 6,
+                        "o": " hafi",
+                        "x": "hafi"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " kviðið",
+                        "x": "kviðið"
+                    },
+                    {
+                        "i": 30,
+                        "k": 6,
+                        "o": " fyrir",
+                        "x": "fyrir"
+                    },
+                    {
+                        "i": 36,
+                        "k": 6,
+                        "o": " að",
+                        "x": "að"
+                    },
+                    {
+                        "i": 39,
+                        "k": 6,
+                        "o": " hitta",
+                        "x": "hitta"
+                    },
+                    {
+                        "i": 45,
+                        "k": 6,
+                        "o": " köttinn",
+                        "x": "köttinn"
+                    },
+                    {
+                        "i": 53,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þgf_þf",
+                        "detail": "Sögnin 'að vanta' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað þágufalls.",
+                        "end": 1,
+                        "end_char": 15,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Hestinn grímni",
+                        "text": "Á líklega að vera 'Hestinn grímni'",
+                        "sent": "Hestinum Grímni vantaði hamar."
+                    }
+                ],
+                "corrected": "Hestinum Grímni vantaði hamar.",
+                "nonce": "91187232",
+                "original": "Hestinum Grímni vantaði hamar.",
+                "token": "1992a86271d7e0b1853ae14d2f5c5be04f9fabb10749e595546891ad33a2ba52",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Hestinum",
+                        "x": "Hestinum"
+                    },
+                    {
+                        "i": 8,
+                        "k": 6,
+                        "o": " Grímni",
+                        "x": "Grímni"
+                    },
+                    {
+                        "i": 15,
+                        "k": 6,
+                        "o": " vantaði",
+                        "x": "vantaði"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " hamar",
+                        "x": "hamar"
+                    },
+                    {
+                        "i": 29,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þgf_þf",
+                        "detail": "Sögnin 'að vanta' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað þágufalls.",
+                        "end": 1,
+                        "end_char": 15,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Hestinn skjóna",
+                        "text": "Á líklega að vera 'Hestinn skjóna'",
+                        "sent": "Hestinum Skjóna vantaði hamar."
+                    }
+                ],
+                "corrected": "Hestinum Skjóna vantaði hamar.",
+                "nonce": "57296547",
+                "original": "Hestinum Skjóna vantaði hamar.",
+                "token": "857a84f4e39d3c810e25b009151f8eea08b3be94118d4fb42a9e1f8f29b99098",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Hestinum",
+                        "x": "Hestinum"
+                    },
+                    {
+                        "i": 8,
+                        "k": 6,
+                        "o": " Skjóna",
+                        "x": "Skjóna"
+                    },
+                    {
+                        "i": 15,
+                        "k": 6,
+                        "o": " vantaði",
+                        "x": "vantaði"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " hamar",
+                        "x": "hamar"
+                    },
+                    {
+                        "i": 29,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "P_WRONG_CASE_þgf_þf",
+                        "detail": "Sögnin 'að vanta' er ópersónuleg. Frumlag hennar á að vera í þolfalli í stað þágufalls.",
+                        "end": 5,
+                        "end_char": 39,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Stóra manninn sem vinnur á verkstæðinu",
+                        "text": "Á líklega að vera 'Stóra manninn sem vinnur á verkstæðinu'",
+                        "sent": "Stóra manninum sem vinnur á verkstæðinu vantaði hamar"
+                    }
+                ],
+                "corrected": "Stóra manninum sem vinnur á verkstæðinu vantaði hamar",
+                "nonce": "65823116",
+                "original": "Stóra manninum sem vinnur á verkstæðinu vantaði hamar",
+                "token": "8768a6d7981b718720eb9460234e1a3c93fb34587801d019c2caab7c95456fb1",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Stóra",
+                        "x": "Stóra"
+                    },
+                    {
+                        "i": 5,
+                        "k": 6,
+                        "o": " manninum",
+                        "x": "manninum"
+                    },
+                    {
+                        "i": 14,
+                        "k": 6,
+                        "o": " sem",
+                        "x": "sem"
+                    },
+                    {
+                        "i": 18,
+                        "k": 6,
+                        "o": " vinnur",
+                        "x": "vinnur"
+                    },
+                    {
+                        "i": 25,
+                        "k": 6,
+                        "o": " á",
+                        "x": "á"
+                    },
+                    {
+                        "i": 27,
+                        "k": 6,
+                        "o": " verkstæðinu",
+                        "x": "verkstæðinu"
+                    },
+                    {
+                        "i": 39,
+                        "k": 6,
+                        "o": " vantaði",
+                        "x": "vantaði"
+                    },
+                    {
+                        "i": 47,
+                        "k": 6,
+                        "o": " hamar",
+                        "x": "hamar"
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "C002",
+                        "detail": null,
+                        "end": 3,
+                        "end_char": 13,
+                        "start": 2,
+                        "start_char": 7,
+                        "suggest": "niður á",
+                        "text": "Orðinu 'niðrá' var skipt upp",
+                        "sent": "Ég fór niðráá bryggjuna með með Reyni Vilhjálmssyni í gær."
+                    },
+                    {
+                        "code": "C004/w",
+                        "detail": null,
+                        "end": 6,
+                        "end_char": 30,
+                        "start": 6,
+                        "start_char": 27,
+                        "suggest": "",
+                        "text": "'með' er að öllum líkindum ofaukið",
+                        "sent": "Ég fór niðráá bryggjuna með með Reyni Vilhjálmssyni í gær."
+                    }
+                ],
+                "corrected": "Ég fór niður á bryggjuna með með Reyni Vilhjálmssyni í gær.",
+                "nonce": "02798844",
+                "original": "Ég fór niðrá bryggjuna með með Reyni Vilhjálmssyni í gær.",
+                "token": "8fc6ae96693285509bda9dd15d1a4356a6d8f5eabe314c08d387f79d1a7a34c7",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ég",
+                        "x": "Ég"
+                    },
+                    {
+                        "i": 2,
+                        "k": 6,
+                        "o": " fór",
+                        "x": "fór"
+                    },
+                    {
+                        "i": 6,
+                        "k": 6,
+                        "o": " niðrá",
+                        "x": "niður"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": "á",
+                        "x": "á"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " bryggjuna",
+                        "x": "bryggjuna"
+                    },
+                    {
+                        "i": 22,
+                        "k": 6,
+                        "o": " með",
+                        "x": "með"
+                    },
+                    {
+                        "i": 26,
+                        "k": 6,
+                        "o": " með",
+                        "x": "með"
+                    },
+                    {
+                        "i": 30,
+                        "k": 14,
+                        "o": " Reyni Vilhjálmssyni",
+                        "x": "Reyni Vilhjálmssyni"
+                    },
+                    {
+                        "i": 50,
+                        "k": 6,
+                        "o": " í gær",
+                        "x": "í gær"
+                    },
+                    {
+                        "i": 56,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "Z002",
+                        "detail": null,
+                        "end": 4,
+                        "end_char": 39,
+                        "start": 4,
+                        "start_char": 29,
+                        "suggest": "Frakklandi",
+                        "text": "Orð á að byrja á hástaf: 'frakklandi'",
+                        "sent": "Það var 17. júní árið 2020 í frakklandi."
+                    }
+                ],
+                "corrected": "Það var 17. júní árið 2020 í Frakklandi.",
+                "nonce": "77724694",
+                "original": "Það var 17. júní árið 2020 í frakklandi.",
+                "token": "977771401a597284c62d70ec7d7422bbf080e559f63b8fbbba34a50ee72fb267",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Það",
+                        "x": "Það"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " var",
+                        "x": "var"
+                    },
+                    {
+                        "i": 7,
+                        "k": 18,
+                        "o": " 17. júní árið 2020",
+                        "x": "17. júní árið 2020"
+                    },
+                    {
+                        "i": 26,
+                        "k": 6,
+                        "o": " í",
+                        "x": "í"
+                    },
+                    {
+                        "i": 28,
+                        "k": 6,
+                        "o": " frakklandi",
+                        "x": "Frakklandi"
+                    },
+                    {
+                        "i": 39,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [],
+                "corrected": "Við sáum tvo seli og öruglega fleiri en 100 máva.",
+                "nonce": "54069693",
+                "original": "Við sáum tvo seli og öruglega fleiri en 100 máva.",
+                "token": "3b95f5cfe3eca0efedaa67dd4eae62dea75c897e7c8fe4c783b41addd3a1c847",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Við",
+                        "x": "Við"
+                    },
+                    {
+                        "i": 3,
+                        "k": 6,
+                        "o": " sáum",
+                        "x": "sáum"
+                    },
+                    {
+                        "i": 8,
+                        "k": 6,
+                        "o": " tvo",
+                        "x": "tvo"
+                    },
+                    {
+                        "i": 12,
+                        "k": 6,
+                        "o": " seli",
+                        "x": "seli"
+                    },
+                    {
+                        "i": 17,
+                        "k": 6,
+                        "o": " og",
+                        "x": "og"
+                    },
+                    {
+                        "i": 20,
+                        "k": 6,
+                        "o": " öruglega",
+                        "x": "öruglega"
+                    },
+                    {
+                        "i": 29,
+                        "k": 6,
+                        "o": " fleiri",
+                        "x": "fleiri"
+                    },
+                    {
+                        "i": 36,
+                        "k": 6,
+                        "o": " en",
+                        "x": "en"
+                    },
+                    {
+                        "i": 39,
+                        "k": 5,
+                        "o": " 100",
+                        "x": "100"
+                    },
+                    {
+                        "i": 43,
+                        "k": 6,
+                        "o": " máva",
+                        "x": "máva"
+                    },
+                    {
+                        "i": 48,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [],
+                "corrected": "Klukkan var orðinn tólf þegar við fórum heim.",
+                "nonce": "16098178",
+                "original": "Klukkan var orðinn tólf þegar við fórum heim.",
+                "token": "4dfad761bd9e5ca06c967c9669517ae906c0ae3dd9d5c99e326d5829c8d43a26",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Klukkan",
+                        "x": "Klukkan"
+                    },
+                    {
+                        "i": 7,
+                        "k": 6,
+                        "o": " var",
+                        "x": "var"
+                    },
+                    {
+                        "i": 11,
+                        "k": 6,
+                        "o": " orðinn",
+                        "x": "orðinn"
+                    },
+                    {
+                        "i": 18,
+                        "k": 6,
+                        "o": " tólf",
+                        "x": "tólf"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " þegar",
+                        "x": "þegar"
+                    },
+                    {
+                        "i": 29,
+                        "k": 6,
+                        "o": " við",
+                        "x": "við"
+                    },
+                    {
+                        "i": 33,
+                        "k": 6,
+                        "o": " fórum",
+                        "x": "fórum"
+                    },
+                    {
+                        "i": 39,
+                        "k": 6,
+                        "o": " heim",
+                        "x": "heim"
+                    },
+                    {
+                        "i": 44,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "Z005/w",
+                        "detail": null,
+                        "end": 2,
+                        "end_char": 23,
+                        "start": 2,
+                        "start_char": 16,
+                        "suggest": "€30.000",
+                        "text": "Fjárhæðina '€30.000' á að rita með lágstöfum",
+                        "sent": "Bíllinn kostaði €30.000 en ég greyddi 25500 USD fyrir hann."
+                    },
+                    {
+                        "code": "S004",
+                        "detail": null,
+                        "end": 5,
+                        "end_char": 37,
+                        "start": 5,
+                        "start_char": 30,
+                        "suggest": "greiddi",
+                        "text": "Orðið 'greyddi' var leiðrétt í 'greiddi'",
+                        "sent": "Bíllinn kostaði €30.000 en ég greyddi 25500 USD fyrir hann."
+                    }
+                ],
+                "corrected": "Bíllinn kostaði €30.000 en ég greiddi 25500 USD fyrir hann.",
+                "nonce": "96799511",
+                "original": "Bíllinn kostaði €30.000 en ég greyddi 25500 USD fyrir hann.",
+                "token": "e759032b191928c0f1f0978aa9c672665d8bef57fc753ea397de9c1966ef1727",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Bíllinn",
+                        "x": "Bíllinn"
+                    },
+                    {
+                        "i": 7,
+                        "k": 6,
+                        "o": " kostaði",
+                        "x": "kostaði"
+                    },
+                    {
+                        "i": 15,
+                        "k": 13,
+                        "o": " €30.000",
+                        "x": "€30.000"
+                    },
+                    {
+                        "i": 23,
+                        "k": 6,
+                        "o": " en",
+                        "x": "en"
+                    },
+                    {
+                        "i": 26,
+                        "k": 6,
+                        "o": " ég",
+                        "x": "ég"
+                    },
+                    {
+                        "i": 29,
+                        "k": 6,
+                        "o": " greyddi",
+                        "x": "greiddi"
+                    },
+                    {
+                        "i": 37,
+                        "k": 5,
+                        "o": " 25500",
+                        "x": "25500"
+                    },
+                    {
+                        "i": 43,
+                        "k": 16,
+                        "o": " USD",
+                        "x": "USD"
+                    },
+                    {
+                        "i": 47,
+                        "k": 6,
+                        "o": " fyrir",
+                        "x": "fyrir"
+                    },
+                    {
+                        "i": 53,
+                        "k": 6,
+                        "o": " hann",
+                        "x": "hann"
+                    },
+                    {
+                        "i": 58,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "Z002",
+                        "detail": null,
+                        "end": 0,
+                        "end_char": 9,
+                        "start": 0,
+                        "start_char": 0,
+                        "suggest": "Morguninn",
+                        "text": "Orð á að byrja á hástaf: 'morguninn'",
+                        "sent": "morguninn eftir vakknaði ég kl. 07:30."
+                    },
+                    {
+                        "code": "S004",
+                        "detail": null,
+                        "end": 2,
+                        "end_char": 24,
+                        "start": 2,
+                        "start_char": 16,
+                        "suggest": "vaknaði",
+                        "text": "Orðið 'vakknaði' var leiðrétt í 'vaknaði'",
+                        "sent": "morguninn eftir vakknaði ég kl. 07:30."
+                    }
+                ],
+                "corrected": "Morguninn eftir vaknaði ég kl. 07: 30.",
+                "nonce": "21370482",
+                "original": "morguninn eftir vakknaði ég kl. 07:30.",
+                "token": "cdc166a33187127d1d5f5b34c54fb4577bc1b3d679227a827c413d67249d6296",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "morguninn",
+                        "x": "Morguninn"
+                    },
+                    {
+                        "i": 9,
+                        "k": 6,
+                        "o": " eftir",
+                        "x": "eftir"
+                    },
+                    {
+                        "i": 15,
+                        "k": 6,
+                        "o": " vakknaði",
+                        "x": "vaknaði"
+                    },
+                    {
+                        "i": 24,
+                        "k": 6,
+                        "o": " ég",
+                        "x": "ég"
+                    },
+                    {
+                        "i": 27,
+                        "k": 2,
+                        "o": " kl. 07:30",
+                        "x": "kl. 07:30"
+                    },
+                    {
+                        "i": 37,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "annotations": [
+                    {
+                        "code": "S004",
+                        "detail": null,
+                        "end": 2,
+                        "end_char": 14,
+                        "start": 2,
+                        "start_char": 7,
+                        "suggest": "fyrstur",
+                        "text": "Orðið 'firstur' var leiðrétt í 'fyrstur'",
+                        "sent": "Ég var firstur á fætur en þuríður Hálfdánardóttir var numer 2."
+                    },
+                    {
+                        "code": "U001",
+                        "detail": null,
+                        "end": 6,
+                        "end_char": 33,
+                        "start": 6,
+                        "start_char": 26,
+                        "suggest": "",
+                        "text": "Óþekkt orð: 'þuríður'",
+                        "sent": "Ég var firstur á fætur en þuríður Hálfdánardóttir var numer 2."
+                    },
+                    {
+                        "code": "S001",
+                        "detail": null,
+                        "end": 9,
+                        "end_char": 59,
+                        "start": 9,
+                        "start_char": 54,
+                        "suggest": "númer",
+                        "text": "Orðið 'numer' var leiðrétt í 'númer'",
+                        "sent": "Ég var firstur á fætur en þuríður Hálfdánardóttir var numer 2."
+                    }
+                ],
+                "corrected": "Ég var fyrstur á fætur en þuríður Hálfdánardóttir var númer 2.",
+                "nonce": "50937789",
+                "original": "Ég var firstur á fætur en þuríður Hálfdánardóttir var numer 2.",
+                "token": "1895252a466a1047b11b217bce0c978c78b1de4540cb83fc5156af3d46c442ff",
+                "tokens": [
+                    {
+                        "i": 0,
+                        "k": 6,
+                        "o": "Ég",
+                        "x": "Ég"
+                    },
+                    {
+                        "i": 2,
+                        "k": 6,
+                        "o": " var",
+                        "x": "var"
+                    },
+                    {
+                        "i": 6,
+                        "k": 6,
+                        "o": " firstur",
+                        "x": "fyrstur"
+                    },
+                    {
+                        "i": 14,
+                        "k": 6,
+                        "o": " á",
+                        "x": "á"
+                    },
+                    {
+                        "i": 16,
+                        "k": 6,
+                        "o": " fætur",
+                        "x": "fætur"
+                    },
+                    {
+                        "i": 22,
+                        "k": 6,
+                        "o": " en",
+                        "x": "en"
+                    },
+                    {
+                        "i": 25,
+                        "k": 6,
+                        "o": " þuríður",
+                        "x": "þuríður"
+                    },
+                    {
+                        "i": 33,
+                        "k": 6,
+                        "o": " Hálfdánardóttir",
+                        "x": "Hálfdánardóttir"
+                    },
+                    {
+                        "i": 49,
+                        "k": 6,
+                        "o": " var",
+                        "x": "var"
+                    },
+                    {
+                        "i": 53,
+                        "k": 6,
+                        "o": " numer",
+                        "x": "númer"
+                    },
+                    {
+                        "i": 59,
+                        "k": 5,
+                        "o": " 2",
+                        "x": "2"
+                    },
+                    {
+                        "i": 61,
+                        "k": 1,
+                        "o": ".",
+                        "x": "."
+                    }
+                ]
+            }
+        ]
+    ],
+    "stats": {
+        "ambiguity": 1.478202598887688,
+        "num_chars": 1692,
+        "num_parsed": 41,
+        "num_sentences": 42,
+        "num_tokens": 341
+    },
+    "text": "Einn af drengjunum fór í sund af gefnu tilefni.\nEinn af drengjunum fóru í sund.\nFjöldi þingmanna greiddu atkvæði gegn tillögunni.\nJón borðaði ís þar sem að hann var svangur.\n'Jón borðaði ís þar sem að hann var svangur.'\nJón borðaði ís þó hann væri svangur.\n'Jón borðaði ís þó hann væri svangur.'\nJón borðaði ís jafnvel þó hann væri svangur.\n'Jón borðaði ís jafnvel þó hann væri svangur.'\nJón borðaði ís þótt hann væri svangur.\n'Jón borðaði ís þótt hann væri svangur.'\nÉg féll fyrir annað hvort fegurð hennar eða gáfum.\nÉg talaði við annaðhvort barnanna.\nÉg hef verið slappur frá því ég fékk sprautuna.\nÉg hef verið slappur allt frá því ég fékk sprautuna.\nFriðgeir vildi vera heima víst að Sigga yrði að vera heima.\nFriðgeir taldi víst að Sigga yrði að vera heima.\nÉg er ekki meiri fáviti heldur en þú.\nbarnið fæddist í gær, en það er 3. strákur þeirra hjóna.\nÁkæran beinist gegn Jóni og Friðberti.\ndeildin fer vel af stað í vetur.\nXVII. kafli: Um landsins gagn og nauðsynjar.\nMér er annara um símann minn en orðspor mitt.\nMig hlakkaði til.\nMér hlakkaði til.\nÉg dreymdi köttinn.\nMér dreymdi köttinn.\nÉg dreymdi kettinum.\nPál kveið fyrir skóladeginum.\nPáli kveið fyrir skóladeginum.\nUnga fólkinu skortir aðhald.\nÉg held að músinni hafi kviðið fyrir að hitta köttinn.\nHestinum Grímni vantaði hamar.\nHestinum Skjóna vantaði hamar.\nStóra manninum sem vinnur á verkstæðinu vantaði hamar\n \nÉg fór niðrá bryggjuna með með Reyni Vilhjálmssyni í gær.\nÞað var 17. júní árið 2020 í frakklandi.\nVið sáum tvo seli og öruglega fleiri en 100 máva.\nKlukkan var orðinn tólf þegar við fórum heim.\nBíllinn kostaði €30.000 en ég greyddi 25500 USD fyrir hann.\nmorguninn eftir vakknaði ég kl. 07:30.\nÉg var firstur á fætur en þuríður Hálfdánardóttir var numer 2.",
+    "valid": true
+}
