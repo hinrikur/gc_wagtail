@@ -1,0 +1,1 @@
+watchify apps/ui_test/static/js/annotate.js -o ui_test/static/js/annotate-bundle.js
