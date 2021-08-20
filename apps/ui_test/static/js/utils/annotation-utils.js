@@ -1,6 +1,5 @@
 
 const Modifier = window.DraftJS.Modifier;
-const EditorState = window.DraftJS.EditorState;
 const DraftUtils = window.Draftail.DraftUtils;
 const SelectionState = window.DraftJS.SelectionState;
 const convertToRaw = window.DraftJS.convertToRaw;
@@ -282,23 +281,7 @@ function whiteSpaceLen(textBlock) {
     }
 }
 
-function createAnnotationEntities(editorState, response) {
-
-    const rawState = convertToRaw(editorState.getCurrentContent());
-    var rawContentBlocks = rawState.blocks;
-    // char length of filtered in-line tags extracted
-    const filteredCharDiffs = allFilteredDiffs(rawState);
-    console.log(filteredCharDiffs);
-    // check for other entities in a given range
-    const otherEntityRanges = getOtherEntityRanges(editorState);
-    console.log("otherEntityRanges:", otherEntityRanges);
-    // return array declared
-    var entitiesToRender = [];
-
-    // processed response logged to console
-    console.log("Array of annotations:", response);
-    // response flattened to a array of annotation data objects
-    // each paragraph annotation matched with a content block
+function insertRawAnnData(rawContentBlocks, response, entitiesToRender) {
     var i = 0;
     for (var key in rawContentBlocks) {
         // content block skipped if no text present 
@@ -312,114 +295,135 @@ function createAnnotationEntities(editorState, response) {
         rawContentBlocks[key]["APIresponse"] = response[i];
         i++;
     }
+}
+
+function getEntitiesForBlock(editorState, rawContentBlock, filteredCharDiffs, entitiesToRender) {
+
+    // check for other entities in a given range
+    const otherEntityRanges = getOtherEntityRanges(editorState);
+    console.log("otherEntityRanges:", otherEntityRanges);
+
+    rawContentBlock.APIresponse.forEach(annotation => {
+
+        const anchorKey = rawContentBlock.key;
+        let currentContent = editorState.getCurrentContent();
+        console.log("currentContent:", currentContent);
+        const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+        console.log("anchorKey:", anchorKey);
+        console.log("currentContentBock, via anchorKey:", currentContentBlock);
+
+        const startWhiteSpace = whiteSpaceLen(rawContentBlock); 
+
+        // length of par-start whitespace added to char indexes (0 +)
+        // NOTE: hack for adding filtered character differences ([adspce], [links] etc.)
+        const start = annotation.start_char + startWhiteSpace + filteredCharDiffs[anchorKey];
+        var end = annotation.end_char + startWhiteSpace + filteredCharDiffs[anchorKey];
+
+        // text for annotation selected from content block text, with inline style
+        var selectedText = currentContentBlock.getText().slice(start, end);
+        const selectionStyle = currentContentBlock.getInlineStyleAt(start);
+
+        // additional annotation data to add to entity
+        const textReplacement = getReplacement(annotation, selectedText);
+        const annClass = getAnnotationClass(annotation.code, textReplacement, selectedText);
+
+        // decreased start offset by 1 if replacement is empty string
+        if (textReplacement === "") {
+            end += 1;
+            selectedText += " ";
+        }
+
+        // selectionState for annotation render
+        const blockSelection = SelectionState
+            .createEmpty(anchorKey)
+            .merge({
+                anchorOffset: start,
+                focusOffset: end,
+            });
+
+        console.log("Text to annotate: " + selectedText);
+        console.log("Start offset:", start);
+        console.log("End offset:", end);
+
+        // Check for entity clash in entity range
+        const entitiesInBLock = otherEntityRanges[anchorKey];
+        const entityClash = checkEntityClash(start, end, entitiesInBLock);
+
+        if (entityClash) {
+            console.log(`Entity clash: Skipping annotation for "${selectedText}", block anchor key: ${anchorKey}`);
+        } else {
+            // create annotation entity
+            // the annotation entity contains information sent from the API during annotation
+            const annEntity = currentContent.createEntity(
+                'ANNOTATION',
+                'MUTABLE', // Drafttail entity mutability
+                {
+                    textReplacement, // processed replacement text
+                    annClass,        // processed annotation error class
+                    annotation,      // data from API 
+                    replyGreynirAPI  // method for sending feedback
+                }
+            );
+            // last created DraftTail entity extracted 
+            const annotationEntityKey = annEntity.getLastCreatedEntityKey();
+            // last created pushed to toRender array
+            entitiesToRender.push({
+                "key": annotationEntityKey,
+                "blockSelection": blockSelection,
+                "selectedText": selectedText,
+                "selectionStyle": selectionStyle,
+            });
+        }
+    });
+    // return entitiesToRender;
+}
+
+function createAnnotationEntities(editorState, response) {
+
+    const rawState = convertToRaw(editorState.getCurrentContent());
+    var rawContentBlocks = rawState.blocks;
+
+    // char length of filtered in-line tags extracted
+    const filteredCharDiffs = allFilteredDiffs(rawState);
+    console.log(filteredCharDiffs);
+
+    // return array declared
+    var entitiesToRender = [];
+
+    // processed response logged to console
+    console.log("Array of annotations:", response);
+
+    // response flattened to a array of annotation data objects
+    // each paragraph annotation matched with a content block
+    insertRawAnnData(rawContentBlocks, response);
 
     console.log("rawContentBlocks after addition:", rawContentBlocks);
 
     // iterate over block keys in raw content blocks
     for (var blockKey in rawContentBlocks) {
+
         // log current content block key
         console.log(rawContentBlocks[blockKey]);
+
+        // check if block content is only in-line marker/tag, i.e. [adspot], [links], etc.
         const markerBlock = checkTextMarkers(rawContentBlocks[blockKey].text);
+
         // check for empty API response
         if (markerBlock) {
             console.log(`Markerblock: Skipping block with text "${rawContentBlocks[blockKey].text}", key ${blockKey}`);
         } else if (typeof rawContentBlocks[blockKey].APIresponse !== "undefined") {
-            // API response not empty
-
-
 
             console.log(`Start whitespace length for key ${blockKey}:`, whiteSpaceLen);
 
             // each content block assigned its relevant text annotations
-            rawContentBlocks[blockKey].APIresponse.forEach(annotation => {
-
-                const anchorKey = rawContentBlocks[blockKey].key;
-                let currentContent = editorState.getCurrentContent();
-                console.log("currentContent:", currentContent);
-                const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-                console.log("anchorKey:", anchorKey);
-                console.log("currentContentBock, via anchorKey:", currentContentBlock);
-
-                const startWhiteSpace = whiteSpaceLen(rawContentBlocks[blockKey]); 
-
-                // // each annotation start and end char index reduced by aggregated char length (aggrLen)
-                // // API looks at location in total text, DrafTail looks at location in current block
-                // const start = annotation.start_char - aggrLen;
-                // const end = annotation.end_char - aggrLen;
-                // NOTE: aggrLen fix moved to ProcessAPI method
-
-                // length of par-start whitespace added to char indexes (0 +)
-                // NOTE: hack for adding filtered character differences ([adspce], [links] etc.)
-                const start = annotation.start_char + startWhiteSpace + filteredCharDiffs[anchorKey];
-                var end = annotation.end_char + startWhiteSpace + filteredCharDiffs[anchorKey];
-                // text for annotation selected from content block text, with inline style
-                var selectedText = currentContentBlock.getText().slice(start, end);
-                const selectionStyle = currentContentBlock.getInlineStyleAt(start);
-
-                // additional annotation data to add to entity
-                const textReplacement = getReplacement(annotation, selectedText);
-                const annClass = getAnnotationClass(annotation.code, textReplacement, selectedText);
-
-                // decreased start offset by 1 if replacement is empty string
-                if (textReplacement === "") {
-                    end += 1;
-                    selectedText += " ";
-                }
-
-
-                // selectionState for annotation render
-                const blockSelection = SelectionState
-                    .createEmpty(anchorKey)
-                    .merge({
-                        anchorOffset: start,
-                        focusOffset: end,
-                    });
-
-
-                console.log("Text to annotate: " + selectedText);
-                console.log("Start offset:", start);
-                console.log("End offset:", end);
-
-                // Check for entity clash in entity range
-                const entitiesInBLock = otherEntityRanges[anchorKey];
-                const entityClash = checkEntityClash(start, end, entitiesInBLock);
-
-                if (entityClash) {
-                    console.log(`Entity clash: Skipping annotation for "${selectedText}", block anchor key: ${anchorKey}`);
-                } else {
-                    // create annotation entity
-                    // the annotation entity contains information sent from the API during annotation
-                    const annEntity = currentContent.createEntity(
-                        'ANNOTATION',
-                        'MUTABLE', // Drafttail entity mutability
-                        {
-                            textReplacement, // processed replacement text
-                            annClass,        // processed annotation error class
-                            annotation,      // data from API 
-                            replyGreynirAPI  // method for sending feedback
-                        }
-                    );
-                    // last created DraftTail entity extracted 
-                    const annotationEntityKey = annEntity.getLastCreatedEntityKey();
-                    // last created pushed to toRender array
-                    entitiesToRender.push({
-                        "key": annotationEntityKey,
-                        "blockSelection": blockSelection,
-                        "selectedText": selectedText,
-                        "selectionStyle": selectionStyle,
-                    });
-                }
-
-
-
-
-            });
-            console.log("Current block text content:", rawContentBlocks[blockKey].text);
-            console.log("Current block text length:", rawContentBlocks[blockKey].text.length);
-            // length of current block text added to aggregated text length variable
-            // + 2 to compensate "\n" in API input string between paragraphs
-            // aggrLen += rawContentBlocks[blockKey].text.replace(/ +$/, "").length;
-
+            // annotation entities added to return array
+            getEntitiesForBlock(
+                editorState,                // the complete editor state
+                rawContentBlocks[blockKey], // current block in editor raw content, containing annotation data
+                filteredCharDiffs,          // map of filtered char locations for all blocks in raw data
+                entitiesToRender            // array of entities to push to
+                );
+            
         } else {
             // API response was empty or undefined, usually because of an empty text block
             console.log("Undefined response, likely empty Block. BlockKey:", blockKey);
