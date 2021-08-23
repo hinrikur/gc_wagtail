@@ -40,14 +40,19 @@ function getAnnotatedRanges(editorState) {
     return rangesToRemove;
 }
 
-
-
-
-
 function annScrollPosition() {
     let x = window.pageXOffset;
     let y = window.pageYOffset;
     return [x, y];
+}
+
+function resetAnnotationScroll() {
+    const [x, y] = annScrollPosition();
+
+    setTimeout(() => {
+        window.scrollTo(x, y);
+        console.log("scroll completed");
+    }, 50); // timeout length arbitrary, as low as works
 }
 
 function getAnnotationClass(code, replacement, annotatedText) {
@@ -208,11 +213,11 @@ function replaceAnnotation(editorState, entityKey) {
  * @param {string} editorText - concatenated raw text from Draftail editor
  * @returns {string} filtered - input text with matched tags removed 
  */
- function filterTextTags(editorText) {
+function filterTextTags(editorText) {
     const TAG_SEGMENT = "\\[(links|adspot|box|chart)\\]";
     const LINE_START_TAG = "^" + TAG_SEGMENT + "(?=\\S)";
     const LINE_END_TAG = "(?<=\\S|\\.)" + TAG_SEGMENT + "$";
-    const TAG_RE = new RegExp("(" + LINE_START_TAG + "|" + LINE_END_TAG + ")"); 
+    const TAG_RE = new RegExp("(" + LINE_START_TAG + "|" + LINE_END_TAG + ")");
     var filtered = editorText.replace(TAG_RE, "");
     return filtered;
 }
@@ -297,6 +302,25 @@ function insertRawAnnData(rawContentBlocks, response, entitiesToRender) {
     }
 }
 
+function addEntitiesToContentState(entitiesToRender, editorState) {
+
+    // current content saved as base new content state
+    let currentContent = editorState.getCurrentContent();
+
+    // iterate over list of entities to render and add to new content state
+    entitiesToRender.forEach(entity => {
+        console.log("entity from list:", entity);
+        currentContent = Modifier.replaceText(
+            currentContent,
+            entity.blockSelection,
+            entity.selectedText,
+            entity.selectionStyle, // null, 
+            entity.key
+        );
+    });
+    return currentContent;
+}
+
 function getEntitiesForBlock(editorState, rawContentBlock, filteredCharDiffs, entitiesToRender) {
 
     // check for other entities in a given range
@@ -312,7 +336,7 @@ function getEntitiesForBlock(editorState, rawContentBlock, filteredCharDiffs, en
         console.log("anchorKey:", anchorKey);
         console.log("currentContentBock, via anchorKey:", currentContentBlock);
 
-        const startWhiteSpace = whiteSpaceLen(rawContentBlock); 
+        const startWhiteSpace = whiteSpaceLen(rawContentBlock);
 
         // length of par-start whitespace added to char indexes (0 +)
         // NOTE: hack for adding filtered character differences ([adspce], [links] etc.)
@@ -385,6 +409,7 @@ function createAnnotationEntities(editorState, response) {
 
     // char length of filtered in-line tags extracted
     const filteredCharDiffs = allFilteredDiffs(rawState);
+
     console.log(filteredCharDiffs);
 
     // return array declared
@@ -410,10 +435,12 @@ function createAnnotationEntities(editorState, response) {
 
         // check for empty API response
         if (markerBlock) {
+
             console.log(`Markerblock: Skipping block with text "${rawContentBlocks[blockKey].text}", key ${blockKey}`);
+
         } else if (typeof rawContentBlocks[blockKey].APIresponse !== "undefined") {
 
-            console.log(`Start whitespace length for key ${blockKey}:`, whiteSpaceLen);
+            // console.log(`Start whitespace length for key ${blockKey}:`, whiteSpaceLen);
 
             // each content block assigned its relevant text annotations
             // annotation entities added to return array
@@ -422,8 +449,8 @@ function createAnnotationEntities(editorState, response) {
                 rawContentBlocks[blockKey], // current block in editor raw content, containing annotation data
                 filteredCharDiffs,          // map of filtered char locations for all blocks in raw data
                 entitiesToRender            // array of entities to push to
-                );
-            
+            );
+
         } else {
             // API response was empty or undefined, usually because of an empty text block
             console.log("Undefined response, likely empty Block. BlockKey:", blockKey);
@@ -433,7 +460,7 @@ function createAnnotationEntities(editorState, response) {
 }
 
 module.exports = {
-    annScrollPosition,
+    resetAnnotationScroll,
     checkForAnnotations,
     getOtherEntityRanges,
     replaceAnnotation,
@@ -441,5 +468,6 @@ module.exports = {
     allFilteredDiffs,
     checkTextMarkers,
     getAnnotationClass,
-    createAnnotationEntities
+    createAnnotationEntities,
+    addEntitiesToContentState
 };
