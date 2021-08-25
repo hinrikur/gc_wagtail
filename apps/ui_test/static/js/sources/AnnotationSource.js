@@ -36,6 +36,7 @@ class AnnotationSource extends React.Component {
         } = this.props;
 
         // console.log("Entity type prop:", entityType);
+        // console.log("Entity key prop:", entityKey);
 
         // var nextState = editorState;
 

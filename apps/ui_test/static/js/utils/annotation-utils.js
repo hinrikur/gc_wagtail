@@ -372,6 +372,8 @@ function getEntitiesForBlock(editorState, rawContentBlock, filteredCharDiffs, en
         // Check for entity clash in entity range
         const entitiesInBLock = otherEntityRanges[anchorKey];
         const entityClash = checkEntityClash(start, end, entitiesInBLock);
+        console.log("Entity clash for this range:", entityClash);
+        console.log("Other entities already in block:", entitiesInBLock);
 
         if (entityClash) {
             console.log(`Entity clash: Skipping annotation for "${selectedText}", block anchor key: ${anchorKey}`);

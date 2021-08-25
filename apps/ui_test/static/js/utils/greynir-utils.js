@@ -1,5 +1,5 @@
 async function callGreynirAPI(url = '', data = {}) {
-    
+
     if (data === "") {
         // text is field is empty, returns null
         // NOTE: this was tripped when content blocks were annoatated one by one,
@@ -141,44 +141,47 @@ function adjustChars(paragraph) {
     return paragraph;
 }
 
+// collect tokens into single string and add to annotations
+function insertSentenceText(sentence, annotations) {
+    var sentString = '';
+    sentence.tokens.forEach(token => {
+        sentString += token.o;
+    });
+    annotations.forEach(ann => {
+        ann.sent = sentString;
+    });
+    return annotations;
+}
+
+// discards additional annotations if parse error in sentence
+// done so annotations don't render on top of each other
+// NOTE: fairly nuclear approach 
+function filterParseErrors(annotations) {
+    for (var i = 0; i < annotations.length; i++) {
+        if (annotations[i].code.includes("E001")) {
+            return [annotations[i]];
+        }
+    }
+    return annotations;
+}
+
 // iterates over API response JSON and returns flat
 // array of annotations (annotationArray)
 function processAPI(json) {
-    
-    // collect tokens into single string and add to annotations
-    function insertSentenceText(sentence, annotations) {
-        var sentString = '';
-        sentence.tokens.forEach(token => {
-            sentString += token.o;
-        });
-        annotations.forEach(ann => {
-            ann.sent = sentString;
-        });
-        return annotations;
-    }
-
-    // discards additional annotations if parse error in sentence
-    // done so annotations don't render on top of each other
-    // NOTE: fairly nuclear approach 
-    function filterParseErrors(annotations) {
-        for (var i = 0; i < annotations.length; i++) {
-            if (annotations[i].code.includes("E001")) {
-                return [annotations[i]];
-            }
-        }
-        return annotations;
-    }
 
     // empty return array defined
     var annotationArray = [];
+
     // iterate through outer array
     for (var i = 0; i < json.result.length; i++) {
+
         // iterate through paragraphs
         var paragraphArray = [];
         // console.log("Paragraph before par adjust", json.result[i]);
         json.result[i] = adjustChars(json.result[i]);
         // console.log("Paragraph after par adjust", json.result[i]);
         for (var j = 0; j < json.result[i].length; j++) {
+
             // iterate through sentences
             // adjust likely errors in char locations from API
             // var adjustedJson = adjustChars(json.result[i][j]);
@@ -189,6 +192,7 @@ function processAPI(json) {
                 ann.token = currentSentence.token;
                 ann.nonce = currentSentence.nonce;
             });
+            
             // Sentence text added to annotation data
             // var anns = insertSentenceText(json.result[i][j], json.result[i][j].annotations);            
             // annotation added to return array
