@@ -1,4 +1,8 @@
 
+wagtailenv
+Dockerfile
+db.sqlite3
+
 
 
 # wagtail admin static files
@@ -22,4 +26,6 @@ package.json
 webpack.config.js
 
 # pycache
-# ui_test/__pycache__
+__pycache__/
+# migrations
+.jshintrc
