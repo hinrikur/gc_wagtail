@@ -16,7 +16,7 @@ The plugin was developed for, and is configured for use with, the [Kjarninn](htt
 The annotation functionality of the plugin and interactive UI is based on pre-existing [in line entity](https://www.draftail.org/docs/entities) frameworks of the Draftail editor, written in React. As Draftail is based on the widely used [Draft.js](https://draftjs.org/) editor, functionality more specific to Draft.js is used where possible.
 
 ### Django app
-The custom entity functionality of the plugin is contained within a specific Django app. This is labeled [`ui_test`](apps/ui_test) in the within the repository file structure.  
+The custom entity functionality of the plugin is contained within a specific Django app. This is labeled [`ui_test`](apps/ui_test) in the the repository file structure.
 
 The plugin technically consists of two sub-plugins: one for the general functionality of in-line annotations and the other for the removal of all annotations in the text. These sub-plugins each consist of a source and an entity, which are registered to the DOM through [the app's Wagtail hooks](apps/ui_test/wagtail_hooks.py).
 
