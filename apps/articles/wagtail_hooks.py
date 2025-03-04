@@ -2,20 +2,24 @@
 
 import json
 from wagtail.core import hooks
-from wagtail.admin.rich_text import HalloPlugin
+
+# from wagtail.admin.rich_text import HalloPlugin
+from django.utils.translation import gettext_lazy as _
 from django.utils.html import format_html
 from wagtail.core.whitelist import attribute_rule, check_url, allow_without_attributes
 from wagtail.admin.rich_text.converters.editor_html import WhitelistRule
 from wagtail.contrib.redirects.models import Redirect
-from wagtail.core.models import Site
+from wagtail.models import Site
 from django.utils.html import escape
+
 from wagtail.core.rich_text import LinkHandler
 
 
-@hooks.register('construct_homepage_summary_items')
+@hooks.register("construct_homepage_summary_items")
 def remove_summary_items(request, items):
     for i in items:
         items.remove(i)
+
 
 # TODO
 # @hooks.register('before_move_page')
@@ -47,10 +51,10 @@ class CorrectButtonHelper(ButtonHelper):
         classnames = self.add_button_classnames + classnames_add
         cn = self.finalise_classname(classnames, classnames_exclude)
         return {
-            'url': self.url_helper.create_url,
-            'label': _('Add %s') % self.verbose_name,
-            'classname': cn,
-            'title': _('Add a new %s') % self.verbose_name,
+            "url": self.url_helper.create_url,
+            "label": _("Add %s") % self.verbose_name,
+            "classname": cn,
+            "title": _("Add a new %s") % self.verbose_name,
         }
 
     def delete_button(self, pk, classnames_add=None, classnames_exclude=None):
@@ -61,15 +65,17 @@ class CorrectButtonHelper(ButtonHelper):
         classnames = self.add_button_classnames + classnames_add
         cn = self.finalise_classname(classnames, classnames_exclude)
         return {
-            'url': reverse("your_custom_url"),
-            'label': _('Delete'),
-            'classname': "custom-css-class",
-            'title': _('Delete this item')
+            "url": reverse("your_custom_url"),
+            "label": _("Delete"),
+            "classname": "custom-css-class",
+            "title": _("Delete this item"),
         }
+
 
 class ArticlePageAdmin(ModelAdmin):
     model = ArticlePage
     button_helper_class = CorrectButtonHelper
+
 
 modeladmin_register(ArticlePageAdmin)
 
@@ -84,14 +90,15 @@ modeladmin_register(ArticlePageAdmin)
 
 
 class NoFollowExternalLinkHandler(LinkHandler):
-    identifier = 'external'
+    identifier = "external"
 
     @classmethod
     def expand_db_attributes(cls, attrs):
         href = attrs["href"]
         return '<a href="%s" target="_blank" rel="noopener nofollower">' % escape(href)
 
-@hooks.register('register_rich_text_features')
+
+@hooks.register("register_rich_text_features")
 def register_external_link(features):
     features.register_link_type(NoFollowExternalLinkHandler)
 
@@ -128,57 +135,58 @@ def register_external_link(features):
 #     features.default_features.append('html')
 
 
-
-@hooks.register('insert_editor_js')
-def editor_js():
-    return format_html("""
-        <script>
-
-
-        function initSlugAutoPopulate() {{
-            if (!$('body').hasClass('page-is-live')) {{
-
-                var now = new Date();
-                var d = date_format(now);
-                var slugFollowsTitle = false;
-
-                $('#id_title').on('focus', function() {{
-                    /* slug should only follow the title field if its value matched the title's value at the time of focus */
-                    var currentSlug = $('#id_slug').val();
-                    var slugifiedTitle = cleanForSlug(this.value, true);
-                    slugFollowsTitle = (currentSlug.replace(d, "") == slugifiedTitle);
-                }});
-
-                $('#id_title').on('keyup keydown keypress blur', function() {{
-                    if (slugFollowsTitle) {{
-                        var slugifiedTitle = d + cleanForSlug(this.value, true);
-                        $('#id_slug').val(slugifiedTitle);
-                    }}
-                }});
-            }}
-        }}
-
-        $(function(){{
-            $("input#url_to_copy").on("click", function () {{
-                $(this).select();
-            }});
-        }});
-
-        function pad_2(number) {{
-             return (number < 10 ? '0' : '') + number;
-        }}
+# @hooks.register("insert_editor_js")
+# def editor_js():
+#     return format_html(
+#         """
+#         <script>
 
 
-        function date_format(date) {{
-             return date.getFullYear() + '-' +
-                    pad_2(date.getMonth()+1) + '-' +
-                    pad_2(date.getDate()) + '-';
-        }}
+#         function initSlugAutoPopulate() {{
+#             if (!$('body').hasClass('page-is-live')) {{
 
-        registerHalloPlugin('hallohtml');
+#                 var now = new Date();
+#                 var d = date_format(now);
+#                 var slugFollowsTitle = false;
 
-        delete halloPlugins['halloreundo'];
+#                 $('#id_title').on('focus', function() {{
+#                     /* slug should only follow the title field if its value matched the title's value at the time of focus */
+#                     var currentSlug = $('#id_slug').val();
+#                     var slugifiedTitle = cleanForSlug(this.value, true);
+#                     slugFollowsTitle = (currentSlug.replace(d, "") == slugifiedTitle);
+#                 }});
+
+#                 $('#id_title').on('keyup keydown keypress blur', function() {{
+#                     if (slugFollowsTitle) {{
+#                         var slugifiedTitle = d + cleanForSlug(this.value, true);
+#                         $('#id_slug').val(slugifiedTitle);
+#                     }}
+#                 }});
+#             }}
+#         }}
+
+#         $(function(){{
+#             $("input#url_to_copy").on("click", function () {{
+#                 $(this).select();
+#             }});
+#         }});
+
+#         function pad_2(number) {{
+#              return (number < 10 ? '0' : '') + number;
+#         }}
 
 
-        </script>
-    """)
+#         function date_format(date) {{
+#              return date.getFullYear() + '-' +
+#                     pad_2(date.getMonth()+1) + '-' +
+#                     pad_2(date.getDate()) + '-';
+#         }}
+
+#         registerHalloPlugin('hallohtml');
+
+#         delete halloPlugins['halloreundo'];
+
+
+#         </script>
+#     """
+#     )
